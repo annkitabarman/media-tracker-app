@@ -17,7 +17,7 @@
     <a class="text-2xl font-bold" href="#">Media Tracker</a>
 
     <div class="hidden md:block h-full">
-      <ul class="flex items-center gap-6 h-full">
+      <ul #menuContainer class="flex items-center gap-6 h-full">
         <li class="h-full">
           <a
             href="#"
@@ -25,19 +25,39 @@
             >Home</a
           >
         </li>
-        <li class="h-full">
-          <a
-            href="#"
-            class="h-full inline-flex items-center px-4 hover:bg-cyan-800"
-            >Movies</a
+        <li class="h-full inline-block relative">
+          <button
+            (click)="openMenuDropdown('movies')"
+            class="h-full inline-flex items-center px-4 hover:bg-cyan-800 cursor-pointer"
           >
+            Movies
+          </button>
+          @if(isMovieClicked()) {
+          <div
+            class="absolute top-full left-0 mt-1 min-w-24 text-black rounded shadow-lg z-50 py-2 px-2 -translate-y-4 bg-white text-sm"
+          >
+            @for(movie of selectedMenuDropdown(); track movie.menu) {
+            <a [href]="movie.link" class="block py-1">{{movie.menu}}</a>
+            }
+          </div>
+          }
         </li>
-        <li class="h-full">
-          <a
-            href="#"
-            class="h-full inline-flex items-center px-4 hover:bg-cyan-800"
-            >TV Shows</a
+        <li class="h-full inline-block relative">
+          <button
+            (click)="openMenuDropdown('tv-shows')"
+            class="h-full inline-flex items-center px-4 hover:bg-cyan-800 cursor-pointer"
           >
+            TV Shows
+          </button>
+          @if(isTvShowClicked()) {
+          <div
+            class="absolute top-full left-0 mt-1 min-w-24 text-black rounded shadow-lg z-50 py-2 px-2 -translate-y-4 bg-white text-sm"
+          >
+            @for(show of selectedMenuDropdown(); track show.menu) {
+            <a [href]="show.link" class="block py-1">{{show.menu}}</a>
+            }
+          </div>
+          }
         </li>
       </ul>
     </div>
@@ -57,9 +77,20 @@
       <button class="sm:hidden cursor-pointer p-2" (click)="toggleSearchBox()">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
-      <button class="cursor-pointer p-2" (click)="toggleMenu()">
-        <i class="fa-solid fa-user fa-lg"></i>
-      </button>
+      <div #userMenuContainer class="inline-block relative">
+        <button class="cursor-pointer p-2" (click)="toggleUserMenu()">
+          <i class="fa-solid fa-user fa-lg"></i>
+        </button>
+        @if(isUserMenuClicked()) {
+        <div
+          class="absolute top-full left-0 mt-1 min-w-24 text-black rounded shadow-lg z-50 py-2 px-2 bg-white text-sm"
+        >
+          @for(user of USER_MENU; track user.menu) {
+          <a [href]="user.link" class="block py-1">{{user.menu}}</a>
+          }
+        </div>
+        }
+      </div>
 
       <button class="md:hidden cursor-pointer p-2" (click)="displayOptions()">
         <i class="fa-solid fa-bars"></i>
