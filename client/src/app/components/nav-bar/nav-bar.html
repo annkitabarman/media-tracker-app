@@ -1,8 +1,22 @@
 <nav class="bg-blue-900 text-white h-16 fixed top-0 left-0 right-0">
+  @if(isFullScreenSearchVisible()) {
+  <div
+    class="sm:hidden relative flex flex-1 max-w-sm items-center gap-4 my-4 mx-auto"
+  >
+    <input
+      type="search"
+      placeholder="Search for a show or movie"
+      class="w-full bg-white text-black rounded-full h-8 placeholder:text-sm placeholder:text-gray-500 placeholder:pl-4"
+    />
+    <button (click)="toggleSearchBox()">
+      <i class="fa-solid fa-x absolute right-4 -translate-1/2 text-black"></i>
+    </button>
+  </div>
+  } @else {
   <div class="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
     <a class="text-2xl font-bold" href="#">Media Tracker</a>
 
-    <div>
+    <div class="hidden md:block">
       <ul class="flex items-center gap-6">
         <li><a href="#">Home</a></li>
         <li><a href="#">Movies</a></li>
@@ -11,19 +25,28 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <div class="relative">
+      <div class="relative hidden sm:flex flex-1 min-w-0 lg:w-64">
         <i
           class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-black"
         ></i>
         <input
-          class="w-64 bg-white text-black pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-500 placeholder:text-sm"
+          class="w-full bg-white text-black pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-500 placeholder:text-sm"
           type="search"
           placeholder="Search for a show or movie"
         />
       </div>
-      <button class="cursor-pointer pl-4" (click)="toggleMenu()">
+
+      <button class="sm:hidden cursor-pointer p-2" (click)="toggleSearchBox()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <button class="cursor-pointer p-2" (click)="toggleMenu()">
         <i class="fa-solid fa-user fa-lg"></i>
+      </button>
+
+      <button class="md:hidden cursor-pointer p-2" (click)="displayOptions()">
+        <i class="fa-solid fa-bars"></i>
       </button>
     </div>
   </div>
+  }
 </nav>
