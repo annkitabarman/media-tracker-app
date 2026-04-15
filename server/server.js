@@ -13,8 +13,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use("/tmdb", async (req, res) => {
   const path = req.path.slice(1);
-  console.log("Incoming request:", req.method, req.originalUrl);
-  console.log(path);
 
   try {
     const response = await axios.get(`${BASE_URL}/${path}`, {

@@ -1,0 +1,12 @@
+<div class="auto">
+  <app-media-row
+    [mediaType]="'Movies'"
+    [mediaList]="moviesList().slice(0,6)"
+    [mediaLoading]="moviesLoading()"
+    [mediaHasError]="moviesError()"
+  />
+</div>
+<!-- 
+<div class="auto bg-red-400">
+  <app-media-row [mediaType]="'TV Shows'" />
+</div> -->

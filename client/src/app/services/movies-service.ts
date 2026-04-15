@@ -17,7 +17,7 @@ export class MoviesService {
 
   fetchTrendingMovies(): Observable<TrendingMoviesType[]> {
     return this._httpClient
-      .get<TrendingMoviesAPIResponse>(`${this._baseUrl}/movie/popular`)
+      .get<TrendingMoviesAPIResponse>(`${this._baseUrl}/trending/movie/day`)
       .pipe(
         map((res) => res.results),
         map((movies) => {

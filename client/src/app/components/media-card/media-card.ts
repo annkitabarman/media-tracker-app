@@ -1,0 +1,27 @@
+import { Component, input, signal } from '@angular/core';
+import { TrendingMoviesType } from '../../models/movie-response.model';
+import { DatePipe } from '@angular/common';
+
+@Component({
+  selector: 'app-media-card',
+  imports: [DatePipe],
+  templateUrl: './media-card.html',
+  styleUrl: './media-card.scss',
+})
+export class MediaCard {
+  item = input<TrendingMoviesType>();
+
+  isHovered = signal<boolean>(false);
+  private _hoverTimeout: any;
+
+  onMouseEnter() {
+    this._hoverTimeout = setTimeout(() => {
+      this.isHovered.set(true);
+    }, 1000);
+  }
+
+  onMouseLeave() {
+    clearTimeout(this._hoverTimeout);
+    this.isHovered.set(false);
+  }
+}

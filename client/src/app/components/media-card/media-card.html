@@ -1,0 +1,36 @@
+<div
+  class="relative"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <div class="rounded-md h-64 bg-white mx-4 mt-4 w-40">
+    <img
+      [src]="item()?.poster_path"
+      class="block w-full h-full object-cover cursor-pointer"
+    />
+  </div>
+  <div class="ml-5 ml-1 mt-2 w-40">
+    <!-- <a [href]="'/movie/' + (item()?.id)" target="_blank" rel="noopener noreferrer">
+        {{ item()?.title }}
+    </a> -->
+
+    <a href="#" class="block truncate hover:underline hover:text-pink-300">
+      {{ item()?.title }}
+    </a>
+    <div>{{item()?.release_date |date: 'longDate'}}</div>
+
+    @if(isHovered()) {
+    <div
+      class="absolute -top-10 -left-40 h-96 w-[40rem] bg-black opacity-90 shadow-xl z-50 scale-80 flex"
+    >
+      <div>
+        <img
+          [src]="item()?.poster_path"
+          class="block w-full h-full object-cover rounded-md mb-2"
+        />
+      </div>
+      <div>{{ item()?.original_title }}</div>
+    </div>
+    }
+  </div>
+</div>
