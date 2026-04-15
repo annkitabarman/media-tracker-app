@@ -1,6 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+/* Define font variables */
+@theme {
+  --font-serif-custom: "Merriweather", serif;
+}
+
+/* Apply globally (pick one) */
 body {
-  @apply font-serif;
+  font-family: var(--font-serif-custom);
 }
