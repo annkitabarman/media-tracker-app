@@ -1,5 +1,5 @@
 import { Component, input, signal } from '@angular/core';
-import { TrendingMoviesType } from '../../models/movie-response.model';
+import { TrendingMediaType } from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './media-card.scss',
 })
 export class MediaCard {
-  item = input<TrendingMoviesType>();
+  item = input<TrendingMediaType>();
 
   isHovered = signal<boolean>(false);
   private _hoverTimeout: any;

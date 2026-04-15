@@ -1,4 +1,4 @@
-export interface TrendingMoviesType {
+export interface TrendingMediaType {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
@@ -13,11 +13,14 @@ export interface TrendingMoviesType {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  name: string;
+  original_name: string;
+  first_air_date: string;
 }
 
-export interface TrendingMoviesAPIResponse {
+export interface TrendingMediaAPIResponse {
   page: number;
-  results: TrendingMoviesType[];
+  results: TrendingMediaType[];
   total_pages: number;
   total_results: number;
 }

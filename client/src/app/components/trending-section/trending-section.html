@@ -7,7 +7,7 @@
       <!-- Sliding pill -->
       <div
         class="absolute top-1 left-1 h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] bg-white rounded-full transition-all duration-300 ease-in-out"
-        [ngClass]="trendType === 'weekly' ? 'translate-x-full' : 'translate-x-0'"
+        [ngClass]="trendType() === 'week' ? 'translate-x-full' : 'translate-x-0'"
       ></div>
 
       <!-- Daily -->
@@ -15,14 +15,14 @@
         <input
           type="radio"
           name="trend"
-          value="daily"
+          value="day"
           class="hidden"
-          [checked]="trendType === 'daily'"
-          (change)="setTrend('daily')"
+          [checked]="trendType() === 'day'"
+          (change)="setTrend('day')"
         />
         <span
           class="px-4 py-1 inline-block transition-colors duration-300"
-          [ngClass]="trendType === 'daily' ? 'text-black' : 'text-white'"
+          [ngClass]="trendType() === 'day' ? 'text-black' : 'text-white'"
         >
           Daily
         </span>
@@ -33,14 +33,14 @@
         <input
           type="radio"
           name="trend"
-          value="weekly"
+          value="week"
           class="hidden"
-          [checked]="trendType === 'weekly'"
-          (change)="setTrend('weekly')"
+          [checked]="trendType() === 'week'"
+          (change)="setTrend('week')"
         />
         <span
           class="px-4 py-1 inline-block transition-colors duration-300"
-          [ngClass]="trendType === 'weekly' ? 'text-black' : 'text-white'"
+          [ngClass]="trendType() === 'week' ? 'text-black' : 'text-white'"
         >
           Weekly
         </span>
@@ -53,8 +53,11 @@
     [mediaLoading]="moviesLoading()"
     [mediaHasError]="moviesError()"
   />
+
+  <app-media-row
+    [mediaType]="'TV Shows'"
+    [mediaList]="tvShowsList().slice(0,6)"
+    [mediaLoading]="tvShowsLoading()"
+    [mediaHasError]="tvShowsError()"
+  />
 </div>
-<!-- 
-<div class="auto bg-red-400">
-  <app-media-row [mediaType]="'TV Shows'" />
-</div> -->

@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { MediaCard } from '../media-card/media-card';
-import { TrendingMoviesType } from '../../models/movie-response.model';
+import { TrendingMediaType } from '../../models/movie-response.model';
 import { CommonModule } from '@angular/common';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
@@ -12,7 +12,7 @@ import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 })
 export class MediaRow {
   mediaType = input<string>();
-  mediaList = input<TrendingMoviesType[]>();
+  mediaList = input<TrendingMediaType[]>();
   mediaLoading = input<boolean>();
   mediaHasError = input<boolean>();
 

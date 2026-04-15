@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { BASE_URL } from '../constants/api-urls';
-import { Observable, map } from 'rxjs';
+import { Observable, map, forkJoin, catchError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
-  TrendingMoviesType,
-  TrendingMoviesAPIResponse,
+  TrendingMediaType,
+  TrendingMediaAPIResponse,
 } from '../models/movie-response.model';
 
 @Injectable({
@@ -15,19 +15,42 @@ export class MoviesService {
 
   private readonly _httpClient = inject(HttpClient);
 
-  fetchTrendingMovies(): Observable<TrendingMoviesType[]> {
-    return this._httpClient
-      .get<TrendingMoviesAPIResponse>(`${this._baseUrl}/trending/movie/day`)
-      .pipe(
-        map((res) => res.results),
-        map((movies) => {
-          return movies.map((movie) => {
-            return {
-              ...movie,
-              poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            };
-          });
-        }),
-      );
+  fetchTrendingAll(trendType: 'day' | 'week'): Observable<{
+    movies: TrendingMediaType[];
+    tvShows: TrendingMediaType[];
+  }> {
+    return forkJoin({
+      movies: this._httpClient
+        .get<TrendingMediaAPIResponse>(
+          `${this._baseUrl}/trending/movie/${trendType}`,
+        )
+        .pipe(
+          map((res) =>
+            res.results.map((movie) => {
+              return {
+                ...movie,
+                poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+              };
+            }),
+          ),
+          catchError((error) => of([])),
+        ),
+
+      tvShows: this._httpClient
+        .get<TrendingMediaAPIResponse>(
+          `${this._baseUrl}/trending/tv/${trendType}`,
+        )
+        .pipe(
+          map((res) =>
+            res.results.map((show) => {
+              return {
+                ...show,
+                poster_path: `https://image.tmdb.org/t/p/w500${show.poster_path}`,
+              };
+            }),
+          ),
+          catchError((error) => of([])),
+        ),
+    });
   }
 }
