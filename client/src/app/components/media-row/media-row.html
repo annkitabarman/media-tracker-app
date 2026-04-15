@@ -1,7 +1,7 @@
-<div class="text-4xl my-4">Trending {{mediaType()}}</div>
+<div class="text-2xl my-4 px-4">{{mediaType()}}</div>
 
 <div
-  class="flex gap-x-4 h-[22rem] bg-[#31135c] rounded-md relative"
+  class="flex gap-x-4 h-[23rem] bg-[#31135c] rounded-md relative"
   [ngClass]="mediaHasError() ? 'items-center justify-center' : 'items-start'"
 >
   @if(mediaHasError()) {

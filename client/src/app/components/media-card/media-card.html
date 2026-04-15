@@ -6,7 +6,7 @@
   <div class="rounded-md h-64 bg-white mx-4 mt-4 w-40">
     <img
       [src]="item()?.poster_path"
-      class="block w-full h-full object-cover cursor-pointer"
+      class="block w-full h-full object-cover cursor-pointer rounded-md"
     />
   </div>
   <div class="ml-5 ml-1 mt-2 w-40">
@@ -14,7 +14,7 @@
         {{ item()?.title }}
     </a> -->
 
-    <a href="#" class="block truncate hover:underline hover:text-pink-300">
+    <a href="#" class="block text-wrap hover:underline hover:text-pink-300">
       {{ item()?.title }}
     </a>
     <div>{{item()?.release_date |date: 'longDate'}}</div>
