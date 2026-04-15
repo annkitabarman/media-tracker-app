@@ -1,10 +1,11 @@
 import { Component, input, signal } from '@angular/core';
 import { TrendingMediaType } from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-media-card',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterModule],
   templateUrl: './media-card.html',
   styleUrl: './media-card.scss',
 })

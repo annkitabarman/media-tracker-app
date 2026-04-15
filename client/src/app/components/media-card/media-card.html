@@ -10,11 +10,12 @@
     />
   </div>
   <div class="ml-5 ml-1 mt-2 w-40">
-    <!-- <a [href]="'/movie/' + (item()?.id)" target="_blank" rel="noopener noreferrer">
-        {{ item()?.title }}
-    </a> -->
-
-    <a href="#" class="block truncate hover:underline hover:text-pink-300">
+    <a
+      [routerLink]="['/movie', item()?.title || item()?.name]"
+      class="block truncate hover:underline hover:text-pink-300"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {{ item()?.title || item()?.name }}
     </a>
     <div class="text-sm mt-1">
