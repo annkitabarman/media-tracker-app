@@ -1,7 +1,8 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { TrendingMediaType } from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-media-card',
@@ -11,6 +12,7 @@ import { RouterModule } from '@angular/router';
 })
 export class MediaCard {
   item = input<TrendingMediaType>();
+  private readonly _router = inject(Router);
 
   isHovered = signal<boolean>(false);
   private _hoverTimeout: any;
@@ -24,5 +26,9 @@ export class MediaCard {
   onMouseLeave() {
     clearTimeout(this._hoverTimeout);
     this.isHovered.set(false);
+  }
+
+  openDetails() {
+    this._router.navigate(['/movie', this.item()?.id]);
   }
 }

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
   TrendingMediaAPIResponse,
+  MediaDetailsResponse,
 } from '../models/movie-response.model';
 
 @Injectable({
@@ -52,5 +53,24 @@ export class MoviesService {
           catchError((error) => of([])),
         ),
     });
+  }
+
+  fetchMediaDetails(
+    id: number,
+    type: 'movie' | 'tv',
+  ): Observable<MediaDetailsResponse> {
+    return this._httpClient
+      .get<MediaDetailsResponse>(
+        `${this._baseUrl}/${type}/${id}?language=en-US`,
+      )
+      .pipe(
+        map((res) => {
+          return {
+            ...res,
+            backdrop_path: `https://image.tmdb.org/t/p/w500${res.backdrop_path}`,
+            poster_path: `https://image.tmdb.org/t/p/w500${res.poster_path}`,
+          };
+        }),
+      );
   }
 }

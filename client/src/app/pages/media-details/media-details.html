@@ -1,0 +1,127 @@
+<div class="relative bg-linear-to-bl from-[#1e063d] to-violet-900">
+  <div class="h-[30rem] overflow-hidden px-10">
+    <img
+      [src]="mediaData()?.backdrop_path"
+      class="w-full h-full object-cover opacity-20 my-6 rounded-xl"
+    />
+  </div>
+
+  <div class="absolute top-15 left-40 flex justify-between mx-10 z-50">
+    <div class="flex gap-6">
+      <div
+        class="relative flex flex-col items-center gap-4 max-w-[13rem] flex-shrink-0"
+      >
+        <img
+          [src]="mediaData()?.poster_path"
+          class="w-full object-cover rounded-lg shadow-lg"
+        />
+
+        <div class="flex items-center gap-1 w-full relative">
+          <div
+            #dropdownWrapper
+            class="flex w-full rounded-md overflow-hidden h-9"
+          >
+            <button
+              class="text-sm flex-1 w-full bg-violet-600 hover:bg-violet-700 text-white py-2 transition"
+            >
+              Add to List
+            </button>
+
+            <button
+              (click)="toggleDropdown($event)"
+              class="w-8 pb-2 flex items-center justify-center bg-violet-700 hover:bg-violet-800 text-white border-l border-white/20"
+            >
+              ⌄
+            </button>
+          </div>
+
+          <button class="bg-pink-500 hover:bg-pink-700 rounded-md m-2 w-12 h-9">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+
+        @if(isDropdownOpen()) {
+        <div
+          class="text-sm absolute top-full left-0 mt-2 w-40 bg-[#2a0f4d] rounded-lg shadow-lg overflow-hidden z-50"
+        >
+          <button
+            class="block w-full text-left px-4 py-2 hover:bg-violet-700 text-white"
+          >
+            Set as Complete
+          </button>
+          <button
+            class="block w-full text-left px-4 py-2 hover:bg-violet-700 text-white"
+          >
+            Set as Watching
+          </button>
+          <button
+            class="block w-full text-left px-4 py-2 hover:bg-violet-700 text-white"
+          >
+            Set as Planning
+          </button>
+        </div>
+        }
+      </div>
+
+      <div class="text-white mx-10 max-w-3xl">
+        <h1 class="text-5xl font-bold">
+          {{ mediaData()?.title || mediaData()?.name }}
+        </h1>
+
+        <h2 class="text-3xl my-2">
+          ({{mediaData()?.release_date | date:'yyyy'}})
+        </h2>
+
+        <div class="my-4 flex flex-wrap gap-3">
+          @for(g of genreList(); track g) {
+          <span
+            class="border-2 whitespace-nowrap inline-block border-violet-900 bg-violet-400/30 px-3 py-1 rounded-full text-xs"
+            >{{g}}</span
+          >
+          }
+        </div>
+
+        <div class="flex items-center">
+          <div class="relative h-16 w-16">
+            <svg class="h-full w-full rotate-[90deg]">
+              <circle
+                cx="50%"
+                cy="50%"
+                r="25"
+                stroke-width="6"
+                class="text-gray-700"
+                stroke="currentColor"
+                fill="#2a0f4d"
+              />
+
+              <circle
+                cx="50%"
+                cy="50%"
+                r="25"
+                stroke-width="5"
+                class="text-green-500"
+                stroke="currentColor"
+                fill="transparent"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="circumference()"
+                [attr.stroke-dashoffset]="dashOffset()"
+              />
+            </svg>
+
+            <div
+              class="text-xs absolute inset-0 flex items-center justify-center text-white"
+            >
+              {{percentage ? percentage + '%' : "NR"}}
+            </div>
+          </div>
+          <div class="text-xs w-10">User score</div>
+        </div>
+
+        <div class="italic my-6">{{mediaData()?.tagline}}</div>
+
+        <h4 class="text-base">Overview</h4>
+        <p class="mt-2 text-xs opacity-80">{{ mediaData()?.overview }}</p>
+      </div>
+    </div>
+  </div>
+</div>

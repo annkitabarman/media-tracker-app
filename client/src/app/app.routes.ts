@@ -7,8 +7,8 @@ export const routes: Routes = [
       import('./pages/home-page/home-page').then((m) => m.HomePage),
   },
   {
-    path: 'movie/:id',
+    path: ':type/:id',
     loadComponent: () =>
-      import('./pages/movie-details/movie-details').then((m) => m.MovieDetails),
+      import('./pages/media-details/media-details').then((m) => m.MediaDetails),
   },
 ];
