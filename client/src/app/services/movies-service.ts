@@ -1,6 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { BASE_URL } from '../constants/api-urls';
-import { Observable, map, forkJoin, catchError, of } from 'rxjs';
+import {
+  Observable,
+  map,
+  forkJoin,
+  catchError,
+  of,
+  tap,
+  shareReplay,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
@@ -20,6 +28,19 @@ export class MoviesService {
     movies: TrendingMediaType[];
     tvShows: TrendingMediaType[];
   }> {
+    const key = `trending-${trendType}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+
+      const isExpired = Date.now() - timestamp > 1000 * 60 * 10; // 10 min
+
+      if (!isExpired) {
+        return of(data);
+      }
+    }
+
     return forkJoin({
       movies: this._httpClient
         .get<TrendingMediaAPIResponse>(
@@ -52,7 +73,18 @@ export class MoviesService {
           ),
           catchError((error) => of([])),
         ),
-    });
+    }).pipe(
+      tap((res) => {
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            data: res,
+            timestamp: Date.now(),
+          }),
+        );
+      }),
+      shareReplay(1),
+    );
   }
 
   fetchMediaDetails(

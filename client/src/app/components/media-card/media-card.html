@@ -9,7 +9,7 @@
       class="block w-full h-full object-cover cursor-pointer rounded-md"
     />
   </div>
-  <div class="ml-1 mt-2 w-40">
+  <div class="ml-5 mt-2 w-40">
     <a
       [routerLink]="['/', item()?.media_type, item()?.id]"
       class="block truncate hover:underline hover:text-pink-300"
@@ -31,7 +31,9 @@
           class="block w-full h-full object-cover rounded-md mb-2"
         />
       </div>
-      <div>{{ item()?.original_title || item()?.original_name }}</div>
+      <div class="items-center">
+        {{ item()?.original_title || item()?.original_name }}
+      </div>
     </div>
     }
   </div>
