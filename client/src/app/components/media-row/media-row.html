@@ -1,7 +1,7 @@
 <div class="text-2xl my-4 px-4">{{mediaType()}}</div>
 
 <div
-  class="flex gap-x-4 h-[22rem] bg-[#31135c] rounded-md relative"
+  class="flex h-[22rem] bg-[#31135c] rounded-md relative"
   [ngClass]="mediaHasError() ? 'items-center justify-center' : 'items-start'"
 >
   @if(mediaHasError()) {
@@ -11,11 +11,9 @@
     <ng-lottie [options]="options" class="h-64"></ng-lottie>
   </div>
   } @else { @if(mediaLoading()) { @for(i of [1,2,3,4,5,6]; track i) {
-  <div>
-    <div
-      class="w-40 h-64 mx-4 mt-4 rounded-md overflow-hidden bg-gray-300 animate-pulse"
-    ></div>
-    <div class="ml-5 ml-1 mt-2 w-40 truncate animate-pulse">...</div>
+  <div class="relative">
+    <div class="w-40 h-64 mt-4 mx-4 rounded-md bg-gray-300 animate-pulse"></div>
+    <div class="ml-1 mt-2 w-40 truncate animate-pulse">...</div>
   </div>
   } } @else { @for(media of mediaList(); track media.id) {
   <app-media-card [item]="media" />

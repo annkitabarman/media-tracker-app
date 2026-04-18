@@ -3,13 +3,13 @@
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
 >
-  <div class="rounded-md h-64 bg-white mx-4 mt-4 w-40" (click)="openDetails()">
+  <div class="rounded-md bg-white mx-4 mt-4 w-40" (click)="openDetails()">
     <img
       [src]="item()?.poster_path"
       class="block w-full h-full object-cover cursor-pointer rounded-md"
     />
   </div>
-  <div class="ml-5 ml-1 mt-2 w-40">
+  <div class="ml-1 mt-2 w-40">
     <a
       [routerLink]="['/', item()?.media_type, item()?.id]"
       class="block truncate hover:underline hover:text-pink-300"
