@@ -12,16 +12,21 @@ import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
 import { MediaDetailsResponse } from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
+import { MinutesToHoursPipe } from '../../pipes/minutes-to-hours-pipe';
+import { CastList } from '../cast-list/cast-list';
+import { CastDetailsResponse } from '../../models/cast-response.model';
+import { CastService } from '../../services/cast-service';
 
 @Component({
   selector: 'app-media-details',
-  imports: [DatePipe],
+  imports: [DatePipe, MinutesToHoursPipe, CastList],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
 })
 export class MediaDetails implements OnInit {
   private readonly _activateRoute = inject(ActivatedRoute);
   private readonly _movieesService = inject(MoviesService);
+  private readonly _castService = inject(CastService);
   @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef<HTMLElement>;
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
@@ -29,6 +34,8 @@ export class MediaDetails implements OnInit {
   mediaData = signal<MediaDetailsResponse | null>(null);
   isDropdownOpen = signal<boolean>(false);
   radius = signal<number>(25);
+
+  castDetails = signal<CastDetailsResponse | null>(null);
 
   circumference = computed(() => {
     return 2 * Math.PI * this.radius();
@@ -45,7 +52,7 @@ export class MediaDetails implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchMediaData();
+    this.fetchRoutes();
   }
 
   generateGenreList() {
@@ -55,7 +62,7 @@ export class MediaDetails implements OnInit {
     this.genreList.set(genres ?? []);
   }
 
-  fetchMediaData() {
+  fetchRoutes() {
     this._activateRoute.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
       this.id.set(id);
@@ -65,16 +72,33 @@ export class MediaDetails implements OnInit {
       } else {
         this.type.set('movie');
       }
+      this.fetchMediaData();
+      this.fetchCastDetails();
+    });
+  }
 
-      this._movieesService.fetchMediaDetails(id, this.type()).subscribe({
-        next: (res) => {
-          this.mediaData.set(res);
-          this.generateGenreList();
-        },
-        error: (err) => {
-          console.error('Something went wrong!!', err);
-        },
-      });
+  fetchMediaData() {
+    this._movieesService.fetchMediaDetails(this.id(), this.type()).subscribe({
+      next: (res) => {
+        this.mediaData.set(res);
+        this.generateGenreList();
+      },
+      error: (err) => {
+        console.error('Something went wrong!!', err);
+      },
+    });
+  }
+
+  fetchCastDetails() {
+    if (!this.id() || !this.type()) return;
+    this._castService.fetchCastList(this.type(), this.id()).subscribe({
+      next: (res) => {
+        this.castDetails.set(res);
+        console.log(res);
+      },
+      error: (err) => {
+        console.error('Failed to fetch cast details', err);
+      },
     });
   }
 

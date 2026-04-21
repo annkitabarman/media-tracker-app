@@ -14,21 +14,7 @@ export class MediaCard {
   item = input<TrendingMediaType>();
   private readonly _router = inject(Router);
 
-  isHovered = signal<boolean>(false);
-  private _hoverTimeout: any;
-
-  onMouseEnter() {
-    this._hoverTimeout = setTimeout(() => {
-      this.isHovered.set(true);
-    }, 1000);
-  }
-
-  onMouseLeave() {
-    clearTimeout(this._hoverTimeout);
-    this.isHovered.set(false);
-  }
-
   openDetails() {
-    this._router.navigate(['/movie', this.item()?.id]);
+    this._router.navigate(['/', this.item()?.media_type, this.item()?.id]);
   }
 }

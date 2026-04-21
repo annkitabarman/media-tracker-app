@@ -1,8 +1,4 @@
-<div
-  class="relative"
-  (mouseenter)="onMouseEnter()"
-  (mouseleave)="onMouseLeave()"
->
+<div class="relative">
   <div class="rounded-md bg-white mx-4 mt-4 w-40" (click)="openDetails()">
     <img
       [src]="item()?.poster_path"
@@ -20,21 +16,5 @@
     <div class="text-sm mt-1">
       {{item()?.release_date || item()?.first_air_date |date: 'longDate'}}
     </div>
-
-    @if(isHovered()) {
-    <div
-      class="absolute -top-10 -left-40 h-96 w-[40rem] bg-black opacity-90 shadow-xl z-50 scale-80 flex"
-    >
-      <div>
-        <img
-          [src]="item()?.poster_path"
-          class="block w-full h-full object-cover rounded-md mb-2"
-        />
-      </div>
-      <div class="items-center">
-        {{ item()?.original_title || item()?.original_name }}
-      </div>
-    </div>
-    }
   </div>
 </div>

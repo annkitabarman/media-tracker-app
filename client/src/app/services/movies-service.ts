@@ -1,14 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { BASE_URL } from '../constants/api-urls';
-import {
-  Observable,
-  map,
-  forkJoin,
-  catchError,
-  of,
-  tap,
-  shareReplay,
-} from 'rxjs';
+import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
+import { Observable, map, forkJoin, catchError, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
@@ -35,8 +27,9 @@ export class MoviesService {
       const { data, timestamp } = JSON.parse(cached);
 
       const isExpired = Date.now() - timestamp > 1000 * 60 * 10; // 10 min
+      const hasData = data?.movies?.length > 0 || data?.tvShows?.length > 0;
 
-      if (!isExpired) {
+      if (!isExpired && hasData) {
         return of(data);
       }
     }
@@ -51,7 +44,7 @@ export class MoviesService {
             res.results.map((movie) => {
               return {
                 ...movie,
-                poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                poster_path: `${IMAGE_BASE_URL}${movie.poster_path}`,
               };
             }),
           ),
@@ -67,7 +60,7 @@ export class MoviesService {
             res.results.map((show) => {
               return {
                 ...show,
-                poster_path: `https://image.tmdb.org/t/p/w500${show.poster_path}`,
+                poster_path: `${IMAGE_BASE_URL}${show.poster_path}`,
               };
             }),
           ),
@@ -75,6 +68,8 @@ export class MoviesService {
         ),
     }).pipe(
       tap((res) => {
+        const hasData = res.movies.length > 0 || res.tvShows.length > 0;
+        if (!hasData) return;
         localStorage.setItem(
           key,
           JSON.stringify({
@@ -83,7 +78,6 @@ export class MoviesService {
           }),
         );
       }),
-      shareReplay(1),
     );
   }
 
@@ -99,8 +93,8 @@ export class MoviesService {
         map((res) => {
           return {
             ...res,
-            backdrop_path: `https://image.tmdb.org/t/p/w500${res.backdrop_path}`,
-            poster_path: `https://image.tmdb.org/t/p/w500${res.poster_path}`,
+            backdrop_path: `${IMAGE_BASE_URL}${res.backdrop_path}`,
+            poster_path: `${IMAGE_BASE_URL}${res.poster_path}`,
           };
         }),
       );

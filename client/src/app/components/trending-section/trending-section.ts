@@ -45,7 +45,6 @@ export class TrendingSection implements OnInit {
       )
       .subscribe({
         next: (media) => {
-          console.log(media);
           if (media.movies.length) {
             this.moviesList.set(media.movies);
           } else {
