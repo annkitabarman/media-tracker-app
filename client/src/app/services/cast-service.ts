@@ -52,8 +52,6 @@ export class CastService {
             }),
           };
         }),
-      )
-      .pipe(
         tap((data) => {
           const hasData = data?.cast?.length > 0 || data?.crew?.length > 0;
           if (!hasData) return;

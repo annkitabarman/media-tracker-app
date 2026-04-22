@@ -1,19 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
-import {
-  Observable,
-  map,
-  forkJoin,
-  catchError,
-  of,
-  tap,
-  timestamp,
-} from 'rxjs';
+import { Observable, map, forkJoin, catchError, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
   TrendingMediaAPIResponse,
   MediaDetailsResponse,
+  KeyWordsResponse,
 } from '../models/movie-response.model';
 
 @Injectable({
@@ -122,9 +115,42 @@ export class MoviesService {
             poster_path: `${IMAGE_BASE_URL}${res.poster_path}`,
           };
         }),
-      )
+        tap((res) => {
+          const hasData = res?.id === id;
+          if (!hasData) return;
+
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              data: res,
+              timestamp: Date.now(),
+            }),
+          );
+        }),
+      );
+  }
+
+  fetchKeywords(
+    id: number,
+    type: 'movie' | 'tv',
+  ): Observable<KeyWordsResponse> {
+    const key = `keywords-${type}-${id}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 60); // 1 hour
+      const hasData = data?.id === id;
+
+      if (!isExpired && hasData) {
+        return of(data);
+      }
+    }
+    return this._httpClient
+      .get<KeyWordsResponse>(`${this._baseUrl}/${type}/${id}/keywords`)
       .pipe(
         tap((res) => {
+          console.log(res);
           const hasData = res?.id === id;
           if (!hasData) return;
 

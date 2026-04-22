@@ -10,7 +10,10 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
-import { MediaDetailsResponse } from '../../models/movie-response.model';
+import {
+  MediaDetailsResponse,
+  KeyWordsResponse,
+} from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
 import { MinutesToHoursPipe } from '../../pipes/minutes-to-hours-pipe';
 import { CastDetailsResponse } from '../../models/cast-response.model';
@@ -38,6 +41,7 @@ export class MediaDetails implements OnInit {
   isDropdownOpen = signal<boolean>(false);
   radius = signal<number>(25);
   originalLang = signal<string>('English');
+  keywordsList = signal<KeyWordsResponse['keywords']>([]);
 
   castDetails = signal<CastDetailsResponse | null>(null);
 
@@ -82,6 +86,20 @@ export class MediaDetails implements OnInit {
     this.genreList.set(genres ?? []);
   }
 
+  fetchKeywords() {
+    if (!this.id() || !this.type()) return;
+
+    this._movieesService.fetchKeywords(this.id(), this.type()).subscribe({
+      next: (res) => {
+        this.keywordsList.set(res.keywords);
+        console.log('Keywords fetched successfully', res.keywords);
+      },
+      error: (err) => {
+        console.error('Failed to fetch keywords', err);
+      },
+    });
+  }
+
   fetchRoutes() {
     this._activateRoute.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
@@ -94,6 +112,7 @@ export class MediaDetails implements OnInit {
       }
       this.fetchMediaData();
       this.fetchCastDetails();
+      this.fetchKeywords();
     });
   }
 
