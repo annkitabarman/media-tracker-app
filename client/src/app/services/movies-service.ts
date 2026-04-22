@@ -1,6 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
-import { Observable, map, forkJoin, catchError, of, tap } from 'rxjs';
+import {
+  Observable,
+  map,
+  forkJoin,
+  catchError,
+  of,
+  tap,
+  timestamp,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
@@ -16,6 +24,10 @@ export class MoviesService {
 
   private readonly _httpClient = inject(HttpClient);
 
+  checkExpiry(timestamp: number, expectedTime: number): boolean {
+    return Date.now() - timestamp > expectedTime;
+  }
+
   fetchTrendingAll(trendType: 'day' | 'week'): Observable<{
     movies: TrendingMediaType[];
     tvShows: TrendingMediaType[];
@@ -26,7 +38,7 @@ export class MoviesService {
     if (cached) {
       const { data, timestamp } = JSON.parse(cached);
 
-      const isExpired = Date.now() - timestamp > 1000 * 60 * 10; // 10 min
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 60); // 1 hour
       const hasData = data?.movies?.length > 0 || data?.tvShows?.length > 0;
 
       if (!isExpired && hasData) {
@@ -85,6 +97,19 @@ export class MoviesService {
     id: number,
     type: 'movie' | 'tv',
   ): Observable<MediaDetailsResponse> {
+    const key = `details-${type}-${id}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 10); // 10 minutes
+      const hasData = data?.id === id;
+
+      if (!isExpired && hasData) {
+        return of(data);
+      }
+    }
     return this._httpClient
       .get<MediaDetailsResponse>(
         `${this._baseUrl}/${type}/${id}?language=en-US`,
@@ -96,6 +121,20 @@ export class MoviesService {
             backdrop_path: `${IMAGE_BASE_URL}${res.backdrop_path}`,
             poster_path: `${IMAGE_BASE_URL}${res.poster_path}`,
           };
+        }),
+      )
+      .pipe(
+        tap((res) => {
+          const hasData = res?.id === id;
+          if (!hasData) return;
+
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              data: res,
+              timestamp: Date.now(),
+            }),
+          );
         }),
       );
   }

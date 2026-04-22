@@ -1,0 +1,11 @@
+<div class="rounded-xl overflow-hidden bg-[#2a0f4d] h-60 flex flex-col">
+  <img
+    [src]="castProfilePath()"
+    class="w-full h-40 object-cover flex-shrink-0"
+  />
+
+  <div class="p-2 text-white text-sm flex flex-col flex-grow">
+    <div class="font-semibold text-xs mb-1 line-clamp-2">{{ castName() }}</div>
+    <div class="opacity-70 text-xs">{{ castRole() }}</div>
+  </div>
+</div>

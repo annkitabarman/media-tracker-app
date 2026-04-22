@@ -75,3 +75,11 @@ export interface MediaDetailsResponse {
   vote_average: number;
   vote_count: number;
 }
+
+export interface KeyWordsResponse {
+  id: number;
+  keywords: {
+    id: number;
+    name: string;
+  }[];
+}

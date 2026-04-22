@@ -1,13 +1,13 @@
 <div class="bg-linear-to-bl from-[#1e063d] to-violet-900">
   <div class="relative">
-    <div class="h-[30rem] overflow-hidden px-10">
+    <div class="h-[30rem] overflow-hidden px-10 pb-10 pt-0">
       <img
         [src]="mediaData()?.backdrop_path"
-        class="w-full h-full object-cover opacity-20 my-6 rounded-xl"
+        class="w-full h-full object-cover opacity-40 mt-5 rounded-xl"
       />
     </div>
 
-    <div class="absolute top-15 left-40 flex justify-between mx-10 z-50">
+    <div class="absolute top-15 left-30 flex justify-between mx-10 z-50">
       <div class="flex gap-6">
         <div
           class="relative flex flex-col items-center gap-4 max-w-[13rem] flex-shrink-0"
@@ -136,10 +136,61 @@
     </div>
   </div>
 
-  <div class="px-20 bg-red-400">
-    <span class="text-2xl"> Cast </span>
-    <div class="w-96 bg-green-300 my-10">
-      <app-cast-list [castList]="castDetails()?.cast ?? []" />
+  <div class="flex gap-10 mx-10">
+    <div class="flex-1 min-w-0">
+      <div class="bg-violet-700 pl-30 pr-10 py-4 rounded-xl">
+        <span class="text-xl text-white">Cast</span>
+
+        <div class="w-full h-70 my-5 overflow-x-auto">
+          <div class="flex py-3 gap-4 w-max">
+            @for (c of (castDetails()?.cast ?? []).slice(0, 9); track c) {
+            <app-cast-card
+              class="w-32 flex-shrink-0"
+              [castName]="c.name"
+              [castRole]="c.character"
+              [castProfilePath]="c.profile_path"
+            />
+            }
+
+            <div
+              class="flex items-center flex-shrink-0 px-1 mr-1 cursor-pointer"
+            >
+              <span class="text-xs">View more</span>
+              <i class="fa-solid fa-arrow-right text-sm ml-1"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-64 flex-shrink-0 text-white bg-violet-700 rounded-xl">
+      <div class="space-y-4 p-5">
+        <div>
+          <p class="font-semibold text-sm">Status</p>
+          <p class="text-xs opacity-80">{{mediaData()?.status}}</p>
+        </div>
+
+        <div>
+          <p class="font-semibold text-sm">Original Language</p>
+          <p class="text-xs opacity-80">{{originalLang()}}</p>
+        </div>
+
+        <div>
+          <p class="font-semibold text-sm">Budget</p>
+          <p class="text-xs opacity-80">
+            {{ mediaData()?.budget ? (mediaData()?.budget | currency:'USD') :
+            '-' }}
+          </p>
+        </div>
+
+        <div>
+          <p class="font-semibold text-sm">Revenue</p>
+          <p class="text-xs opacity-80">
+            {{ mediaData()?.revenue ? (mediaData()?.revenue | currency:'USD') :
+            '-' }}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

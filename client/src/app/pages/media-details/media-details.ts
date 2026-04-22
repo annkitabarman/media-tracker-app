@@ -13,13 +13,15 @@ import { MoviesService } from '../../services/movies-service';
 import { MediaDetailsResponse } from '../../models/movie-response.model';
 import { DatePipe } from '@angular/common';
 import { MinutesToHoursPipe } from '../../pipes/minutes-to-hours-pipe';
-import { CastList } from '../cast-list/cast-list';
 import { CastDetailsResponse } from '../../models/cast-response.model';
 import { CastService } from '../../services/cast-service';
+import { CastCard } from '../../components/cast-card/cast-card';
+import { SharedService } from '../../services/shared-service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-media-details',
-  imports: [DatePipe, MinutesToHoursPipe, CastList],
+  imports: [DatePipe, MinutesToHoursPipe, CastCard, CurrencyPipe],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
 })
@@ -27,6 +29,7 @@ export class MediaDetails implements OnInit {
   private readonly _activateRoute = inject(ActivatedRoute);
   private readonly _movieesService = inject(MoviesService);
   private readonly _castService = inject(CastService);
+  private readonly _sharedService = inject(SharedService);
   @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef<HTMLElement>;
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
@@ -34,6 +37,7 @@ export class MediaDetails implements OnInit {
   mediaData = signal<MediaDetailsResponse | null>(null);
   isDropdownOpen = signal<boolean>(false);
   radius = signal<number>(25);
+  originalLang = signal<string>('English');
 
   castDetails = signal<CastDetailsResponse | null>(null);
 
@@ -53,6 +57,22 @@ export class MediaDetails implements OnInit {
 
   ngOnInit(): void {
     this.fetchRoutes();
+    this.generateLanguageList();
+  }
+
+  generateLanguageList() {
+    this._sharedService.fetchLanguageMapping().subscribe({
+      next: (mapping) => {
+        const originalLang = this.mediaData()?.original_language;
+        if (originalLang && mapping[originalLang]) {
+          this.originalLang.set(mapping[originalLang]);
+        }
+      },
+
+      error: (err) => {
+        console.error('Failed to fetch language mapping', err);
+      },
+    });
   }
 
   generateGenreList() {
@@ -94,7 +114,6 @@ export class MediaDetails implements OnInit {
     this._castService.fetchCastList(this.type(), this.id()).subscribe({
       next: (res) => {
         this.castDetails.set(res);
-        console.log(res);
       },
       error: (err) => {
         console.error('Failed to fetch cast details', err);
