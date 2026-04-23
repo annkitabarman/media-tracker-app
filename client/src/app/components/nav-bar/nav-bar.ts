@@ -11,10 +11,11 @@ import {
   TV_SHOWS_MENU,
   USER_MENU,
 } from '../../constants/dropdown-menu';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.scss',
 })

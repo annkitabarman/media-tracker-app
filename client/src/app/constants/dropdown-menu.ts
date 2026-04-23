@@ -16,15 +16,15 @@ export const MOVIES_MENU = [
 export const TV_SHOWS_MENU = [
   {
     menu: 'Popular',
-    link: '/tv-shows',
+    link: '/tv',
   },
   {
     menu: 'Top Rated',
-    link: '/tv-shows/top-rated',
+    link: '/tv/top-rated',
   },
   {
     menu: 'Airing Today',
-    link: '/tv-shows/airing-today',
+    link: '/tv/airing-today',
   },
 ];
 
@@ -37,4 +37,14 @@ export const USER_MENU = [
     menu: 'Watchlist',
     link: '/user/watchlist',
   },
+  {
+    menu: 'Favorites',
+    link: '/user/favorites',
+  },
 ];
+
+export const ADD_TO_LIST_MENU = {
+  WATCHING: 'Set as Watching',
+  COMPLETED: 'Set as Completed',
+  PLANNING: 'Set as Planning',
+};

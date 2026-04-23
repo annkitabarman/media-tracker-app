@@ -7,6 +7,7 @@ import {
   signal,
   ViewChild,
   computed,
+  DestroyRef,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
@@ -21,6 +22,8 @@ import { CastService } from '../../services/cast-service';
 import { CastCard } from '../../components/cast-card/cast-card';
 import { SharedService } from '../../services/shared-service';
 import { CurrencyPipe } from '@angular/common';
+import { ADD_TO_LIST_MENU } from '../../constants/dropdown-menu';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-media-details',
@@ -33,7 +36,9 @@ export class MediaDetails implements OnInit {
   private readonly _movieesService = inject(MoviesService);
   private readonly _castService = inject(CastService);
   private readonly _sharedService = inject(SharedService);
+  private readonly _destroyRef = inject(DestroyRef);
   @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef<HTMLElement>;
+  menuValues = Object.values(ADD_TO_LIST_MENU);
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
   genreList = signal<string[] | undefined>([]);
@@ -92,7 +97,6 @@ export class MediaDetails implements OnInit {
     this._movieesService.fetchKeywords(this.id(), this.type()).subscribe({
       next: (res) => {
         this.keywordsList.set(res.keywords);
-        console.log('Keywords fetched successfully', res.keywords);
       },
       error: (err) => {
         console.error('Failed to fetch keywords', err);
@@ -101,19 +105,21 @@ export class MediaDetails implements OnInit {
   }
 
   fetchRoutes() {
-    this._activateRoute.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
-      this.id.set(id);
-      const type = params.get('type');
-      if (type === 'movie' || type === 'tv') {
-        this.type.set(type);
-      } else {
-        this.type.set('movie');
-      }
-      this.fetchMediaData();
-      this.fetchCastDetails();
-      this.fetchKeywords();
-    });
+    this._activateRoute.paramMap
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe((params) => {
+        const id = Number(params.get('id'));
+        this.id.set(id);
+        const type = params.get('type');
+        if (type === 'movie' || type === 'tv') {
+          this.type.set(type);
+        } else {
+          this.type.set('movie');
+        }
+        this.fetchMediaData();
+        this.fetchCastDetails();
+        this.fetchKeywords();
+      });
   }
 
   fetchMediaData() {
