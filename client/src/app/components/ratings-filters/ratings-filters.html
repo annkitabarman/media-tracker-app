@@ -30,24 +30,40 @@
 
   <div class="my-7">
     <p class="mb-2">Filters</p>
-    @for (filter of FILTERS_DROPDOWN; track filter.key) {
+    @for (filter of filters(); track filter.key) {
     <div class="relative">
       <button
-        (click)="toggleDropDown(filter.key)"
+        (click)="toggleDropDown(filter.key, $event)"
         class="px-2 py-1 my-1 rounded-sm w-full text-left bg-violet-900 cursor-pointer"
       >
-        <div class="flex justify-between items-center w-full">
-          <span>{{ filter.label }}</span>
+        <div
+          class="flex justify-between items-center w-full"
+          (mouseenter)="filterHovered(filter.key)"
+          (mouseleave)="filterHovered(null)"
+        >
+          <span>{{ selectedFilters()[filter.key] || filter.label }}</span>
+
+          @if(selectedFilters()[filter.key] && hoveredFilter() === filter.key) {
+          <i
+            class="fa-solid fa-xmark"
+            (click)="clearFilter(filter.key); $event.stopPropagation()"
+          ></i>
+          } @else {
 
           <i
             class="fa-solid fa-chevron-down transition-transform duration-200"
             [class.rotate-180]="isDropDownOpen() === filter.key"
           ></i>
+          }
         </div>
       </button>
 
       <div
-        class="absolute bottom-full left-0 w-full bg-violet-900 z-50 overflow-hidden transition-all duration-200 ease-out origin-top border-b-1 border-r-1"
+        class="absolute left-0 w-full bg-violet-900 z-50 max-h-72 overflow-y-auto transition-all duration-200 ease-out origin-top border-b border-r clean-scrollbar"
+        [class.top-full]="dropdownDirection() === 'down'"
+        [class.mt-1]="dropdownDirection() === 'down'"
+        [class.bottom-full]="dropdownDirection() === 'up'"
+        [class.mb-1]="dropdownDirection() === 'up'"
         [class.opacity-100]="isDropDownOpen() === filter.key"
         [class.scale-y-100]="isDropDownOpen() === filter.key"
         [class.translate-y-0]="isDropDownOpen() === filter.key"
@@ -59,6 +75,9 @@
         @for (option of filter.options; track option) {
         <button
           class="block w-full text-left px-2 py-3 hover:bg-violet-800 cursor-pointer"
+          (click)="applyFilter(filter.key, option)"
+          [class.bg-violet-800]="selectedFilters()[filter.key] === option"
+          [class.text-blue-400]="selectedFilters()[filter.key] === option"
         >
           {{ option }}
         </button>
@@ -66,5 +85,77 @@
       </div>
     </div>
     }
+  </div>
+
+  <div class="my-7">
+    <div class="flex justify-between items-center">
+      <span> Year </span>
+      @if(selectedFilters()['year']) {
+      <span>
+        <i
+          class="fa-solid fa-xmark cursor-pointer text-[0.7rem] mx-1"
+          (click)="clearFilter('year'); $event.stopPropagation()"
+        ></i
+        >{{ selectedFilters()['year']}}</span
+      >
+      }
+    </div>
+    <input
+      type="range"
+      min="1950"
+      max="2026"
+      step="1"
+      [value]="selectedFilters()['year'] || 1950"
+      (input)="applyFilter('year', $any($event.target).value)"
+      class="w-full accent-violet-300 py-2 cursor-pointer active:cursor-grabbing"
+    />
+  </div>
+
+  <div class="my-7">
+    Sort
+    <div class="relative">
+      <button
+        class="w-full mt-2 bg-violet-900 px-2 py-1 rounded-sm cursor-pointer"
+        (mouseenter)="filterHovered('sort')"
+        (mouseleave)="filterHovered(null)"
+        (click)="toggleDropDown('sort', $event)"
+      >
+        <div class="flex items-center justify-between">
+          <span> {{sortDisplayValue()}} </span>
+          <i
+            class="fa-solid fa-chevron-down transition-transform duration-200"
+            [class.rotate-180]="isDropDownOpen() === 'sort'"
+          ></i>
+        </div>
+      </button>
+
+      <div>
+        <div
+          class="absolute left-0 w-full bg-violet-900 z-50 mt-1 max-h-72 overflow-y-auto transition-all duration-200 ease-out origin-top border-b border-r clean-scrollbar"
+          [class.top-full]="dropdownDirection() === 'down'"
+          [class.mt-1]="dropdownDirection() === 'down'"
+          [class.bottom-full]="dropdownDirection() === 'up'"
+          [class.mb-1]="dropdownDirection() === 'up'"
+          [class.opacity-100]="isDropDownOpen() === 'sort'"
+          [class.scale-y-100]="isDropDownOpen() === 'sort'"
+          [class.translate-y-0]="isDropDownOpen() === 'sort'"
+          [class.opacity-0]="isDropDownOpen() !== 'sort'"
+          [class.scale-y-95]="isDropDownOpen() !== 'sort'"
+          [class.-translate-y-2]="isDropDownOpen() !== 'sort'"
+          [class.pointer-events-none]="isDropDownOpen() !== 'sort'"
+        >
+          @for (option of SORT_OPTIONS; track option.key) {
+          <button
+            class="block w-full text-left px-2 py-3 hover:bg-violet-800 cursor-pointer"
+            [class.bg-violet-800]="selectedFilters()['sort'] === option.key"
+            [class.text-blue-400]="selectedFilters()['sort'] === option.key"
+            (click)="applyFilter('sort', option.key)"
+          >
+            {{ option.label }}
+          </button>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </div>
