@@ -9,3 +9,8 @@
 body {
   font-family: var(--font-serif-custom);
 }
+
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}

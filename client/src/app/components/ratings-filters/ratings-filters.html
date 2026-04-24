@@ -1,0 +1,70 @@
+<div class="text-xs py-3 px-3 text-gray-300">
+  <div class="relative">
+    <i
+      class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-black"
+    ></i>
+    <input
+      type="search"
+      placeholder="Search"
+      class="w-full bg-violet-900 h-8 rounded-sm pl-9 pr-3 placeholder:text-xs text-xs"
+    />
+  </div>
+
+  <div class="my-6">
+    Lists
+    <div class="flex flex-col gap-2 mt-2">
+      @for(s of watchStatus; track s) {
+      <div>
+        <button
+          (click)="setActiveWatchStatus(s)"
+          class="px-2 py-1 rounded-sm w-full text-left cursor-pointer hover:bg-violet-900"
+          [class.bg-violet-900]="activeWatchStatus()=== s"
+        >
+          {{s}}
+        </button>
+      </div>
+
+      }
+    </div>
+  </div>
+
+  <div class="my-7">
+    <p class="mb-2">Filters</p>
+    @for (filter of FILTERS_DROPDOWN; track filter.key) {
+    <div class="relative">
+      <button
+        (click)="toggleDropDown(filter.key)"
+        class="px-2 py-1 my-1 rounded-sm w-full text-left bg-violet-900 cursor-pointer"
+      >
+        <div class="flex justify-between items-center w-full">
+          <span>{{ filter.label }}</span>
+
+          <i
+            class="fa-solid fa-chevron-down transition-transform duration-200"
+            [class.rotate-180]="isDropDownOpen() === filter.key"
+          ></i>
+        </div>
+      </button>
+
+      <div
+        class="absolute bottom-full left-0 w-full bg-violet-900 z-50 overflow-hidden transition-all duration-200 ease-out origin-top border-b-1 border-r-1"
+        [class.opacity-100]="isDropDownOpen() === filter.key"
+        [class.scale-y-100]="isDropDownOpen() === filter.key"
+        [class.translate-y-0]="isDropDownOpen() === filter.key"
+        [class.opacity-0]="isDropDownOpen() !== filter.key"
+        [class.scale-y-95]="isDropDownOpen() !== filter.key"
+        [class.-translate-y-2]="isDropDownOpen() !== filter.key"
+        [class.pointer-events-none]="isDropDownOpen() !== filter.key"
+      >
+        @for (option of filter.options; track option) {
+        <button
+          class="block w-full text-left px-2 py-3 hover:bg-violet-800 cursor-pointer"
+        >
+          {{ option }}
+        </button>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

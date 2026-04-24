@@ -1,1 +1,7 @@
-<p>user-profile works!</p>
+<div class="bg-linear-to-bl from-[#1e063d] to-violet-900">
+  @if(this.section() === 'ratings') {
+  <app-ratings></app-ratings>
+  } @else {
+  <app-favourites></app-favourites>
+  }
+</div>

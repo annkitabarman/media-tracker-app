@@ -34,10 +34,6 @@ export const USER_MENU = [
     link: '/user/ratings',
   },
   {
-    menu: 'Watchlist',
-    link: '/user/watchlist',
-  },
-  {
     menu: 'Favorites',
     link: '/user/favorites',
   },
@@ -47,4 +43,11 @@ export const ADD_TO_LIST_MENU = {
   WATCHING: 'Set as Watching',
   COMPLETED: 'Set as Completed',
   PLANNING: 'Set as Planning',
+};
+
+export const WATCH_STATUS = {
+  ALL: 'All',
+  WATCHING: 'Watching',
+  COMPLETED: 'Completed',
+  PLANNING: 'Planning',
 };

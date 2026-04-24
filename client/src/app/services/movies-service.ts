@@ -150,7 +150,6 @@ export class MoviesService {
       .get<KeyWordsResponse>(`${this._baseUrl}/${type}/${id}/keywords`)
       .pipe(
         tap((res) => {
-          console.log(res);
           const hasData = res?.id === id;
           if (!hasData) return;
 
