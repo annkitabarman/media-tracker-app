@@ -26,70 +26,84 @@
           <hr class="border-white/20" />
         </div>
 
-        <div class="my-5 px-10 text-md flex items-start gap-20">
-          <div class="relative">
-            <p>Status</p>
-            <button
-              class="w-36 my-2 bg-slate-800 rounded-md text-left px-2 py-2 cursor-pointer"
-              (click)="toggleDropdown($event)"
-            >
-              <div class="flex justify-between">
-                {{WATCH_STATUS.WATCHING}}
-                <i
-                  class="fa-solid fa-chevron-down transition-transform duration-200"
-                  [class.rotate-180]="isDropDownOpen()"
-                ></i>
-              </div>
-            </button>
-            <div
-              #dropdownWrapper
-              class="absolute left-0 top-full bg-slate-800 overflow-y-auto transition-all duration-200 ease-out border-b border-r"
-              [class.opacity-100]="isDropDownOpen()"
-              [class.scale-y-100]="isDropDownOpen()"
-              [class.translate-y-0]="isDropDownOpen()"
-              [class.opacity-0]="!isDropDownOpen()"
-              [class.scale-y-95]="!isDropDownOpen()"
-              [class.-translate-y-2]="!isDropDownOpen()"
-              [class.pointer-events-none]="!isDropDownOpen()"
-              (click)="toggleDropdown($event)"
-            >
-              @for(i of watchStatusDropdown; track i) {
+        <form [formGroup]="form" (ngSubmit)="addNewRating()">
+          <div class="my-5 px-10 text-md flex items-start gap-20">
+            <div class="relative">
+              <p>Status</p>
               <button
-                class="cursor-pointer block py-2 hover:bg-slate-500 w-30 text-left px-5"
+                type="button"
+                class="w-36 my-2 bg-slate-800 rounded-md text-left px-2 py-2 cursor-pointer"
+                (click)="toggleDropdown($event)"
               >
-                {{i}}
+                <div class="flex justify-between">
+                  {{form.get('watchStatus')?.value}}
+                  <i
+                    class="fa-solid fa-chevron-down transition-transform duration-200"
+                    [class.rotate-180]="isDropDownOpen()"
+                  ></i>
+                </div>
               </button>
-              }
+              <div
+                #dropdownWrapper
+                class="absolute left-0 top-full bg-slate-800 overflow-y-auto transition-all duration-200 ease-out border-b border-r"
+                [class.opacity-100]="isDropDownOpen()"
+                [class.scale-y-100]="isDropDownOpen()"
+                [class.translate-y-0]="isDropDownOpen()"
+                [class.opacity-0]="!isDropDownOpen()"
+                [class.scale-y-95]="!isDropDownOpen()"
+                [class.-translate-y-2]="!isDropDownOpen()"
+                [class.pointer-events-none]="!isDropDownOpen()"
+                (click)="toggleDropdown($event)"
+              >
+                @for(i of watchStatusDropdown; track i) {
+                <button
+                  type="button"
+                  class="cursor-pointer block py-2 hover:bg-slate-500 w-30 text-left px-5"
+                  (click)="selectStatus(i)"
+                >
+                  {{i}}
+                </button>
+                }
+              </div>
+            </div>
+
+            <div>
+              Ratings
+              <div class="my-2">
+                <select
+                  class="w-24 bg-slate-800 rounded-md py-2 px-2 outline-none cursor-pointer"
+                  formControlName="rating"
+                >
+                  <option value="0">--</option>
+
+                  @for (num of ratingOptions; track num) {
+                  <option [value]="num">{{ num }}</option>
+                  }
+                </select>
+              </div>
             </div>
           </div>
 
-          <div>
-            Ratings
+          <div class="px-10">
+            Notes
             <div class="my-2">
-              <input
-                type="number"
-                class="bg-slate-800 rounded-sm py-2 px-2 outline-none"
-                min="0"
-              />
+              <textarea
+                formControlName="notes"
+                type="text"
+                class="h-20 bg-slate-800 w-full"
+              ></textarea>
             </div>
           </div>
-        </div>
 
-        <div class="px-10">
-          Notes
-          <div class="my-2">
-            <textarea type="text" class="h-20 bg-slate-800 w-full"></textarea>
+          <div class="px-10 my-2">
+            <button
+              class="block bg-indigo-500 px-5 py-2 cursor-pointer rounded-sm"
+              type="submit"
+            >
+              Save
+            </button>
           </div>
-        </div>
-
-        <div class="px-10 my-2">
-          <button
-            class="block bg-indigo-500 px-5 py-2 cursor-pointer rounded-sm"
-            (click)="addNewRating()"
-          >
-            Save
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   </div>

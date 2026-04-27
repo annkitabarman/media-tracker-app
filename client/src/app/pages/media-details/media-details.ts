@@ -8,6 +8,7 @@ import {
   ViewChild,
   computed,
   DestroyRef,
+  effect,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
@@ -78,7 +79,13 @@ export class MediaDetails implements OnInit {
   }
 
   get percentage() {
-    return Math.round(this.mediaData()?.vote_average ?? 0) * 10;
+    return Math.round((this.mediaData()?.vote_average ?? 0) * 10);
+  }
+
+  constructor() {
+    effect(() => {
+      console.log(this.mediaData());
+    });
   }
 
   ngOnInit(): void {

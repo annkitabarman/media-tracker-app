@@ -1,11 +1,10 @@
 export interface RatedMediaModel {
   name: string;
-  year: string;
+  year: number;
   poster: string;
   rating: number;
   mediaType: 'movie' | 'tv';
   id: number;
-  tags: string;
-  currentEpisode: number;
-  totalEpisodes: number;
+  notes: string;
+  watchStatus: string;
 }

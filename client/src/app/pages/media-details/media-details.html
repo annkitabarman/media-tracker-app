@@ -206,6 +206,7 @@
   [isPopupOpen]="isPopupOpen()"
   [mediaData]="mediaData()"
   (ratingSavedEmitter)="showSuccessToast()"
+  [mediaType]="type()"
 ></app-add-rating-popup>
 
 @if (showToast()) {
