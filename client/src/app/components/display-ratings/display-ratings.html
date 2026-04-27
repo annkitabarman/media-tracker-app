@@ -1,0 +1,10 @@
+<div class="text-xs py-3 mx-10 my-2 w-full">
+  <div class="">
+    @if(!ratingList()?.length) {
+    <div class="text-white text-left text-xl">
+      You haven't rated any Movies or TV Shows yet. Click
+      <a [routerLink]="['/']" class="underline">here</a> to check out.
+    </div>
+    } @else { }
+  </div>
+</div>

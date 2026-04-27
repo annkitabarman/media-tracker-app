@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RatingsFilters } from '../ratings-filters/ratings-filters';
-import { RatedMedia } from '../rated-media/rated-media';
+import { DisplayRatings } from '../display-ratings/display-ratings';
 
 @Component({
   selector: 'app-ratings',
-  imports: [RatingsFilters, RatedMedia],
+  imports: [RatingsFilters, DisplayRatings],
   templateUrl: './ratings.html',
   styleUrl: './ratings.scss',
 })
-export class Ratings {}
+export class Ratings {
+  watchStatus = signal<string>('All');
+  setWatchStatus(status: string) {
+    this.watchStatus.set(status);
+  }
+}

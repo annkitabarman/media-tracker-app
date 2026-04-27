@@ -8,6 +8,7 @@ import {
   MediaDetailsResponse,
   KeyWordsResponse,
 } from '../models/movie-response.model';
+import { RatedMediaModel } from '../models/rated-media.model';
 
 @Injectable({
   providedIn: 'root',
@@ -162,5 +163,27 @@ export class MoviesService {
           );
         }),
       );
+  }
+
+  fetchRatings(): Observable<RatedMediaModel[]> {
+    const key = 'my-ratings';
+    const cached = localStorage.getItem(key);
+
+    if (!cached) return of([]);
+
+    const data = JSON.parse(cached);
+
+    return of(data);
+  }
+
+  addNewRating(rating: RatedMediaModel): void {
+    if (!rating) return;
+    const key = 'my-ratings';
+
+    const cached = localStorage.getItem(key);
+    const allRatings: RatedMediaModel[] = cached ? JSON.parse(cached) : [];
+
+    allRatings.push(rating);
+    localStorage.setItem(key, JSON.stringify(allRatings));
   }
 }

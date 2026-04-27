@@ -113,6 +113,11 @@
 
   <div class="my-7">
     Sort
+    <i
+      class="fa-solid fa-arrow-down cursor-pointer transition-transform duration-200"
+      [class.rotate-180]="!ascOrder()"
+      (click)="changeSortOrder()"
+    ></i>
     <div class="relative">
       <button
         class="w-full mt-2 bg-violet-900 px-2 py-1 rounded-sm cursor-pointer"

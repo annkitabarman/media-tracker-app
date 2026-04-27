@@ -87,7 +87,6 @@ export class SharedService {
       }>(`${this._baseUrl}/genre/${mediaType}/list?language=en-US`)
       .pipe(
         map((res) => {
-          console.log(res);
           const mapping: Record<string, string> = {};
           res.genres.forEach((genre) => {
             mapping[genre.id.toString()] = genre.name;

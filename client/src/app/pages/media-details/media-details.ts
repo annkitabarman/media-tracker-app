@@ -24,10 +24,17 @@ import { SharedService } from '../../services/shared-service';
 import { CurrencyPipe } from '@angular/common';
 import { ADD_TO_LIST_MENU } from '../../constants/dropdown-menu';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AddRatingPopup } from '../../components/add-rating-popup/add-rating-popup';
 
 @Component({
   selector: 'app-media-details',
-  imports: [DatePipe, MinutesToHoursPipe, CastCard, CurrencyPipe],
+  imports: [
+    DatePipe,
+    MinutesToHoursPipe,
+    CastCard,
+    CurrencyPipe,
+    AddRatingPopup,
+  ],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
 })
@@ -47,8 +54,10 @@ export class MediaDetails implements OnInit {
   radius = signal<number>(25);
   originalLang = signal<string>('English');
   keywordsList = signal<KeyWordsResponse['keywords']>([]);
+  showToast = signal<boolean>(false);
 
   castDetails = signal<CastDetailsResponse | null>(null);
+  isPopupOpen = signal<boolean>(false);
 
   circumference = computed(() => {
     return 2 * Math.PI * this.radius();
@@ -59,6 +68,14 @@ export class MediaDetails implements OnInit {
       this.circumference() * (1 - (this.mediaData()?.vote_average ?? 0) / 10)
     );
   });
+
+  showSuccessToast() {
+    this.showToast.set(true);
+
+    setTimeout(() => {
+      this.showToast.set(false);
+    }, 3000);
+  }
 
   get percentage() {
     return Math.round(this.mediaData()?.vote_average ?? 0) * 10;
@@ -162,5 +179,17 @@ export class MediaDetails implements OnInit {
     if (!clickedInside) {
       this.isDropdownOpen.set(false);
     }
+  }
+
+  openAddRatingPopup() {
+    this.isPopupOpen.set(true);
+    document.documentElement.style.overflow = 'hidden'; // html
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePopup() {
+    this.isPopupOpen.set(false);
+    document.documentElement.style.overflow = ''; // html
+    document.body.style.overflow = '';
   }
 }

@@ -23,6 +23,7 @@
               class="flex w-full rounded-md overflow-hidden h-9"
             >
               <button
+                (click)="openAddRatingPopup()"
                 class="text-sm flex-1 w-full bg-violet-600 hover:bg-violet-700 text-white py-2 transition cursor-pointer"
               >
                 Add to List
@@ -199,3 +200,18 @@
     </div>
   </div>
 </div>
+
+<app-add-rating-popup
+  (closePopupEmitter)="closePopup()"
+  [isPopupOpen]="isPopupOpen()"
+  [mediaData]="mediaData()"
+  (ratingSavedEmitter)="showSuccessToast()"
+></app-add-rating-popup>
+
+@if (showToast()) {
+<div
+  class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-4 py-1 rounded-lg shadow-lg transition-all duration-300 text-[0.75rem]"
+>
+  Rating saved successfully!
+</div>
+}

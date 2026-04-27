@@ -50,4 +50,7 @@ export const WATCH_STATUS = {
   WATCHING: 'Watching',
   COMPLETED: 'Completed',
   PLANNING: 'Planning',
+  REWATCHING: 'Rewatching',
+  PAUSED: 'Paused',
+  DROPPED: 'Dropped',
 };

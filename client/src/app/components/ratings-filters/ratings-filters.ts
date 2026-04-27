@@ -5,6 +5,7 @@ import {
   ElementRef,
   OnInit,
   computed,
+  output,
 } from '@angular/core';
 import { WATCH_STATUS } from '../../constants/dropdown-menu';
 import {
@@ -22,8 +23,8 @@ import { forkJoin } from 'rxjs';
   styleUrl: './ratings-filters.scss',
 })
 export class RatingsFilters implements OnInit {
-  private _sharedService = inject(SharedService);
-  private elementRef = inject(ElementRef);
+  private readonly _sharedService = inject(SharedService);
+  private readonly elementRef = inject(ElementRef);
   watchStatus = Object.values(WATCH_STATUS);
   filters = signal(FILTERS_DROPDOWN);
   SORT_OPTIONS = SORT_OPTIONS;
@@ -32,6 +33,8 @@ export class RatingsFilters implements OnInit {
   activeWatchStatus = signal(WATCH_STATUS.ALL);
   isDropDownOpen = signal<string | null>(null);
   hoveredFilter = signal<string | null>(null);
+  watchStatusEmitter = output<string>();
+  ascOrder = signal<boolean>(true);
 
   selectedFilters = signal<Record<string, string>>({
     format: '',
@@ -70,11 +73,8 @@ export class RatingsFilters implements OnInit {
     return option ? option.label : key;
   });
 
-  setYear(year: string) {
-    this.selectedFilters.update((filters) => ({
-      ...filters,
-      year,
-    }));
+  changeSortOrder() {
+    this.ascOrder.set(!this.ascOrder());
   }
 
   populateGenres() {
@@ -97,6 +97,7 @@ export class RatingsFilters implements OnInit {
   }
   setActiveWatchStatus(status: string) {
     this.activeWatchStatus.set(status);
+    this.watchStatusEmitter.emit(this.activeWatchStatus());
   }
 
   applyFilter(filterKey: string, option: string) {

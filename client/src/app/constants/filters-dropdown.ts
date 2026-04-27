@@ -18,7 +18,7 @@ export const FILTERS_DROPDOWN = [
 ];
 
 export const SORT_OPTIONS = [
-  { key: 'title', label: 'Title (A-Z)' },
+  { key: 'title', label: 'Title' },
   { key: 'score', label: 'Score' },
   { key: 'recently_updated', label: 'Recently Updated' },
   { key: 'release_date', label: 'Release Date' },
