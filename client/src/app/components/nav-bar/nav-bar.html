@@ -4,9 +4,10 @@
     class="sm:hidden relative flex flex-1 max-w-sm items-center gap-4 my-4 mx-auto"
   >
     <input
+      [formControl]="searchText"
       type="search"
       placeholder="Search for a show or movie"
-      class="w-full bg-white text-black rounded-full h-8 placeholder:text-xs placeholder:text-gray-500 placeholder:pl-4"
+      class="text-[0.75rem] w-full bg-white text-black rounded-full h-8 placeholder:text-xs placeholder:text-gray-500 placeholder:pl-4"
     />
     <button (click)="toggleSearchBox()">
       <i class="fa-solid fa-x absolute right-4 -translate-1/2 text-black"></i>
@@ -65,15 +66,46 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <div class="relative hidden sm:flex flex-1 min-w-0 lg:w-64">
+      <div
+        #searchContainer
+        class="relative hidden sm:flex flex-1 min-w-0 lg:w-64"
+      >
         <i
           class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-black"
         ></i>
         <input
-          class="w-full bg-white text-black pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-500 placeholder:text-xs"
+          [formControl]="searchText"
+          class="text-[0.75rem] w-full bg-white text-black pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-500 placeholder:text-xs"
           type="search"
           placeholder="Search for a show or movie"
         />
+
+        @if(suggestions().length > 0 && showSuggestions()) {
+        <div
+          class="absolute top-full right-0 w-[23rem] mt-2 bg-white text-black rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto"
+        >
+          @for(item of suggestions(); track $index) {
+          <button
+            type="button"
+            class="bg-gray-100 block w-full text-left px-6 hover:bg-gray-400 text-[0.75rem] cursor-pointer flex items-start gap-3 border-b-1 border-r-1 border-white"
+            [ngClass]="item.type === 'query' ? 'py-2' : 'py-4'"
+          >
+            @if(item.type === 'result') {
+            <img [src]="item.poster_path" class="w-8 object-cover" />
+
+            <div class="text-left">
+              <p class="text-xs font-medium">{{ item.label }}</p>
+              <p class="text-xs text-gray-700">
+                {{ item.year | date:'yyyy' }} • {{ item.media_type }}
+              </p>
+            </div>
+            } @if(item.type === 'query') {
+            <span> {{ item.label }}</span>
+            }
+          </button>
+          }
+        </div>
+        }
       </div>
 
       <button class="sm:hidden cursor-pointer p-2" (click)="toggleSearchBox()">

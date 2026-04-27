@@ -12,7 +12,7 @@ import { MediaDetailsResponse } from '../../models/movie-response.model';
 import { WATCH_STATUS } from '../../constants/dropdown-menu';
 import { MoviesService } from '../../services/movies-service';
 import { RatedMediaModel } from '../../models/rated-media.model';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-rating-popup',

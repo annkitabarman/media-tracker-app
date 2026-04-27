@@ -16,7 +16,7 @@ export interface TrendingMediaType {
   name: string;
   original_name: string;
   first_air_date: string;
-  media_type: string;
+  media_type: 'movie' | 'tv';
 }
 
 export interface TrendingMediaAPIResponse {

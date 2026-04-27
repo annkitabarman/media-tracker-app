@@ -5,6 +5,8 @@ import {
   computed,
   ViewChild,
   ElementRef,
+  OnInit,
+  inject,
 } from '@angular/core';
 import {
   MOVIES_MENU,
@@ -12,20 +14,49 @@ import {
   USER_MENU,
 } from '../../constants/dropdown-menu';
 import { RouterLink } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs';
+import { SharedService } from '../../services/shared-service';
+import { SuggestionItem } from '../../models/search-result.model';
+import { DatePipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [RouterLink],
+  imports: [RouterLink, ReactiveFormsModule, DatePipe, CommonModule],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.scss',
 })
-export class NavBar {
+export class NavBar implements OnInit {
+  private readonly _sharedService = inject(SharedService);
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('userMenuContainer') userMenuContainer!: ElementRef;
+  @ViewChild('searchContainer') searchContainer!: ElementRef;
   isFullScreenSearchVisible = signal(false);
   clickedMenu = signal<string | null>(null);
   USER_MENU = USER_MENU;
   isUserMenuClicked = signal<boolean>(false);
+  suggestions = signal<SuggestionItem[]>([]);
+  showSuggestions = signal<boolean>(false);
+
+  searchText = new FormControl('', { nonNullable: true });
+
+  ngOnInit(): void {
+    this.searchText.valueChanges
+      .pipe(
+        debounceTime(500),
+        map((v) => v.trim()),
+        distinctUntilChanged(),
+        filter((v) => v.length > 2),
+      )
+      .subscribe((value) => {
+        this._sharedService.fetchSuggestions(value).subscribe({
+          next: (res) => {
+            this.suggestions.set(res);
+            this.showSuggestions.set(true);
+          },
+        });
+      });
+  }
 
   isMovieClicked = computed(() => {
     return this.clickedMenu() === 'movies';
@@ -51,7 +82,6 @@ export class NavBar {
 
   toggleSearchBox() {
     this.isFullScreenSearchVisible.set(!this.isFullScreenSearchVisible());
-    console.log('Search box toggled');
   }
 
   @HostListener('window:resize')
@@ -63,6 +93,13 @@ export class NavBar {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    const clickedInside = this.searchContainer.nativeElement.contains(
+      event.target,
+    );
+
+    if (!clickedInside) {
+      this.showSuggestions.set(false);
+    }
     if (
       this.menuContainer &&
       !this.menuContainer.nativeElement.contains(event.target as Node)
