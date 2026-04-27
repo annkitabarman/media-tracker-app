@@ -1,10 +1,18 @@
 import { Routes } from '@angular/router';
+import { SearchResults } from './pages/search-results/search-results';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./pages/home-page/home-page').then((m) => m.HomePage),
+  },
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./pages/search-results/search-results').then(
+        (m) => SearchResults,
+      ),
   },
   {
     path: 'user/:section',

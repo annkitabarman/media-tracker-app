@@ -89,6 +89,7 @@
             type="button"
             class="bg-gray-100 block w-full text-left px-6 hover:bg-gray-400 text-[0.75rem] cursor-pointer flex items-start gap-3 border-b-1 border-r-1 border-white"
             [ngClass]="item.type === 'query' ? 'py-2' : 'py-4'"
+            (click)="showSearchResults(item)"
           >
             @if(item.type === 'result') {
             <img [src]="item.poster_path" class="w-8 object-cover" />

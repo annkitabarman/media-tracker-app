@@ -19,6 +19,7 @@ import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs';
 import { SharedService } from '../../services/shared-service';
 import { SuggestionItem } from '../../models/search-result.model';
 import { DatePipe, CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -31,6 +32,7 @@ export class NavBar implements OnInit {
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('userMenuContainer') userMenuContainer!: ElementRef;
   @ViewChild('searchContainer') searchContainer!: ElementRef;
+  private readonly _router = inject(Router);
   isFullScreenSearchVisible = signal(false);
   clickedMenu = signal<string | null>(null);
   USER_MENU = USER_MENU;
@@ -56,6 +58,13 @@ export class NavBar implements OnInit {
           },
         });
       });
+  }
+
+  showSearchResults(s: SuggestionItem) {
+    this.showSuggestions.set(false);
+    this._router.navigate(['/search'], {
+      queryParams: { q: s.label },
+    });
   }
 
   isMovieClicked = computed(() => {
