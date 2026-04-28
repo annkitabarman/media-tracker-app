@@ -49,14 +49,14 @@
   </div>
   <app-media-row
     [mediaType]="'Movies'"
-    [mediaList]="moviesList().slice(0,6)"
+    [mediaList]="moviesList()"
     [mediaLoading]="moviesLoading()"
     [mediaHasError]="moviesError()"
   />
 
   <app-media-row
     [mediaType]="'TV Shows'"
-    [mediaList]="tvShowsList().slice(0,6)"
+    [mediaList]="tvShowsList()"
     [mediaLoading]="tvShowsLoading()"
     [mediaHasError]="tvShowsError()"
   />

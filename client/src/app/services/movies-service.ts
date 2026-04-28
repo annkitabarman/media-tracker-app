@@ -50,7 +50,9 @@ export class MoviesService {
             res.results.map((movie) => {
               return {
                 ...movie,
-                poster_path: `${IMAGE_BASE_URL}${movie.poster_path}`,
+                poster_path: movie.poster_path
+                  ? `${IMAGE_BASE_URL}${movie.poster_path}`
+                  : null,
               };
             }),
           ),
@@ -66,7 +68,9 @@ export class MoviesService {
             res.results.map((show) => {
               return {
                 ...show,
-                poster_path: `${IMAGE_BASE_URL}${show.poster_path}`,
+                poster_path: show.poster_path
+                  ? `${IMAGE_BASE_URL}${show.poster_path}`
+                  : null,
               };
             }),
           ),
@@ -112,8 +116,12 @@ export class MoviesService {
         map((res) => {
           return {
             ...res,
-            backdrop_path: `${IMAGE_BASE_URL}${res.backdrop_path}`,
-            poster_path: `${IMAGE_BASE_URL}${res.poster_path}`,
+            backdrop_path: res.backdrop_path
+              ? `${IMAGE_BASE_URL}${res.backdrop_path}`
+              : null,
+            poster_path: res.poster_path
+              ? `${IMAGE_BASE_URL}${res.poster_path}`
+              : null,
           };
         }),
         tap((res) => {

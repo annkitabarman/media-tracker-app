@@ -2,7 +2,7 @@ import { TrendingMediaType } from './movie-response.model';
 
 export type SuggestionItem = {
   label: string;
-  poster_path?: string;
+  poster_path?: string | null;
   media_type?: 'movie' | 'tv';
   year?: string;
   query: string;
@@ -19,9 +19,14 @@ export interface SearchResultResponse {
 export interface SearchResultItem {
   id: number;
   title: string;
-  name?: string;
-  poster_path: string;
+  poster_path: string | null;
   media_type: 'movie' | 'tv';
-  release_date?: string;
-  first_air_date?: string;
+  release_date: string;
+  overview: string;
+  original_title: string;
+}
+
+export interface SearchResultsPayload {
+  results: SearchResultItem[];
+  totalPages: number;
 }

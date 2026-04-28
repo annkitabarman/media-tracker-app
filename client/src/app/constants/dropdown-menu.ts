@@ -34,8 +34,8 @@ export const USER_MENU = [
     link: '/user/ratings',
   },
   {
-    menu: 'Favorites',
-    link: '/user/favorites',
+    menu: 'Favourites',
+    link: '/user/favourites',
   },
 ];
 

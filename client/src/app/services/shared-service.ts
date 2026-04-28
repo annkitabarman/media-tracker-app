@@ -2,11 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { LanguageResponse } from '../models/language-response.model';
 import { HttpClient } from '@angular/common/http';
 import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
-import { Observable, map, tap, of, shareReplay } from 'rxjs';
+import { Observable, map, tap, of, shareReplay, timestamp } from 'rxjs';
 import {
   SearchResultResponse,
   SuggestionItem,
   SearchResultItem,
+  SearchResultsPayload,
 } from '../models/search-result.model';
 
 @Injectable({
@@ -132,7 +133,9 @@ export class SharedService {
             .map((item) => ({
               label: item.title || item.name,
               query: item.title || item.name,
-              poster_path: `${this._imgUrl}${item.poster_path}`,
+              poster_path: item.poster_path
+                ? `${this._imgUrl}${item.poster_path}`
+                : null,
               media_type: item.media_type,
               year: item.release_date || item.first_air_date,
               type: 'result',
@@ -146,18 +149,65 @@ export class SharedService {
       );
   }
 
-  fetchSearchResults(query: string): Observable<SearchResultItem[]> {
+  fetchSearchResults(
+    query: string,
+    page: number,
+  ): Observable<SearchResultsPayload> {
+    const key = `${query}-${page}-result`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+
+      const isExpired = Date.now() - timestamp > 1000 * 10 * 60 * 60;
+
+      if (!isExpired) {
+        return of(data);
+      }
+    }
+
     const url = `${this._baseUrl}/search/multi`;
 
     return this._httpClient
       .get<SearchResultResponse>(url, {
         params: {
           query,
+          page,
           include_adult: false,
           language: 'en-US',
-          page: 1,
         },
       })
-      .pipe(map((res) => res.results));
+      .pipe(
+        map((res) => ({
+          totalPages: res.total_pages,
+
+          results: res.results
+            .filter(
+              (item) => item.media_type === 'movie' || item.media_type === 'tv',
+            )
+            .map((media) => ({
+              id: media.id,
+              title: media.title || media.name,
+              poster_path: media.poster_path
+                ? `${this._imgUrl}${media.poster_path}`
+                : null,
+              media_type: media.media_type,
+              release_date: media.release_date || media.first_air_date,
+              overview: media.overview,
+              original_title:
+                media.original_language !== 'en' ? media.original_title : '',
+            })),
+        })),
+
+        tap((payload) => {
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              data: payload,
+              timestamp: Date.now(),
+            }),
+          );
+        }),
+      );
   }
 }

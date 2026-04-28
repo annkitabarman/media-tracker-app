@@ -121,7 +121,12 @@
           class="absolute top-full left-0 md:-left-10 mt-1 min-w-24 text-black rounded shadow-lg z-50 py-2 pr-2 pl-3 bg-white text-sm"
         >
           @for(user of USER_MENU; track user.menu) {
-          <a [routerLink]="user.link" class="block py-1">{{user.menu}}</a>
+          <a
+            [routerLink]="user.link"
+            class="block py-1"
+            (click)="toggleUserMenu()"
+            >{{user.menu}}</a
+          >
           }
         </div>
         }

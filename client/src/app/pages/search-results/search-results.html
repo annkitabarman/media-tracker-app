@@ -1,1 +1,15 @@
-showing results for {{searchText()}}
+<div
+  class="h-full flex py-10 justify-between px-28 bg-linear-to-bl from-[#1e063d] to-violet-900"
+>
+  <div class="w-60">
+    <app-search-page-filters />
+  </div>
+  <div class="w-full">
+    <app-search-result-list
+      [searchResult]="searchResults()"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      (pageChange)="goToPage($event)"
+    />
+  </div>
+</div>

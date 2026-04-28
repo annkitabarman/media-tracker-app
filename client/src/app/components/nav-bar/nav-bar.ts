@@ -20,6 +20,7 @@ import { SharedService } from '../../services/shared-service';
 import { SuggestionItem } from '../../models/search-result.model';
 import { DatePipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -29,6 +30,7 @@ import { Router } from '@angular/router';
 })
 export class NavBar implements OnInit {
   private readonly _sharedService = inject(SharedService);
+  private readonly _activatedRoute = inject(ActivatedRoute);
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('userMenuContainer') userMenuContainer!: ElementRef;
   @ViewChild('searchContainer') searchContainer!: ElementRef;
@@ -43,6 +45,10 @@ export class NavBar implements OnInit {
   searchText = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
+    this._activatedRoute.queryParams.subscribe((params) => {
+      const query = params['q'];
+      this.searchText.setValue(query);
+    });
     this.searchText.valueChanges
       .pipe(
         debounceTime(500),
@@ -63,7 +69,7 @@ export class NavBar implements OnInit {
   showSearchResults(s: SuggestionItem) {
     this.showSuggestions.set(false);
     this._router.navigate(['/search'], {
-      queryParams: { q: s.label },
+      queryParams: { q: s.label, page: 1 },
     });
   }
 
