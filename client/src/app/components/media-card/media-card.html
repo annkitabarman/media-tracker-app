@@ -8,12 +8,12 @@
   <div class="ml-5 mt-2 w-40">
     <a
       [routerLink]="['/', item()?.media_type, item()?.id]"
-      class="block truncate hover:underline hover:text-pink-300"
+      class="block truncate hover:underline hover:text-pink-300 text-xs"
       rel="noopener noreferrer"
     >
       {{ item()?.title || item()?.name }}
     </a>
-    <div class="text-sm mt-1">
+    <div class="text-[0.65rem] mt-1">
       {{item()?.release_date || item()?.first_air_date |date: 'longDate'}}
     </div>
   </div>

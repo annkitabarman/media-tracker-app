@@ -45,6 +45,8 @@
   }
 </div>
 
+@if(searchResult()?.length) {
+
 <div class="flex justify-center gap-3 mt-6 text-blue-300 text-[0.75rem]">
   <button
     (click)="pageChange.emit(currentPage() - 1)"
@@ -64,3 +66,5 @@
     Next >
   </button>
 </div>
+
+}

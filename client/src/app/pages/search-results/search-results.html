@@ -1,12 +1,22 @@
 <div
-  class="h-full flex items-center py-10 justify-center items-center px-28 bg-linear-to-bl from-[#1e063d] to-violet-900"
+  class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-28 py-10 bg-linear-to-bl from-[#1e063d] to-violet-900"
 >
   <div class="w-full max-w-6xl px-20">
+    @if(searchResults()?.length) {
+
     <app-search-result-list
       [searchResult]="searchResults()"
       [currentPage]="currentPage()"
       [totalPages]="totalPages()"
       (pageChange)="goToPage($event)"
     />
+
+    } @else {
+
+    <div class="min-h-[70vh] flex justify-center text-white text-xs">
+      No items match your query
+    </div>
+
+    }
   </div>
 </div>

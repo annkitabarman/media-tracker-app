@@ -1,6 +1,6 @@
-<div class="auto">
+<div class="w-full max-w-5xl mx-auto">
   <div class="flex items-center justify-between px-4 mt-4">
-    <h2 class="text-4xl">Trending</h2>
+    <h2 class="text-2xl">Trending</h2>
 
     <!-- Toggle -->
     <div class="relative flex bg-gray-800 rounded-full p-1 text-sm w-fit">
@@ -21,7 +21,7 @@
           (change)="setTrend('day')"
         />
         <span
-          class="px-4 py-1 inline-block transition-colors duration-300"
+          class="px-4 py-1 inline-block transition-colors duration-300 text-xs"
           [ngClass]="trendType() === 'day' ? 'text-black' : 'text-white'"
         >
           Daily
@@ -39,7 +39,7 @@
           (change)="setTrend('week')"
         />
         <span
-          class="px-4 py-1 inline-block transition-colors duration-300"
+          class="px-4 py-1 inline-block transition-colors duration-300 text-xs"
           [ngClass]="trendType() === 'week' ? 'text-black' : 'text-white'"
         >
           Weekly
