@@ -12,6 +12,7 @@ import {
   MOVIES_MENU,
   TV_SHOWS_MENU,
   USER_MENU,
+  MEDIA_FILTER_MENU,
 } from '../../constants/dropdown-menu';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -34,13 +35,38 @@ export class NavBar implements OnInit {
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('userMenuContainer') userMenuContainer!: ElementRef;
   @ViewChild('searchContainer') searchContainer!: ElementRef;
+  @ViewChild('filterContainer') filterContainer!: ElementRef;
   private readonly _router = inject(Router);
   isFullScreenSearchVisible = signal(false);
   clickedMenu = signal<string | null>(null);
   USER_MENU = USER_MENU;
+  MEDIA_FILTER_MENU = Object.values(MEDIA_FILTER_MENU);
   isUserMenuClicked = signal<boolean>(false);
   suggestions = signal<SuggestionItem[]>([]);
   showSuggestions = signal<boolean>(false);
+  filterDropdown = signal<boolean>(false);
+  selectedFilter = signal<string>('All');
+
+  toggleFilterDropdown() {
+    this.filterDropdown.set(!this.filterDropdown());
+  }
+
+  updateFilter(s: string) {
+    this.selectedFilter.set(s);
+    this.toggleFilterDropdown();
+  }
+
+  filterValue = computed(() => {
+    switch (this.selectedFilter()) {
+      case 'Movies':
+        return 'movie';
+      case 'TV Shows':
+        return 'tv';
+
+      default:
+        return '';
+    }
+  });
 
   searchText = new FormControl('', { nonNullable: true });
 
@@ -49,6 +75,7 @@ export class NavBar implements OnInit {
       const query = params['q'];
       this.searchText.setValue(query);
     });
+
     this.searchText.valueChanges
       .pipe(
         debounceTime(500),
@@ -57,19 +84,28 @@ export class NavBar implements OnInit {
         filter((v) => v.length > 2),
       )
       .subscribe((value) => {
-        this._sharedService.fetchSuggestions(value).subscribe({
-          next: (res) => {
-            this.suggestions.set(res);
-            this.showSuggestions.set(true);
-          },
-        });
+        this._sharedService
+          .fetchSuggestions(value, this.filterValue())
+          .subscribe({
+            next: (res) => {
+              this.suggestions.set(res);
+              this.showSuggestions.set(true);
+            },
+          });
       });
   }
 
   showSearchResults(s: SuggestionItem) {
     this.showSuggestions.set(false);
+    if (s.type == 'result') {
+      this._router.navigate(['/', s.media_type, s.id]);
+      this.searchText.setValue('');
+      this.selectedFilter.set('All');
+      return;
+    }
+
     this._router.navigate(['/search'], {
-      queryParams: { q: s.label, page: 1 },
+      queryParams: { q: s.label, page: 1, type: this.filterValue() },
     });
   }
 
@@ -108,6 +144,13 @@ export class NavBar implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    const filterClick = this.filterContainer.nativeElement.contains(
+      event.target,
+    );
+
+    if (!filterClick) {
+      this.filterDropdown.set(false);
+    }
     const clickedInside = this.searchContainer.nativeElement.contains(
       event.target,
     );

@@ -1,13 +1,14 @@
 import { TrendingMediaType } from './movie-response.model';
 
-export type SuggestionItem = {
+export interface SuggestionItem {
+  id?: number;
   label: string;
+  query: string;
   poster_path?: string | null;
   media_type?: 'movie' | 'tv';
   year?: string;
-  query: string;
-  type: string;
-};
+  type: 'result' | 'query';
+}
 
 export interface SearchResultResponse {
   page: number;

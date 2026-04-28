@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SearchPageFilters } from '../../components/search-page-filters/search-page-filters';
 import { SearchResultList } from '../../components/search-result-list/search-result-list';
 import { SharedService } from '../../services/shared-service';
 import { SearchResultItem } from '../../models/search-result.model';
@@ -8,7 +7,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-results',
-  imports: [SearchPageFilters, SearchResultList],
+  imports: [SearchResultList],
   templateUrl: './search-results.html',
   styleUrl: './search-results.scss',
 })
@@ -37,7 +36,6 @@ export class SearchResults implements OnInit {
         next: (res) => {
           this.searchResults.set(res.results);
           this.totalPages.set(res.totalPages);
-          console.log(res);
         },
         error: (err) => {
           console.error('error fetching search results', err);

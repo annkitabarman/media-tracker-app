@@ -1,10 +1,7 @@
 <div
-  class="h-full flex py-10 justify-between px-28 bg-linear-to-bl from-[#1e063d] to-violet-900"
+  class="h-full flex items-center py-10 justify-center items-center px-28 bg-linear-to-bl from-[#1e063d] to-violet-900"
 >
-  <div class="w-60">
-    <app-search-page-filters />
-  </div>
-  <div class="w-full">
+  <div class="w-full max-w-6xl px-20">
     <app-search-result-list
       [searchResult]="searchResults()"
       [currentPage]="currentPage()"

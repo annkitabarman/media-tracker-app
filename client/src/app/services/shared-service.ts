@@ -111,8 +111,12 @@ export class SharedService {
       );
   }
 
-  fetchSuggestions(query: string): Observable<SuggestionItem[]> {
-    const url = `${this._baseUrl}/search/multi`;
+  fetchSuggestions(
+    query: string,
+    mediaType: 'movie' | 'tv' | '',
+  ): Observable<SuggestionItem[]> {
+    const endpoint = mediaType ? `/search/${mediaType}` : '/search/multi';
+    const url = `${this._baseUrl}${endpoint}`;
 
     return this._httpClient
       .get<SearchResultResponse>(url, {
@@ -124,25 +128,35 @@ export class SharedService {
         },
       })
       .pipe(
-        map((response) => [
+        map((response): SuggestionItem[] => [
           ...response.results
-            .filter(
-              (item) => item.media_type === 'movie' || item.media_type === 'tv',
+            .filter((item) =>
+              mediaType
+                ? true
+                : item.media_type === 'movie' || item.media_type === 'tv',
             )
             .slice(0, 7)
-            .map((item) => ({
-              label: item.title || item.name,
-              query: item.title || item.name,
-              poster_path: item.poster_path
-                ? `${this._imgUrl}${item.poster_path}`
-                : null,
-              media_type: item.media_type,
-              year: item.release_date || item.first_air_date,
-              type: 'result',
-            })),
+            .map(
+              (item): SuggestionItem => ({
+                id: item.id,
+                label: item.title || item.name,
+                query: item.title || item.name,
+                poster_path: item.poster_path
+                  ? `${this._imgUrl}${item.poster_path}`
+                  : null,
+                media_type: item.media_type ?? mediaType,
+                year: item.release_date || item.first_air_date,
+                type: 'result',
+              }),
+            ),
+
           {
-            label: `Search ${query}`,
-            query: query,
+            label: mediaType
+              ? `Search ${query} in ${
+                  mediaType === 'tv' ? 'TV Shows' : 'Movies'
+                }`
+              : `Search ${query}`,
+            query,
             type: 'query',
           },
         ]),

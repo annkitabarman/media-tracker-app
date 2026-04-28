@@ -7,7 +7,7 @@
       [formControl]="searchText"
       type="search"
       placeholder="Search for a show or movie"
-      class="text-[0.75rem] w-full bg-white text-black rounded-full h-8 placeholder:text-xs placeholder:text-gray-500 placeholder:pl-4"
+      class="text-[0.75rem] w-full bg-slate-700 text-gray-300 rounded-full h-8 placeholder:text-xs placeholder:text-gray-300 placeholder:pl-4"
     />
     <button (click)="toggleSearchBox()">
       <i class="fa-solid fa-x absolute right-4 -translate-1/2 text-black"></i>
@@ -67,15 +67,48 @@
 
     <div class="flex items-center gap-2">
       <div
+        #filterContainer
+        class="text-[0.65rem] text-gray-300 relative mx-2 w-[6rem]"
+      >
+        <button
+          class="h-7 w-full rounded-md text-left px-2 flex items-center cursor-pointer justify-between bg-slate-700"
+          (click)="toggleFilterDropdown()"
+        >
+          <span> {{selectedFilter()}} </span>
+          <i
+            class="fa-solid fa-chevron-down transition-transform duration-200"
+            [class.rotate-180]="filterDropdown()"
+          ></i>
+        </button>
+
+        <div
+          class="absolute top-full left-0 my-1 transition-all duration-200 rounded-md overflow-hidden"
+          [class.opacity-0]="!filterDropdown()"
+          [class.opactiy-100]="filterDropdown()"
+          [class.pointer-events-none]="!filterDropdown()"
+          [class.scale-y-80]="!filterDropdown()"
+          [class.scale-y-100]="filterDropdown()"
+        >
+          @for(f of MEDIA_FILTER_MENU; track $index) {
+          <button
+            class="w-full h-7 bg-red-300 text-left px-2 cursor-pointer bg-slate-700"
+            (click)="updateFilter(f)"
+          >
+            {{f}}
+          </button>
+          }
+        </div>
+      </div>
+      <div
         #searchContainer
         class="relative hidden sm:flex flex-1 min-w-0 lg:w-64"
       >
         <i
-          class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-black"
+          class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2"
         ></i>
         <input
           [formControl]="searchText"
-          class="text-[0.75rem] w-full bg-white text-black pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-500 placeholder:text-xs"
+          class="text-[0.75rem] w-full bg-slate-700 text-gray-300 pr-4 pl-10 h-8 text-sm rounded-full placeholder:text-gray-300 placeholder:text-xs"
           type="search"
           placeholder="Search for a show or movie"
         />

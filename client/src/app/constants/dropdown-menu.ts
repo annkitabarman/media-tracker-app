@@ -54,3 +54,9 @@ export const WATCH_STATUS = {
   PAUSED: 'Paused',
   DROPPED: 'Dropped',
 };
+
+export const MEDIA_FILTER_MENU = {
+  ALL: 'All',
+  MOVIES: 'Movies',
+  TV_SHOWS: 'TV Shows',
+};
