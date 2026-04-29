@@ -33,7 +33,7 @@ export class MoviesService {
       const { data, timestamp } = JSON.parse(cached);
 
       const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 60); // 1 hour
-      const hasData = data?.movies?.length > 0 || data?.tvShows?.length > 0;
+      const hasData = data?.movies?.length > 0 && data?.tvShows?.length > 0;
 
       if (!isExpired && hasData) {
         return of(data);
@@ -78,7 +78,7 @@ export class MoviesService {
         ),
     }).pipe(
       tap((res) => {
-        const hasData = res.movies.length > 0 || res.tvShows.length > 0;
+        const hasData = res.movies.length > 0 && res.tvShows.length > 0;
         if (!hasData) return;
         localStorage.setItem(
           key,
