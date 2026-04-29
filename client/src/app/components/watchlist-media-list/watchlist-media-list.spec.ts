@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Ratings } from './ratings';
+import { RatedMediaList } from './watchlist-media-list';
 
-describe('Ratings', () => {
-  let component: Ratings;
-  let fixture: ComponentFixture<Ratings>;
+describe('RatedMediaList', () => {
+  let component: RatedMediaList;
+  let fixture: ComponentFixture<RatedMediaList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Ratings]
-    })
-    .compileComponents();
+      imports: [RatedMediaList],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(Ratings);
+    fixture = TestBed.createComponent(RatedMediaList);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

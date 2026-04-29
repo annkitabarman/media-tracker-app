@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Ratings } from '../../components/ratings/ratings';
+import { Watchlist } from '../../components/watchlist/watchlist';
 import { Favourites } from '../../components/favourites/favourites';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [Ratings, Favourites],
+  imports: [Watchlist, Favourites],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.scss',
 })

@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplayRatings } from './display-ratings';
+import { Watchlist } from './watchlist';
 
-describe('DisplayRatings', () => {
-  let component: DisplayRatings;
-  let fixture: ComponentFixture<DisplayRatings>;
+describe('Watchlist', () => {
+  let component: Watchlist;
+  let fixture: ComponentFixture<Watchlist>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DisplayRatings]
-    })
-    .compileComponents();
+      imports: [Watchlist],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(DisplayRatings);
+    fixture = TestBed.createComponent(Watchlist);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

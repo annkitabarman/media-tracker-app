@@ -1,8 +1,7 @@
-export interface RatedMediaModel {
+export interface WatchlistMediaModel {
   name: string;
   year: number;
   poster: string;
-  rating: number;
   mediaType: 'movie' | 'tv';
   id: number;
   notes: string;

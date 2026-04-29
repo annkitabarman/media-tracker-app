@@ -8,7 +8,7 @@ import {
   MediaDetailsResponse,
   KeyWordsResponse,
 } from '../models/movie-response.model';
-import { RatedMediaModel } from '../models/rated-media.model';
+import { WatchlistMediaModel } from '../models/watchlist-media.model';
 
 @Injectable({
   providedIn: 'root',
@@ -173,26 +173,23 @@ export class MoviesService {
       );
   }
 
-  fetchRatings(): Observable<RatedMediaModel[]> {
-    const key = 'my-ratings';
-    const cached = localStorage.getItem(key);
-
-    if (!cached) return of([]);
-
-    const data = JSON.parse(cached);
-
-    return of(data);
+  fetchWatchlist(): WatchlistMediaModel[] {
+    const cached = localStorage.getItem('my-watchlist');
+    return cached ? JSON.parse(cached) : [];
   }
 
-  addNewRating(rating: RatedMediaModel): { success: boolean; message: string } {
-    if (!rating) return { success: false, message: 'Invalid payload' };
-    const key = 'my-ratings';
+  addToWatchlist(item: WatchlistMediaModel): {
+    success: boolean;
+    message: string;
+  } {
+    if (!item) return { success: false, message: 'Invalid payload' };
+    const key = 'my-watchlist';
 
     const cached = localStorage.getItem(key);
-    const allRatings: RatedMediaModel[] = cached ? JSON.parse(cached) : [];
+    const allItems: WatchlistMediaModel[] = cached ? JSON.parse(cached) : [];
 
-    allRatings.push(rating);
-    localStorage.setItem(key, JSON.stringify(allRatings));
+    allItems.push(item);
+    localStorage.setItem(key, JSON.stringify(allItems));
     return { success: true, message: 'New entry added!' };
   }
 }

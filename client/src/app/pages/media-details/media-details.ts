@@ -8,6 +8,7 @@ import {
   ViewChild,
   computed,
   DestroyRef,
+  effect,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
@@ -23,18 +24,21 @@ import { CastCard } from '../../components/cast-card/cast-card';
 import { SharedService } from '../../services/shared-service';
 import { CurrencyPipe } from '@angular/common';
 import { ADD_TO_LIST_MENU } from '../../constants/dropdown-menu';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AddRatingPopup } from '../../components/add-rating-popup/add-rating-popup';
+import {
+  takeUntilDestroyed,
+  toSignal,
+  toObservable,
+} from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import {
+  selectCurrentWatchlistItem,
+  selectInWatchlist,
+} from '../../store/watchlist/watchlist.selectors';
+import { switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-media-details',
-  imports: [
-    DatePipe,
-    MinutesToHoursPipe,
-    CastCard,
-    CurrencyPipe,
-    AddRatingPopup,
-  ],
+  imports: [DatePipe, MinutesToHoursPipe, CastCard, CurrencyPipe],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
 })
@@ -44,6 +48,7 @@ export class MediaDetails implements OnInit {
   private readonly _castService = inject(CastService);
   private readonly _sharedService = inject(SharedService);
   private readonly _destroyRef = inject(DestroyRef);
+  private readonly _store = inject(Store);
   @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef<HTMLElement>;
   menuValues = Object.values(ADD_TO_LIST_MENU);
   id = signal<number>(0);
@@ -55,6 +60,24 @@ export class MediaDetails implements OnInit {
   originalLang = signal<string>('English');
   keywordsList = signal<KeyWordsResponse['keywords']>([]);
   showToast = signal<boolean>(false);
+
+  existingWatchlist = toSignal(
+    toObservable(this.id).pipe(
+      switchMap((id) =>
+        id ? this._store.select(selectCurrentWatchlistItem(id)) : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
+
+  constructor() {
+    effect(() => {
+      console.log(this.existingWatchlist());
+      console.log(this.isAddedToWatchlsit());
+    });
+  }
+
+  isAddedToWatchlsit = computed(() => !!this.existingWatchlist());
 
   castDetails = signal<CastDetailsResponse | null>(null);
   isPopupOpen = signal<boolean>(false);
@@ -179,17 +202,5 @@ export class MediaDetails implements OnInit {
     if (!clickedInside) {
       this.isDropdownOpen.set(false);
     }
-  }
-
-  openAddRatingPopup() {
-    this.isPopupOpen.set(true);
-    document.documentElement.style.overflow = 'hidden'; // html
-    document.body.style.overflow = 'hidden';
-  }
-
-  closePopup() {
-    this.isPopupOpen.set(false);
-    document.documentElement.style.overflow = ''; // html
-    document.body.style.overflow = '';
   }
 }

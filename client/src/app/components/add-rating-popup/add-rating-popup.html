@@ -90,17 +90,24 @@
               <textarea
                 formControlName="notes"
                 type="text"
-                class="h-20 bg-slate-800 w-full"
+                class="h-20 bg-slate-800 w-full resize-none px-1 py-1"
               ></textarea>
             </div>
           </div>
 
-          <div class="px-10 my-2">
+          <div class="px-10 my-2 flex gap-2">
             <button
               class="block bg-indigo-500 px-5 py-2 cursor-pointer rounded-sm"
               type="submit"
             >
               Save
+            </button>
+
+            <button
+              type="button"
+              class="block bg-slate-800 hover:bg-red-500 px-5 cursor-pointer rounded-sm"
+            >
+              Delete
             </button>
           </div>
         </form>

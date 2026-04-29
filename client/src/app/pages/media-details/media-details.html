@@ -18,24 +18,30 @@
           />
 
           <div class="flex items-center gap-1 w-full relative">
-            <div
-              #dropdownWrapper
-              class="flex w-full rounded-md overflow-hidden h-9"
-            >
+            @if(!isAddedToWatchlsit()){
+            <div #dropdownWrapper class="flex w-full overflow-hidden h-8 gap-2">
               <button
-                (click)="openAddRatingPopup()"
-                class="text-sm flex-1 w-full bg-violet-600 hover:bg-violet-700 text-white py-2 transition cursor-pointer"
+                class="text-xs flex items-center justify-between w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 transition cursor-pointer rounded-md"
               >
-                Add to List
+                <!-- <i class="fa-solid fa-plus"></i> -->
+                <i class="fa-solid fa-check"></i>
+                Watchlist
               </button>
 
               <button
                 (click)="toggleDropdown($event)"
-                class="w-8 pb-2 flex items-center justify-center bg-violet-700 hover:bg-violet-800 text-white border-l border-white/20"
+                class="w-9 text-xs p-2 flex items-center justify-center bg-violet-600 hover:bg-violet-700 text-white border-l border-white/20 rounded-md cursor-pointer"
               >
-                ⌄
+                <i class="fa-regular fa-eye"></i>
               </button>
             </div>
+            } @else{
+            <button
+              class="text-sm rounded-md w-full bg-violet-600 hover:bg-violet-700 text-white py-2 cursor-pointer"
+            >
+              Edit
+            </button>
+            }
 
             <button
               class="bg-pink-500 hover:bg-pink-700 rounded-md m-2 w-12 h-9 cursor-pointer"
@@ -43,21 +49,6 @@
               <i class="fa-regular fa-heart"></i>
             </button>
           </div>
-
-          @if(isDropdownOpen()) {
-          <div
-            class="text-sm absolute top-full left-0 w-40 bg-[#2a0f4d] rounded-lg shadow-lg overflow-hidden z-50"
-          >
-            @for(al of menuValues; track al) {
-            <button
-              class="block w-full text-left px-4 py-2 hover:bg-violet-900 text-white cursor-pointer"
-            >
-              {{al}}
-            </button>
-            }
-          </div>
-
-          }
         </div>
 
         <div class="text-white mx-10 max-w-3xl">
@@ -201,12 +192,13 @@
   </div>
 </div>
 
-<app-add-rating-popup
+<!-- <app-add-rating-popup
   (closePopupEmitter)="closePopup()"
   [isPopupOpen]="isPopupOpen()"
   [mediaData]="mediaData()"
   (ratingSavedEmitter)="showSuccessToast()"
   [mediaType]="type()"
+  [newRating]="isAddedToRatings()"
 ></app-add-rating-popup>
 
 @if (showToast()) {
@@ -215,4 +207,4 @@
 >
   Rating saved successfully!
 </div>
-}
+} -->

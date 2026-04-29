@@ -7,12 +7,15 @@ import {
   ViewChild,
   ElementRef,
   inject,
+  effect,
 } from '@angular/core';
 import { MediaDetailsResponse } from '../../models/movie-response.model';
 import { WATCH_STATUS } from '../../constants/dropdown-menu';
 import { MoviesService } from '../../services/movies-service';
-import { RatedMediaModel } from '../../models/rated-media.model';
+import { WatchlistMediaModel } from '../../models/watchlist-media.model';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { addToWatchlist } from '../../store/watchlist/watchlist.actions';
 
 @Component({
   selector: 'app-add-rating-popup',
@@ -21,6 +24,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './add-rating-popup.scss',
 })
 export class AddRatingPopup {
+  private readonly _store = inject(Store);
   @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef;
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _moviesService = inject(MoviesService);
@@ -32,6 +36,8 @@ export class AddRatingPopup {
     (s) => s !== WATCH_STATUS.ALL,
   );
   ratingSavedEmitter = output<void>();
+  newRating = input<boolean>(true);
+  exisitingRatingValue = input<WatchlistMediaModel | null>(null);
 
   isDropDownOpen = signal<boolean>(false);
   mediaType = input<'movie' | 'tv'>('movie');
@@ -39,7 +45,6 @@ export class AddRatingPopup {
 
   form = this._formBuilder.nonNullable.group({
     watchStatus: [WATCH_STATUS.WATCHING],
-    rating: [0],
     notes: [''],
   });
 
@@ -57,22 +62,36 @@ export class AddRatingPopup {
     this.isDropDownOpen.update((v) => !v);
   }
 
+  constructor() {
+    effect(() => {
+      if (this.exisitingRatingValue() && !this.newRating()) {
+        this.form.patchValue({
+          watchStatus: this.exisitingRatingValue()?.watchStatus,
+          notes: this.exisitingRatingValue()?.notes,
+        });
+      }
+      console.log(this.form.getRawValue());
+    });
+  }
+
   private getReleaseYear(date?: string): number {
     return date ? Number(date.slice(0, 4)) : 0;
   }
 
   addNewRating() {
-    const payload: RatedMediaModel = {
-      ...this.form.getRawValue(),
-      name: this.mediaData()?.name || this.mediaData()?.title || '',
-      year: this.getReleaseYear(this.mediaData()?.release_date),
-      poster: this.mediaData()?.poster_path || '',
-      mediaType: this.mediaType(),
-      id: this.mediaData()?.id || -1,
-    };
-    const result = this._moviesService.addNewRating(payload);
-    console.log(result);
-    this.ratingSavedEmitter.emit();
+    // const payload: RatedMediaModel = {
+    //   ...this.form.getRawValue(),
+    //   name: this.mediaData()?.name || this.mediaData()?.title || '',
+    //   year: this.getReleaseYear(this.mediaData()?.release_date),
+    //   poster: this.mediaData()?.poster_path || '',
+    //   mediaType: this.mediaType(),
+    //   id: this.mediaData()?.id || -1,
+    // };
+    // const result = this._moviesService.addNewRating(payload);
+    // if (result.success) {
+    //   this._store.dispatch(addRating({ rating: payload }));
+    // }
+    // this.ratingSavedEmitter.emit();
     this.closePopup();
   }
 

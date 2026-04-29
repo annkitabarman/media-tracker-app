@@ -1,14 +1,14 @@
 <div class="text-xs py-3 mx-10 my-2 w-full">
   <div class="">
-    @if(!ratingList()?.length) {
+    @if(!watchList()?.length) {
     <div class="text-white text-left text-xl">
       You haven't rated any Movies or TV Shows yet. Click
       <a [routerLink]="['/']" class="underline">here</a> to check out.
     </div>
     } @else {
     <div>
-      @for(item of ratingList(); track item.id) {
-      <app-rated-media-list [ratingDetail]="item"></app-rated-media-list>
+      @for(item of watchList(); track item.id) {
+      <app-watchlist-media-list [item]="item"></app-watchlist-media-list>
       }
     </div>
     }

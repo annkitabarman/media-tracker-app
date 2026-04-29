@@ -3,9 +3,9 @@
     <app-ratings-filters (watchStatusEmitter)="setWatchStatus($event)" />
   </div>
   <div class="w-full">
-    <app-display-ratings
+    <app-display-watchlist
       [watchStatus]="watchStatus()"
-      [ratingList]="allRatingsList()"
+      [watchList]="allWatchlist()"
     />
   </div>
 </div>

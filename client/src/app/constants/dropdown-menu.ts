@@ -30,12 +30,16 @@ export const TV_SHOWS_MENU = [
 
 export const USER_MENU = [
   {
-    menu: 'Ratings',
-    link: '/user/ratings',
-  },
-  {
     menu: 'Favourites',
     link: '/user/favourites',
+  },
+  {
+    menu: 'Watchlist',
+    link: '/user/watchlist',
+  },
+  {
+    menu: 'Watched',
+    link: '/user/watchlist',
   },
 ];
 
