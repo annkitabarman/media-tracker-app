@@ -1,11 +1,8 @@
 <div class="h-full flex py-10 justify-between px-28">
   <div class="w-52">
-    <app-ratings-filters (watchStatusEmitter)="setWatchStatus($event)" />
+    <app-user-filters />
   </div>
   <div class="w-full">
-    <app-display-watchlist
-      [watchStatus]="watchStatus()"
-      [watchList]="allWatchlist()"
-    />
+    <app-display-watchlist [watchList]="allWatchlist()" />
   </div>
 </div>

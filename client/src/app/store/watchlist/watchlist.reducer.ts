@@ -3,7 +3,6 @@ import { initialState } from './watchlist.store';
 import {
   addToWatchlist,
   removeFromWatchlist,
-  updateWatchlist,
   loadWatchlist,
   loadWatchlistFailure,
   loadWatchlistSuccess,
@@ -15,10 +14,6 @@ export const watchlistReducer = createReducer(
   on(addToWatchlist, (state, { item }) => ({
     ...state,
     items: [...state.items, item],
-  })),
-  on(updateWatchlist, (state, { item }) => ({
-    ...state,
-    items: state.items.map((i) => (i.id === item.id ? item : i)),
   })),
   on(removeFromWatchlist, (state, { id }) => ({
     ...state,

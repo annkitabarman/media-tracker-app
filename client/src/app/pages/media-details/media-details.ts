@@ -8,7 +8,6 @@ import {
   ViewChild,
   computed,
   DestroyRef,
-  effect,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MoviesService } from '../../services/movies-service';
@@ -35,6 +34,10 @@ import {
   selectInWatchlist,
 } from '../../store/watchlist/watchlist.selectors';
 import { switchMap, of } from 'rxjs';
+import {
+  removeFromWatchlist,
+  addToWatchlist,
+} from '../../store/watchlist/watchlist.actions';
 
 @Component({
   selector: 'app-media-details',
@@ -44,7 +47,7 @@ import { switchMap, of } from 'rxjs';
 })
 export class MediaDetails implements OnInit {
   private readonly _activateRoute = inject(ActivatedRoute);
-  private readonly _movieesService = inject(MoviesService);
+  private readonly _moviesService = inject(MoviesService);
   private readonly _castService = inject(CastService);
   private readonly _sharedService = inject(SharedService);
   private readonly _destroyRef = inject(DestroyRef);
@@ -60,6 +63,7 @@ export class MediaDetails implements OnInit {
   originalLang = signal<string>('English');
   keywordsList = signal<KeyWordsResponse['keywords']>([]);
   showToast = signal<boolean>(false);
+  loading = signal<boolean>(false);
 
   existingWatchlist = toSignal(
     toObservable(this.id).pipe(
@@ -70,17 +74,42 @@ export class MediaDetails implements OnInit {
     { initialValue: null },
   );
 
-  constructor() {
-    effect(() => {
-      console.log(this.existingWatchlist());
-      console.log(this.isAddedToWatchlsit());
-    });
+  private getReleaseYear(date?: string): number {
+    return date ? Number(date.slice(0, 4)) : 0;
   }
 
-  isAddedToWatchlsit = computed(() => !!this.existingWatchlist());
+  removeFromWatchlist() {
+    this._store.dispatch(removeFromWatchlist({ id: this.id() }));
+  }
+
+  addToWatchlist() {
+    this.loading.set(true);
+
+    setTimeout(() => {
+      if (!this.isAddedToWatchlist()) {
+        const payload = {
+          name: this.mediaData()?.name || this.mediaData()?.title || '',
+          year: this.getReleaseYear(this.mediaData()?.release_date),
+          poster: this.mediaData()?.poster_path ?? '',
+          mediaType: this.type(),
+          id: this.id(),
+        };
+        const message = this._moviesService.addToWatchlist(payload);
+
+        if (message) {
+          this._store.dispatch(addToWatchlist({ item: payload }));
+        }
+      } else {
+        this.removeFromWatchlist();
+      }
+
+      this.loading.set(false);
+    }, 500);
+  }
+
+  isAddedToWatchlist = computed(() => !!this.existingWatchlist());
 
   castDetails = signal<CastDetailsResponse | null>(null);
-  isPopupOpen = signal<boolean>(false);
 
   circumference = computed(() => {
     return 2 * Math.PI * this.radius();
@@ -134,7 +163,7 @@ export class MediaDetails implements OnInit {
   fetchKeywords() {
     if (!this.id() || !this.type()) return;
 
-    this._movieesService.fetchKeywords(this.id(), this.type()).subscribe({
+    this._moviesService.fetchKeywords(this.id(), this.type()).subscribe({
       next: (res) => {
         this.keywordsList.set(res.keywords);
       },
@@ -163,7 +192,7 @@ export class MediaDetails implements OnInit {
   }
 
   fetchMediaData() {
-    this._movieesService.fetchMediaDetails(this.id(), this.type()).subscribe({
+    this._moviesService.fetchMediaDetails(this.id(), this.type()).subscribe({
       next: (res) => {
         this.mediaData.set(res);
         this.generateGenreList();

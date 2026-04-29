@@ -7,7 +7,6 @@ import {
   computed,
   output,
 } from '@angular/core';
-import { WATCH_STATUS } from '../../constants/dropdown-menu';
 import {
   FILTERS_DROPDOWN,
   SORT_OPTIONS,
@@ -17,29 +16,25 @@ import { SharedService } from '../../services/shared-service';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-ratings-filters',
+  selector: 'app-user-filters',
   imports: [],
-  templateUrl: './ratings-filters.html',
-  styleUrl: './ratings-filters.scss',
+  templateUrl: './user-filters.html',
+  styleUrl: './user-filters.scss',
 })
-export class RatingsFilters implements OnInit {
+export class UserFilters implements OnInit {
   private readonly _sharedService = inject(SharedService);
   private readonly elementRef = inject(ElementRef);
-  watchStatus = Object.values(WATCH_STATUS);
   filters = signal(FILTERS_DROPDOWN);
   SORT_OPTIONS = SORT_OPTIONS;
   genreFiltersIds = signal<{ id: number; name: string }[]>([]);
 
-  activeWatchStatus = signal(WATCH_STATUS.ALL);
   isDropDownOpen = signal<string | null>(null);
   hoveredFilter = signal<string | null>(null);
-  watchStatusEmitter = output<string>();
   ascOrder = signal<boolean>(true);
 
   selectedFilters = signal<Record<string, string>>({
     format: '',
     genre: '',
-    status: '',
     year: '',
     sort: 'title',
   });
@@ -90,14 +85,10 @@ export class RatingsFilters implements OnInit {
 
       this.filters.update((filters) => {
         const updatedFilters = [...filters];
-        updatedFilters[2].options = genreOptions;
+        updatedFilters[1].options = genreOptions;
         return updatedFilters;
       });
     });
-  }
-  setActiveWatchStatus(status: string) {
-    this.activeWatchStatus.set(status);
-    this.watchStatusEmitter.emit(this.activeWatchStatus());
   }
 
   applyFilter(filterKey: string, option: string) {

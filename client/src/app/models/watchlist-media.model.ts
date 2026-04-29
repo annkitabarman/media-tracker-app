@@ -4,6 +4,4 @@ export interface WatchlistMediaModel {
   poster: string;
   mediaType: 'movie' | 'tv';
   id: number;
-  notes: string;
-  watchStatus: string;
 }

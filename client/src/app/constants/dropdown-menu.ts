@@ -49,16 +49,6 @@ export const ADD_TO_LIST_MENU = {
   PLANNING: 'Set as Planning',
 };
 
-export const WATCH_STATUS = {
-  ALL: 'All',
-  WATCHING: 'Watching',
-  COMPLETED: 'Completed',
-  PLANNING: 'Planning',
-  REWATCHING: 'Rewatching',
-  PAUSED: 'Paused',
-  DROPPED: 'Dropped',
-};
-
 export const MEDIA_FILTER_MENU = {
   ALL: 'All',
   MOVIES: 'Movies',
