@@ -70,6 +70,10 @@ export class AddRatingPopup {
       mediaType: this.mediaType(),
       id: this.mediaData()?.id || -1,
     };
+    const result = this._moviesService.addNewRating(payload);
+    console.log(result);
+    this.ratingSavedEmitter.emit();
+    this.closePopup();
   }
 
   @HostListener('document:click', ['$event'])

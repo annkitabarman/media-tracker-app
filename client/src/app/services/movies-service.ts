@@ -184,8 +184,8 @@ export class MoviesService {
     return of(data);
   }
 
-  addNewRating(rating: RatedMediaModel): void {
-    if (!rating) return;
+  addNewRating(rating: RatedMediaModel): { success: boolean; message: string } {
+    if (!rating) return { success: false, message: 'Invalid payload' };
     const key = 'my-ratings';
 
     const cached = localStorage.getItem(key);
@@ -193,5 +193,6 @@ export class MoviesService {
 
     allRatings.push(rating);
     localStorage.setItem(key, JSON.stringify(allRatings));
+    return { success: true, message: 'New entry added!' };
   }
 }

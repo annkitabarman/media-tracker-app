@@ -12,5 +12,5 @@ import { RouterLink } from '@angular/router';
 export class DisplayRatings {
   watchStatus = input<string>();
 
-  ratingList = signal<RatedMediaModel[] | null>(null);
+  ratingList = input<RatedMediaModel[] | null>(null);
 }

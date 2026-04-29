@@ -5,6 +5,12 @@
       You haven't rated any Movies or TV Shows yet. Click
       <a [routerLink]="['/']" class="underline">here</a> to check out.
     </div>
-    } @else { }
+    } @else {
+    <div>
+      @for(item of ratingList(); track item.id) {
+      <app-rated-media-list [ratingDetail]="item"></app-rated-media-list>
+      }
+    </div>
+    }
   </div>
 </div>

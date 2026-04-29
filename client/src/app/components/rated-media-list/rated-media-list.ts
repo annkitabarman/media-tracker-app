@@ -8,5 +8,5 @@ import { RatedMediaModel } from '../../models/rated-media.model';
   styleUrl: './rated-media-list.scss',
 })
 export class RatedMediaList {
-  allRatings = input<RatedMediaModel | null>(null);
+  ratingDetail = input<RatedMediaModel | null>(null);
 }
