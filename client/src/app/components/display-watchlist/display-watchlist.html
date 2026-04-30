@@ -6,7 +6,10 @@
       <a [routerLink]="['/']" class="underline">here</a> to check out.
     </div>
     } @else {
-    <div>
+    <div class="flex flex-col gap-5 text-gray-200">
+      <p class="text-sm">
+        Your Watchlist is the place to track the titles you want to watch.
+      </p>
       @for(item of watchList(); track item.id) {
       <app-watchlist-media-list [item]="item"></app-watchlist-media-list>
       }

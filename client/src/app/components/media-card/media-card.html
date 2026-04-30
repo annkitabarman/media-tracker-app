@@ -1,5 +1,8 @@
 <div class="relative">
-  <div class="rounded-md bg-white mx-4 mt-4 w-40" (click)="openDetails()">
+  <div
+    class="rounded-md bg-white mx-4 mt-4 w-40 aspect-[2/3] overflow-hidden"
+    (click)="openDetails()"
+  >
     <img
       [src]="item()?.poster_path"
       class="block w-full h-full object-cover cursor-pointer rounded-md"

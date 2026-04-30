@@ -1,3 +1,7 @@
+import { LanguageResponse } from './language-response.model';
+import { ProductionCompany, ProductionCountry } from './tv.response.model';
+import { TvDetails } from './tv.response.model';
+
 export interface TrendingMediaType {
   adult: boolean;
   backdrop_path: string;
@@ -26,48 +30,34 @@ export interface TrendingMediaAPIResponse {
   total_results: number;
 }
 
-export interface MediaDetailsResponse {
+export type MediaDetailsResponse =
+  | (MovieDetails & { mediaType: 'movie' })
+  | (TvDetails & { mediaType: 'tv' });
+
+export interface MovieDetails {
   adult: boolean;
-  name: string;
   backdrop_path: string | null;
-  belongs_to_collection: {
-    id: number;
-    name: string;
-    poster_path: string | null;
-    backdrop_path: string | null;
-  } | null;
+  belongs_to_collection: Collection | null;
   budget: number;
   genres: {
     id: number;
     name: string;
   }[];
-  homepage: string;
+  homepage: string | null;
   id: number;
-  imdb_id: string;
+  imdb_id: string | null;
   origin_country: string[];
   original_language: string;
   original_title: string;
   overview: string;
   popularity: number;
   poster_path: string | null;
-  production_companies: {
-    id: number;
-    logo_path: string | null;
-    name: string;
-    origin_country: string;
-  }[];
-  production_countries: {
-    iso_3166_1: string;
-    name: string;
-  }[];
+  production_companies: ProductionCompany[];
+  production_countries: ProductionCountry[];
   release_date: string;
   revenue: number;
   runtime: number;
-  spoken_languages: {
-    english_name: string;
-    iso_639_1: string;
-    name: string;
-  }[];
+  spoken_languages: LanguageResponse[];
   status: string;
   tagline: string;
   title: string;
@@ -76,10 +66,19 @@ export interface MediaDetailsResponse {
   vote_count: number;
 }
 
+export interface Collection {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+}
+
+export interface Keyword {
+  id: number;
+  name: string;
+}
+
 export interface KeyWordsResponse {
   id: number;
-  keywords: {
-    id: number;
-    name: string;
-  }[];
+  keywords: Keyword[];
 }

@@ -1,6 +1,6 @@
 export interface WatchlistMediaModel {
   name: string;
-  year: number;
+  year: string;
   poster: string;
   mediaType: 'movie' | 'tv';
   id: number;

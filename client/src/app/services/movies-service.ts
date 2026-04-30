@@ -5,9 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
   TrendingMediaAPIResponse,
-  MediaDetailsResponse,
   KeyWordsResponse,
+  MovieDetails,
+  MediaDetailsResponse,
 } from '../models/movie-response.model';
+import { TvDetails } from '../models/tv.response.model';
 import { WatchlistMediaModel } from '../models/watchlist-media.model';
 
 @Injectable({
@@ -17,6 +19,13 @@ export class MoviesService {
   private readonly _baseUrl = BASE_URL;
 
   private readonly _httpClient = inject(HttpClient);
+
+  private addCommonFields = (res: any) => ({
+    backdrop_path: res.backdrop_path
+      ? `${IMAGE_BASE_URL}${res.backdrop_path}`
+      : null,
+    poster_path: res.poster_path ? `${IMAGE_BASE_URL}${res.poster_path}` : null,
+  });
 
   checkExpiry(timestamp: number, expectedTime: number): boolean {
     return Date.now() - timestamp > expectedTime;
@@ -101,32 +110,41 @@ export class MoviesService {
     if (cached) {
       const { data, timestamp } = JSON.parse(cached);
 
-      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 10); // 10 minutes
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 10);
       const hasData = data?.id === id;
+
+      // 🔥 Fix old cache (missing mediaType)
+      if (data && !data.mediaType) {
+        data.mediaType = type;
+      }
 
       if (!isExpired && hasData) {
         return of(data);
       }
     }
+
     return this._httpClient
-      .get<MediaDetailsResponse>(
-        `${this._baseUrl}/${type}/${id}?language=en-US`,
-      )
+      .get<
+        MovieDetails | TvDetails
+      >(`${this._baseUrl}/${type}/${id}?language=en-US`)
       .pipe(
         map((res) => {
-          return {
-            ...res,
-            backdrop_path: res.backdrop_path
-              ? `${IMAGE_BASE_URL}${res.backdrop_path}`
-              : null,
-            poster_path: res.poster_path
-              ? `${IMAGE_BASE_URL}${res.poster_path}`
-              : null,
-          };
+          if (type === 'movie') {
+            return {
+              ...(res as MovieDetails),
+              ...this.addCommonFields(res),
+              mediaType: 'movie' as const,
+            };
+          } else {
+            return {
+              ...(res as TvDetails),
+              ...this.addCommonFields(res),
+              mediaType: 'tv' as const,
+            };
+          }
         }),
         tap((res) => {
-          const hasData = res?.id === id;
-          if (!hasData) return;
+          if (res?.id !== id) return;
 
           localStorage.setItem(
             key,
@@ -156,8 +174,11 @@ export class MoviesService {
       }
     }
     return this._httpClient
-      .get<KeyWordsResponse>(`${this._baseUrl}/${type}/${id}/keywords`)
+      .get<any>(`${this._baseUrl}/${type}/${id}/keywords`)
       .pipe(
+        map((data) => {
+          return { id: data.id, keywords: data.keywords || data.results };
+        }),
         tap((res) => {
           const hasData = res?.id === id;
           if (!hasData) return;
@@ -178,18 +199,8 @@ export class MoviesService {
     return cached ? JSON.parse(cached) : [];
   }
 
-  addToWatchlist(item: WatchlistMediaModel): {
-    success: boolean;
-    message: string;
-  } {
-    if (!item) return { success: false, message: 'Invalid payload' };
+  saveWatchlist(items: WatchlistMediaModel[]): void {
     const key = 'my-watchlist';
-
-    const cached = localStorage.getItem(key);
-    const allItems: WatchlistMediaModel[] = cached ? JSON.parse(cached) : [];
-
-    allItems.push(item);
-    localStorage.setItem(key, JSON.stringify(allItems));
-    return { success: true, message: 'New entry added!' };
+    localStorage.setItem(key, JSON.stringify(items));
   }
 }

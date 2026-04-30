@@ -18,54 +18,38 @@
           />
 
           <div class="flex items-center gap-1 w-full relative">
-            <div #dropdownWrapper class="flex w-full overflow-hidden h-8 gap-2">
+            <div class="flex flex-col w-full overflow-hidden h-8 gap-4 px-4">
               <button
-                class="text-xs flex items-center justify-between w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 transition cursor-pointer rounded-md"
+                class="text-xs flex items-start justify-center w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-2 transition cursor-pointer rounded-md"
                 (click)="addToWatchlist()"
               >
                 @if(loading()) {
-                <i class="fa-solid fa-spinner fa-spin"></i>
+                <i class="fa-solid fa-spinner fa-spin mx-2"></i>
                 } @else { @if(!isAddedToWatchlist()) {
-                <i class="fa-solid fa-plus"></i>
-                } @else {
-                <i class="fa-solid fa-check"></i>
-                } } Watchlist
-              </button>
-
-              <button
-                (click)="toggleDropdown($event)"
-                class="w-9 text-xs p-2 flex items-center justify-center bg-violet-600 hover:bg-violet-700 text-white border-l border-white/20 rounded-md cursor-pointer"
-              >
-                <i class="fa-regular fa-eye"></i>
+                <i class="fa-solid fa-plus mx-2"></i>
+                Add to Watchlist} @else {
+                <i class="fa-solid fa-check mx-2"></i>
+                Added to Watchlist} }
               </button>
             </div>
-
-            <button
-              class="bg-pink-500 hover:bg-pink-700 rounded-md m-2 w-12 h-9 cursor-pointer"
-            >
-              <i class="fa-regular fa-heart"></i>
-            </button>
           </div>
         </div>
 
         <div class="text-white mx-10 max-w-3xl">
-          <h1 class="text-5xl font-bold">
-            {{ mediaData()?.title || mediaData()?.name }}
-          </h1>
+          <h1 class="text-5xl font-bold">{{displayTitle}}</h1>
 
           <div class="flex items-center gap-2">
-            <h2 class="text-xl">
-              ({{mediaData()?.release_date | date:'yyyy'}})
-            </h2>
+            <h2 class="text-xl">({{releaseDate | date:'yyyy'}})</h2>
 
             <div class="text-xl">•</div>
-            <div class="text-md">
-              {{mediaData()?.runtime ?? 0 | minutesToHours}}
-            </div>
+            @if(isMovie) {
+
+            <div class="text-md">{{runtime ?? 0 | minutesToHours}}</div>
+            } @else { {{seasonCount}} Seasons}
           </div>
 
           <div class="my-4 flex flex-wrap gap-3">
-            @for(g of genreList(); track g) {
+            @for(g of genreList(); track $index) {
             <span
               class="border-2 whitespace-nowrap inline-block border-violet-900 bg-violet-400/30 px-3 py-1 rounded-full text-xs"
               >{{g}}</span
@@ -107,6 +91,22 @@
               </div>
             </div>
             <div class="text-xs w-10">User score</div>
+            <button
+              class="bg-slate-700 hover:bg-blue-500 rounded-full m-2 w-10 h-10 cursor-pointer"
+            >
+              <i class="fa-regular fa-heart"></i>
+            </button>
+
+            <button
+              class="bg-slate-700 hover:bg-blue-500 rounded-full m-2 w-10 h-10 cursor-pointer"
+              (click)="toggleWatched()"
+            >
+              @if(watched()) {
+              <i class="fa-solid fa-eye"></i>
+              } @else {
+              <i class="fa-regular fa-eye"></i>
+              }
+            </button>
           </div>
 
           <div class="italic my-6">{{mediaData()?.tagline}}</div>
@@ -125,7 +125,7 @@
 
         <div class="w-full h-70 my-5 overflow-x-auto">
           <div class="flex py-3 gap-4 w-max">
-            @for (c of (castDetails()?.cast ?? []).slice(0, 9); track c) {
+            @for (c of castList(); track c.id) {
             <app-cast-card
               class="w-32 flex-shrink-0"
               [castName]="c.name"
@@ -157,21 +157,26 @@
           <p class="text-xs opacity-80">{{originalLang()}}</p>
         </div>
 
+        @if(isMovie) {
         <div>
           <p class="font-semibold text-sm">Budget</p>
           <p class="text-xs opacity-80">
-            {{ mediaData()?.budget ? (mediaData()?.budget | currency:'USD') :
-            '-' }}
+            {{ budget ? (budget | currency:'USD') : '-' }}
           </p>
         </div>
 
         <div>
           <p class="font-semibold text-sm">Revenue</p>
           <p class="text-xs opacity-80">
-            {{ mediaData()?.revenue ? (mediaData()?.revenue | currency:'USD') :
-            '-' }}
+            {{ revenue ? (revenue | currency:'USD') : '-' }}
           </p>
         </div>
+        } @else {
+        <div>
+          <p class="font-semibold text-sm">Type</p>
+          <p class="text-xs opacity-80">{{ typeOfShow }}</p>
+        </div>
+        }
 
         <div>
           <div class="text-[0.65rem] my-1">Keywords</div>

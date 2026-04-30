@@ -1,11 +1,8 @@
 import {
   Component,
-  ElementRef,
-  HostListener,
   inject,
   OnInit,
   signal,
-  ViewChild,
   computed,
   DestroyRef,
 } from '@angular/core';
@@ -29,10 +26,7 @@ import {
   toObservable,
 } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import {
-  selectCurrentWatchlistItem,
-  selectInWatchlist,
-} from '../../store/watchlist/watchlist.selectors';
+import { selectCurrentWatchlistItem } from '../../store/watchlist/watchlist.selectors';
 import { switchMap, of } from 'rxjs';
 import {
   removeFromWatchlist,
@@ -52,7 +46,6 @@ export class MediaDetails implements OnInit {
   private readonly _sharedService = inject(SharedService);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _store = inject(Store);
-  @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef<HTMLElement>;
   menuValues = Object.values(ADD_TO_LIST_MENU);
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
@@ -64,6 +57,75 @@ export class MediaDetails implements OnInit {
   keywordsList = signal<KeyWordsResponse['keywords']>([]);
   showToast = signal<boolean>(false);
   loading = signal<boolean>(false);
+  watched = signal<boolean>(false);
+
+  toggleWatched() {
+    this.watched.set(!this.watched());
+  }
+
+  get isMovie(): boolean {
+    const data = this.mediaData();
+    return data?.mediaType === 'movie';
+  }
+
+  get displayTitle() {
+    const data = this.mediaData();
+    if (!data) return '';
+
+    return data.mediaType === 'movie' ? data.title : data.name;
+  }
+
+  get releaseDate() {
+    const data = this.mediaData();
+    if (!data) return;
+
+    return data.mediaType === 'movie' ? data.release_date : data.first_air_date;
+  }
+
+  get seasonCount(): number {
+    const data = this.mediaData();
+    if (!data || data.mediaType !== 'tv') return 0;
+
+    const today = new Date();
+
+    const seasons = (data.seasons ?? [])
+      .filter((s) => s.season_number !== 0)
+      .filter((s) => s.air_date && new Date(s.air_date) <= today);
+
+    return seasons.length;
+  }
+
+  get budget(): number | null {
+    const data = this.mediaData();
+    if (!data || data.mediaType !== 'movie') return null;
+
+    return data.budget;
+  }
+
+  get revenue(): number | null {
+    const data = this.mediaData();
+    if (!data || data.mediaType !== 'movie') return null;
+
+    return data.revenue;
+  }
+
+  get runtime(): number | null {
+    const data = this.mediaData();
+    if (!data || data.mediaType !== 'movie') return null;
+
+    return data.runtime;
+  }
+
+  get typeOfShow(): string | null {
+    const data = this.mediaData();
+    if (!data || data.mediaType !== 'tv') return null;
+
+    return data.type;
+  }
+
+  castList = computed(() => {
+    return (this.castDetails()?.cast ?? []).slice(0, 9);
+  });
 
   existingWatchlist = toSignal(
     toObservable(this.id).pipe(
@@ -74,37 +136,33 @@ export class MediaDetails implements OnInit {
     { initialValue: null },
   );
 
-  private getReleaseYear(date?: string): number {
-    return date ? Number(date.slice(0, 4)) : 0;
-  }
-
   removeFromWatchlist() {
     this._store.dispatch(removeFromWatchlist({ id: this.id() }));
   }
 
   addToWatchlist() {
+    const data = this.mediaData();
+    if (!data) return;
     this.loading.set(true);
+    if (!this.isAddedToWatchlist()) {
+      const payload = {
+        name: data.mediaType === 'movie' ? data.title : data.name,
+        year:
+          data?.mediaType === 'movie'
+            ? data?.release_date
+            : data?.first_air_date,
+        poster: data?.poster_path ?? '',
+        mediaType: this.type(),
+        id: this.id(),
+      };
+      this._store.dispatch(addToWatchlist({ item: payload }));
+    } else {
+      this.removeFromWatchlist();
+    }
 
     setTimeout(() => {
-      if (!this.isAddedToWatchlist()) {
-        const payload = {
-          name: this.mediaData()?.name || this.mediaData()?.title || '',
-          year: this.getReleaseYear(this.mediaData()?.release_date),
-          poster: this.mediaData()?.poster_path ?? '',
-          mediaType: this.type(),
-          id: this.id(),
-        };
-        const message = this._moviesService.addToWatchlist(payload);
-
-        if (message) {
-          this._store.dispatch(addToWatchlist({ item: payload }));
-        }
-      } else {
-        this.removeFromWatchlist();
-      }
-
       this.loading.set(false);
-    }, 500);
+    }, 200);
   }
 
   isAddedToWatchlist = computed(() => !!this.existingWatchlist());
@@ -218,18 +276,5 @@ export class MediaDetails implements OnInit {
   toggleDropdown(event: MouseEvent) {
     event.stopPropagation();
     this.isDropdownOpen.update((v) => !v);
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    if (!this.dropdownWrapper) return;
-
-    const clickedInside = this.dropdownWrapper.nativeElement.contains(
-      event.target as Node,
-    );
-
-    if (!clickedInside) {
-      this.isDropdownOpen.set(false);
-    }
   }
 }
