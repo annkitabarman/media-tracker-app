@@ -1,8 +1,9 @@
-<div class="h-full flex py-10 justify-between px-28">
-  <div class="w-52">
+<div class="min-h-[calc(100vh-4rem)] flex gap-10 px-28 pt-3">
+  <div class="w-52 shrink-0">
     <app-user-filters />
   </div>
-  <div class="w-full">
+
+  <div class="flex-1 min-w-0">
     <app-display-watchlist [watchList]="allWatchlist()" />
   </div>
 </div>

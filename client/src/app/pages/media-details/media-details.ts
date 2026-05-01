@@ -154,6 +154,9 @@ export class MediaDetails implements OnInit {
         poster: data?.poster_path ?? '',
         mediaType: this.type(),
         id: this.id(),
+        overview: data.overview,
+        original_lang: data.original_language,
+        vote_average: data.vote_average,
       };
       this._store.dispatch(addToWatchlist({ item: payload }));
     } else {
@@ -254,6 +257,7 @@ export class MediaDetails implements OnInit {
       next: (res) => {
         this.mediaData.set(res);
         this.generateGenreList();
+        console.log(res);
       },
       error: (err) => {
         console.error('Something went wrong!!', err);

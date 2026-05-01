@@ -45,7 +45,7 @@
             @if(isMovie) {
 
             <div class="text-md">{{runtime ?? 0 | minutesToHours}}</div>
-            } @else { {{seasonCount}} Seasons}
+            } @else { {{seasonCount}} Season{{seasonCount > 1 ? 's' : ''}} }
           </div>
 
           <div class="my-4 flex flex-wrap gap-3">
