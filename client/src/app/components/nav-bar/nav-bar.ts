@@ -68,7 +68,7 @@ export class NavBar implements OnInit {
     }
   });
 
-  searchText = new FormControl('', { nonNullable: true });
+  searchText = new FormControl('');
 
   ngOnInit(): void {
     this._activatedRoute.queryParams.subscribe((params) => {
@@ -81,13 +81,13 @@ export class NavBar implements OnInit {
     this.searchText.valueChanges
       .pipe(
         debounceTime(500),
-        map((v) => v.trim()),
+        map((v) => v?.trim() ?? ''),
         distinctUntilChanged(),
         filter((v) => v.length > 2),
       )
       .subscribe((value) => {
         this._sharedService
-          .fetchSuggestions(value, this.filterValue())
+          .fetchSuggestions(value ?? '', this.filterValue())
           .subscribe({
             next: (res) => {
               this.suggestions.set(res);

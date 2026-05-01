@@ -157,6 +157,8 @@ export class MediaDetails implements OnInit {
         overview: data.overview,
         original_lang: data.original_language,
         vote_average: data.vote_average,
+        genre: this.genreList() ?? [],
+        dateAdded: new Date().toISOString(),
       };
       this._store.dispatch(addToWatchlist({ item: payload }));
     } else {

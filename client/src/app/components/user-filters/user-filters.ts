@@ -14,10 +14,12 @@ import {
 import { HostListener } from '@angular/core';
 import { SharedService } from '../../services/shared-service';
 import { forkJoin } from 'rxjs';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { distinctUntilChanged, map } from 'rxjs';
 
 @Component({
   selector: 'app-user-filters',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './user-filters.html',
   styleUrl: './user-filters.scss',
 })
@@ -27,6 +29,9 @@ export class UserFilters implements OnInit {
   filters = signal(FILTERS_DROPDOWN);
   SORT_OPTIONS = SORT_OPTIONS;
   genreFiltersIds = signal<{ id: number; name: string }[]>([]);
+  emitFilter = output<Record<string, string>>();
+  searchChange = output<string>();
+  searchText = new FormControl('');
 
   isDropDownOpen = signal<string | null>(null);
   hoveredFilter = signal<string | null>(null);
@@ -37,6 +42,8 @@ export class UserFilters implements OnInit {
     genre: '',
     year: '',
     sort: 'title',
+    sort_order: 'asc',
+    search: '',
   });
   dropdownDirection = signal<'up' | 'down'>('down');
 
@@ -54,12 +61,19 @@ export class UserFilters implements OnInit {
     } else {
       this.dropdownDirection.set('down');
     }
-
     this.isDropDownOpen.set(this.isDropDownOpen() === key ? null : key);
   }
 
   ngOnInit() {
     this.populateGenres();
+    this.searchText.valueChanges
+      .pipe(
+        map((v) => v?.trim() ?? ''),
+        distinctUntilChanged(),
+      )
+      .subscribe((value) => {
+        this.searchChange.emit(value ?? '');
+      });
   }
 
   sortDisplayValue = computed(() => {
@@ -70,6 +84,18 @@ export class UserFilters implements OnInit {
 
   changeSortOrder() {
     this.ascOrder.set(!this.ascOrder());
+    if (this.ascOrder()) {
+      this.selectedFilters.update((prev) => ({
+        ...prev,
+        sort_order: 'asc',
+      }));
+    } else {
+      this.selectedFilters.update((prev) => ({
+        ...prev,
+        sort_order: 'desc',
+      }));
+    }
+    this.emitFilter.emit(this.selectedFilters());
   }
 
   populateGenres() {
@@ -78,16 +104,27 @@ export class UserFilters implements OnInit {
 
     forkJoin([movie$, tv$]).subscribe(([movieGenre, tvGenre]) => {
       const merged = { ...movieGenre, ...tvGenre };
-      this.genreFiltersIds.set(
-        Object.entries(merged).map(([id, name]) => ({ id: Number(id), name })),
-      );
-      const genreOptions = Object.values(merged);
 
-      this.filters.update((filters) => {
-        const updatedFilters = [...filters];
-        updatedFilters[1].options = genreOptions;
-        return updatedFilters;
-      });
+      this.genreFiltersIds.set(
+        Object.entries(merged).map(([id, name]) => ({
+          id: Number(id),
+          name,
+        })),
+      );
+
+      this.filters.update((filters) =>
+        filters.map((filter) =>
+          filter.key === 'genre'
+            ? {
+                ...filter,
+                options: Object.entries(merged).map(([id, name]) => ({
+                  label: name,
+                  value: name,
+                })),
+              }
+            : filter,
+        ),
+      );
     });
   }
 
@@ -97,6 +134,7 @@ export class UserFilters implements OnInit {
       [filterKey]: option,
     }));
     this.isDropDownOpen.set(null);
+    this.emitFilter.emit(this.selectedFilters());
   }
 
   filterHovered(filterKey: string | null) {
@@ -108,6 +146,7 @@ export class UserFilters implements OnInit {
       ...filters,
       [filterKey]: '',
     }));
+    this.emitFilter.emit(this.selectedFilters());
   }
 
   @HostListener('document:click', ['$event'])

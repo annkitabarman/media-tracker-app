@@ -7,6 +7,7 @@
       type="search"
       placeholder="Search"
       class="w-full bg-violet-900 h-8 rounded-sm pl-9 pr-3 placeholder:text-xs text-xs"
+      [formControl]="searchText"
     />
   </div>
 
@@ -43,7 +44,7 @@
       </button>
 
       <div
-        class="absolute left-0 w-full bg-violet-900 z-50 max-h-72 overflow-y-auto transition-all duration-200 ease-out origin-top border-b border-r clean-scrollbar"
+        class="absolute left-0 w-full bg-violet-900 z-50 max-h-72 overflow-y-auto transition-all duration-200 ease-out origin-top border-b border-r clean-scrollbar text-[0.65rem]"
         [class.top-full]="dropdownDirection() === 'down'"
         [class.mt-1]="dropdownDirection() === 'down'"
         [class.bottom-full]="dropdownDirection() === 'up'"
@@ -58,12 +59,12 @@
       >
         @for (option of filter.options; track option) {
         <button
-          class="block w-full text-left px-2 py-3 hover:bg-violet-800 cursor-pointer"
-          (click)="applyFilter(filter.key, option)"
-          [class.bg-violet-800]="selectedFilters()[filter.key] === option"
-          [class.text-blue-400]="selectedFilters()[filter.key] === option"
+          class="block w-full text-left px-2 py-2 hover:bg-violet-800 cursor-pointer"
+          (click)="applyFilter(filter.key, option.value)"
+          [class.bg-violet-800]="selectedFilters()[filter.key] === option.label"
+          [class.text-blue-400]="selectedFilters()[filter.key] === option.label"
         >
-          {{ option }}
+          {{ option.label }}
         </button>
         }
       </div>
@@ -135,7 +136,7 @@
         >
           @for (option of SORT_OPTIONS; track option.key) {
           <button
-            class="block w-full text-left px-2 py-3 hover:bg-violet-800 cursor-pointer text-[0.65rem]"
+            class="block w-full text-left px-2 py-2 hover:bg-violet-800 cursor-pointer text-[0.65rem]"
             [class.bg-violet-800]="selectedFilters()['sort'] === option.key"
             [class.text-blue-400]="selectedFilters()['sort'] === option.key"
             (click)="applyFilter('sort', option.key)"

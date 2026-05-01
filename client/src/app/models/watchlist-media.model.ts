@@ -7,4 +7,6 @@ export interface WatchlistMediaModel {
   overview: string;
   original_lang: string;
   vote_average: number;
+  genre: string[];
+  dateAdded: string;
 }
