@@ -1,0 +1,31 @@
+<div
+  class="text-xs py-3 px-2 text-gray-300 bg-purple-800 border border-pink-300 shadow-[0_10px_30px_rgba(0,0,0,0.3)] shadow-2xl rounded-md flex flex-col gap-5"
+>
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-between mx-1">
+      <p>Sort</p>
+      <i class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <button
+        class="text-[0.65rem] w-45 h-6 border-gray-300 border rounded-sm border-pink-300 text-left px-2 py-1 bg-violet-900 hover:cursor-pointer"
+        (click)="toggleSortOptions()"
+      >
+        {{selectedSortLabel()}}
+      </button>
+      @if(sortToggle()) {
+
+      <div class="w-45 border-gray-300 border rounded-sm border-pink-300">
+        @for(options of sortOptions; track options.value) {
+        <p>{{ options.label }}</p>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+  <hr class="border-pink-300 -mx-2" />
+
+  <div></div>
+</div>

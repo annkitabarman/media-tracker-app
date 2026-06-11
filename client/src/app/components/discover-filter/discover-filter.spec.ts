@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediaCollection } from './media-collection';
+import { DiscoverFilter } from './discover-filter';
 
-describe('MediaCollection', () => {
-  let component: MediaCollection;
-  let fixture: ComponentFixture<MediaCollection>;
+describe('DiscoverFilter', () => {
+  let component: DiscoverFilter;
+  let fixture: ComponentFixture<DiscoverFilter>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MediaCollection]
+      imports: [DiscoverFilter]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MediaCollection);
+    fixture = TestBed.createComponent(DiscoverFilter);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

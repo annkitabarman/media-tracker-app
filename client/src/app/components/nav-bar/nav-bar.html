@@ -41,7 +41,7 @@
           >
             @for(movie of selectedMenuDropdown(); track movie.menu) {
             <a
-              [href]="movie.link"
+              [routerLink]="movie.link"
               class="block px-3 py-1 hover:bg-violet-500 active:bg-purple-600 transition-colors duration-200"
               >{{movie.menu}}</a
             >

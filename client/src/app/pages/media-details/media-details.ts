@@ -19,7 +19,6 @@ import { CastService } from '../../services/cast-service';
 import { CastCard } from '../../components/cast-card/cast-card';
 import { SharedService } from '../../services/shared-service';
 import { CurrencyPipe } from '@angular/common';
-import { ADD_TO_LIST_MENU } from '../../constants/dropdown-menu';
 import {
   takeUntilDestroyed,
   toSignal,
@@ -46,7 +45,6 @@ export class MediaDetails implements OnInit {
   private readonly _sharedService = inject(SharedService);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _store = inject(Store);
-  menuValues = Object.values(ADD_TO_LIST_MENU);
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
   genreList = signal<string[] | undefined>([]);

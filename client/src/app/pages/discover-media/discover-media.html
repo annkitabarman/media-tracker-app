@@ -1,0 +1,16 @@
+<div
+  class="min-h-[calc(100vh-4rem)] flex gap-10 px-20 pt-3 bg-linear-to-bl from-[#1e063d] to-violet-900"
+>
+  <div class="w-52 shrink-0 py-4 text-gray-300">
+    {{heading}}
+    <app-discover-filter />
+  </div>
+
+  <div class="flex-1 min-w-0">
+    <div class="flex flex-wrap gap-3 mb-10">
+      @for(item of allMedia(); track item.id) {
+      <app-media-card [item]="item"></app-media-card>
+      }
+    </div>
+  </div>
+</div>

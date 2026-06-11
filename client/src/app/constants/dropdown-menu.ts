@@ -1,30 +1,30 @@
 export const MOVIES_MENU = [
   {
     menu: 'Popular',
-    link: '/movies',
+    link: '/movie/discover/popular',
   },
   {
     menu: 'Top Rated',
-    link: '/movies/top-rated',
+    link: '/movie/discover/top_rated',
   },
   {
     menu: 'Upcoming',
-    link: '/movies/upcoming',
+    link: '/movie/discover/upcoming',
   },
 ];
 
 export const TV_SHOWS_MENU = [
   {
     menu: 'Popular',
-    link: '/tv',
+    link: '/tv/discover/popular',
   },
   {
     menu: 'Top Rated',
-    link: '/tv/top-rated',
+    link: 'tv/discover/top_rated',
   },
   {
     menu: 'Airing Today',
-    link: '/tv/airing-today',
+    link: '/tv/discover/airing_today',
   },
 ];
 
@@ -42,12 +42,6 @@ export const USER_MENU = [
     link: '/user/watchlist',
   },
 ];
-
-export const ADD_TO_LIST_MENU = {
-  WATCHING: 'Set as Watching',
-  COMPLETED: 'Set as Completed',
-  PLANNING: 'Set as Planning',
-};
 
 export const MEDIA_FILTER_MENU = {
   ALL: 'All',

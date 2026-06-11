@@ -20,15 +20,15 @@ export const routes: Routes = [
       import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
   },
   {
+    path: ':type/discover/:category',
+    loadComponent: () =>
+      import('./pages/discover-media/discover-media').then(
+        (m) => m.DiscoverMedia,
+      ),
+  },
+  {
     path: ':type/:id',
     loadComponent: () =>
       import('./pages/media-details/media-details').then((m) => m.MediaDetails),
-  },
-  {
-    path: ':type/:category',
-    loadComponent: () =>
-      import('./pages/media-collection/media-collection').then(
-        (m) => m.MediaCollection,
-      ),
   },
 ];
