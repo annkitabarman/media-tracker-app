@@ -17,6 +17,7 @@ A responsive media discovery and tracking application built with Angular and Tai
 - TypeScript
 - Angular Signals
 - RxJS
+- NgRx
 - Tailwind CSS
 - TMDB API
 - HTML5 & CSS3
