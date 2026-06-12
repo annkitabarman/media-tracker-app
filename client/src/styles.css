@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "flatpickr/dist/flatpickr.min.css";
 
 /* Define font variables */
 @theme {
@@ -36,4 +37,41 @@ html {
 
 .clean-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.6);
+}
+
+.flatpickr-calendar {
+  background: #4c1d95; /* violet */
+  border: 1px solid #f9a8d4; /* pink */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month,
+.flatpickr-weekday,
+.flatpickr-day {
+  color: #d1d5db; /* gray-300 */
+}
+
+.flatpickr-day:hover {
+  background: #6d28d9;
+  border-color: #6d28d9;
+}
+
+.flatpickr-day.selected {
+  background: #ec4899;
+  border-color: #ec4899;
+}
+
+.flatpickr-monthDropdown-months,
+.numInputWrapper input {
+  color: white;
+}
+
+.flatpickr-calendar {
+  background: #2e1065;
+  border-radius: 8px;
+}
+
+.flatpickr-day.today {
+  border-color: #f9a8d4;
 }

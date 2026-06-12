@@ -19,6 +19,8 @@
     "@ngrx/store": "^20.1.0",
     "@ngrx/store-devtools": "^20.1.0",
     "@tailwindcss/postcss": "^4.2.2",
+    "angularx-flatpickr": "^8.1.0",
+    "flatpickr": "^4.6.13",
     "lottie-web": "^5.13.0",
     "ngx-lottie": "^20.0.0",
     "postcss": "^8.5.8",

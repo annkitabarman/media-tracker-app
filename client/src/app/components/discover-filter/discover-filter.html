@@ -1,31 +1,146 @@
 <div
-  class="text-xs py-3 px-2 text-gray-300 bg-purple-800 border border-pink-300 shadow-[0_10px_30px_rgba(0,0,0,0.3)] shadow-2xl rounded-md flex flex-col gap-5"
+  class="text-xs py-3 px-2 text-gray-300 bg-purple-800 border border-pink-300 shadow-[0_10px_30px_rgba(0,0,0,0.3)] shadow-2xl rounded-md flex flex-col"
 >
   <div class="flex flex-col gap-2">
     <div class="flex justify-between mx-1">
-      <p>Sort</p>
-      <i class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+      <p class="font-extrabold">Sort</p>
+      <button class="cursor-pointer" (click)="toggleSortVisibility()">
+        <i
+          class="fa-solid fa-chevron-down transition-transform duration-200"
+          [class.rotate-180]="sortVisible()"
+        ></i>
+      </button>
     </div>
 
-    <div class="flex flex-col gap-1">
+    @if(sortVisible()) {
+    <div class="flex flex-col gap-1 relative">
       <button
-        class="text-[0.65rem] w-45 h-6 border-gray-300 border rounded-sm border-pink-300 text-left px-2 py-1 bg-violet-900 hover:cursor-pointer"
+        class="text-[0.65rem] w-full border-gray-300 border rounded-sm border-pink-300 text-left px-2 py-2 bg-violet-900 hover:cursor-pointer"
         (click)="toggleSortOptions()"
       >
         {{selectedSortLabel()}}
       </button>
-      @if(sortToggle()) {
+      @if(sortDropdownToggle()) {
 
-      <div class="w-45 border-gray-300 border rounded-sm border-pink-300">
+      <div
+        class="overflow-hidden w-full border-gray-300 border rounded-sm border-pink-300 bg-violet-900 z-10 absolute top-full left-0 mt-1"
+      >
         @for(options of sortOptions; track options.value) {
-        <p>{{ options.label }}</p>
+        <button
+          class="block w-full text-left text-[0.65rem] py-2 px-3 hover:bg-violet-800 transition-colors duration-200 hover:cursor-pointer"
+          (click)="updateSortOption(options)"
+        >
+          {{ options.label }}
+        </button>
         }
       </div>
       }
     </div>
+    }
   </div>
 
-  <hr class="border-pink-300 -mx-2" />
+  <hr class="border-pink-300 -mx-2 my-3" />
 
-  <div></div>
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-between mx-1">
+      <p class="font-extrabold">Filters</p>
+      <button class="cursor-pointer" (click)="toggleFilterVisibility()">
+        <i
+          class="fa-solid fa-chevron-down transition-transform duration-200"
+          [class.rotate-180]="filterVisible()"
+        ></i>
+      </button>
+    </div>
+
+    @if(filterVisible()) {
+    <div class="flex flex-col gap-1 relative px-2">
+      <div class="flex flex-col">
+        <p class="text-[0.75rem] font-bold">Release Date</p>
+
+        <div class="flex justify-between items-center mt-2">
+          <p class="text-[0.65rem]">From</p>
+
+          <div class="relative">
+            <input
+              #fromPicker
+              type="text"
+              mwlFlatpickr
+              [dateFormat]="'d-m-Y'"
+              class="w-28 h-5 pr-7 px-2 text-xs rounded-sm border border-pink-300 bg-violet-900 text-gray-300"
+            />
+
+            <button
+              type="button"
+              class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
+              (click)="fromPicker.click()"
+            >
+              <i class="fa-regular fa-calendar text-[0.7rem] text-gray-400"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-2">
+          <p class="text-[0.65rem]">To</p>
+
+          <div class="relative">
+            <input
+              #toPicker
+              type="text"
+              mwlFlatpickr
+              [dateFormat]="'d-m-Y'"
+              class="w-28 h-5 pr-7 px-2 text-xs rounded-sm border border-pink-300 bg-violet-900 text-gray-300"
+            />
+
+            <button
+              type="button"
+              class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
+              (click)="toPicker.click()"
+            >
+              <i class="fa-regular fa-calendar text-[0.7rem] text-gray-400"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <p class="font-extrabold my-1">Genres</p>
+
+        <span>
+          @for (genre of movieGenres(); track genre.id) {
+          <button
+            type="button"
+            class="px-3 py-1 text-xs bg-violet-500 text-gray-300 hover:bg-violet-600 rounded-full mr-1 mb-1 hover:cursor-pointer"
+          >
+            {{ genre.name }}
+          </button>
+          }
+        </span>
+      </div>
+
+      <div class="mt-4">
+        <p class="font-extrabold my-1">Keywords</p>
+        <input
+          type="text"
+          placeholder="Enter keywords"
+          class="w-full bg-violet-900 h-8 rounded-sm pl-2 pr-3 placeholder:text-xs text-xs border border-pink-300"
+        />
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<div class="my-3">
+  <button
+    class="text-[0.75rem] bg-blue-500 rounded-full align-center w-full py-1 cursor-pointer hover:bg-blue-600 transition-colors duration-200"
+    [class.disabled]="noFiltersSelected()"
+    [class.opacity-50]="noFiltersSelected()"
+    [class.bg-gray-300]="noFiltersSelected()"
+    [class.cursor-not-allowed]="noFiltersSelected()"
+    [class.pointer-events-none]="noFiltersSelected()"
+    [class.text-gray-800]="noFiltersSelected()"
+    type="button"
+  >
+    Search
+  </button>
 </div>

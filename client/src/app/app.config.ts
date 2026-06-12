@@ -12,6 +12,7 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { watchlistReducer } from './store/watchlist/watchlist.reducer';
+import { provideFlatpickrDefaults } from 'angularx-flatpickr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(),
+    provideFlatpickrDefaults(),
     provideLottieOptions({
       player: () => import('lottie-web'),
     }),
