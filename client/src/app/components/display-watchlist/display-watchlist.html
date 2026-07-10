@@ -1,19 +1,30 @@
-<div class="text-xs py-3 mx-10 my-2 w-full">
-  <div class="">
-    @if(!watchList()?.length) {
-    <div class="text-white text-left text-xl">
-      You haven't added anything yet. Click
-      <a [routerLink]="['/']" class="underline">here</a> to check out.
-    </div>
-    } @else {
-    <div class="flex flex-col gap-5 text-gray-200">
-      <p class="text-sm">
-        Your Watchlist is the place to track the titles you want to watch.
+<div class="py-3">
+  @if(!watchList()?.length) {
+
+  <div
+    class="flex min-h-[24rem] flex-col items-center justify-center text-center text-white"
+  >
+    ...
+  </div>
+
+  } @else {
+
+  <div
+    class="rounded-2xl border border-white/10 bg-white/5 px-6 pt-3 pb-6 backdrop-blur-xl"
+  >
+    <div class="mb-6">
+      <p class="mt-1 text-xs text-gray-400">
+        {{ watchList()?.length }} title{{ watchList()?.length === 1 ? '' : 's'
+        }}
       </p>
+    </div>
+
+    <div class="flex flex-col gap-4">
       @for(item of watchList(); track item.id) {
-      <app-watchlist-media-list [item]="item"></app-watchlist-media-list>
+      <app-watchlist-media-list [item]="item"> </app-watchlist-media-list>
       }
     </div>
-    }
   </div>
+
+  }
 </div>

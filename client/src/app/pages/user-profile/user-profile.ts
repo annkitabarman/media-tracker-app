@@ -1,12 +1,23 @@
-import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  DestroyRef,
+  computed,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Watchlist } from '../../components/watchlist/watchlist';
-import { Favourites } from '../../components/favourites/favourites';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { UserFilters } from '../../components/user-filters/user-filters';
+import { Store } from '@ngrx/store';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { selectWatchlistItems } from '../../store/watchlist/watchlist.selectors';
+import { DisplayWatchlist } from '../../components/display-watchlist/display-watchlist';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [Watchlist, Favourites],
+  imports: [CommonModule, UserFilters, DisplayWatchlist],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.scss',
 })
@@ -23,4 +34,78 @@ export class UserProfile implements OnInit {
         this.section.set(section);
       });
   }
+
+  toggleSection(type: string) {
+    this.section.set(type);
+  }
+
+  private readonly _store = inject(Store);
+  appliedFilter = signal<Record<string, string>>({
+    format: '',
+    genre: '',
+    year: '',
+    sort: 'title',
+    search: '',
+  });
+  updateSearch(s: string) {
+    this.appliedFilter.update((prev) => ({
+      ...prev,
+      search: s.toLowerCase(),
+    }));
+  }
+
+  allWatchlist = toSignal(this._store.select(selectWatchlistItems), {
+    initialValue: [],
+  });
+
+  applyFilter(filter: Record<string, string>) {
+    this.appliedFilter.set(filter);
+  }
+
+  filteredItems = computed(() => {
+    const items = this.allWatchlist();
+    const filters = this.appliedFilter();
+
+    let result = [...items];
+
+    if (filters['search']) {
+      const search = filters['search'];
+      result = result.filter((i) => i.name.toLowerCase().includes(search));
+    }
+
+    if (filters['genre']) {
+      result = result.filter((i) => i.genre?.includes(filters['genre']));
+    }
+
+    if (filters['format']) {
+      result = result.filter((i) => i.mediaType === filters['format']);
+    }
+
+    if (filters['year']) {
+      result = result.filter((i) => i.year.startsWith(filters['year']));
+    }
+
+    switch (filters['sort']) {
+      case 'title':
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+
+      case 'date_added':
+        result = [...result].sort(
+          (a, b) =>
+            new Date(a.dateAdded ?? 0).getTime() -
+            new Date(b.dateAdded ?? 0).getTime(),
+        );
+        break;
+
+      case 'release_date':
+        result = [...result].sort(
+          (a, b) =>
+            new Date(a.year ?? 0).getTime() - new Date(b.year ?? 0).getTime(),
+        );
+        break;
+    }
+
+    return filters['sort_order'] === 'desc' ? [...result].reverse() : result;
+  });
 }

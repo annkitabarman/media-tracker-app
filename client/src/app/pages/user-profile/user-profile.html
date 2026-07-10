@@ -1,7 +1,57 @@
-<div class="bg-linear-to-bl from-[#1e063d] to-violet-900">
-  @if(this.section() === 'watchlist') {
-  <app-watchlist></app-watchlist>
-  } @else {
-  <app-favourites></app-favourites>
-  }
+<div class="min-h-screen bg-gradient-to-br from-[#1e063d] to-violet-900">
+  <div class="flex justify-center pt-6">
+    <div
+      class="inline-flex rounded-2xl border border-white/10 bg-white/5 p-1 backdrop-blur-xl shadow-lg gap-2"
+    >
+      <button
+        (click)="toggleSection('favorites')"
+        class="flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-medium transition hover:bg-violet-500 hover:cursor-pointer"
+        [ngClass]="section() === 'favorites'
+          ? 'bg-violet-600 text-white'
+          : 'text-gray-300 hover:bg-white/10 hover:text-white'
+"
+      >
+        <i class="fa-solid fa-heart text-pink-300"></i>
+        Favorites
+      </button>
+
+      <button
+        (click)="toggleSection('watchlist')"
+        class="flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/10 hover:text-white hover:cursor-pointer"
+        [ngClass]="section() === 'watchlist'
+          ? 'bg-violet-600 text-white'
+          : 'text-gray-300 hover:bg-white/10 hover:text-white'
+"
+      >
+        <i class="fa-solid fa-bookmark text-violet-300"></i>
+        Watchlist
+      </button>
+
+      <button
+        (click)="toggleSection('watched')"
+        class="flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/10 hover:text-white hover:cursor-pointer"
+        [ngClass]="section() === 'watched'
+          ? 'bg-violet-600 text-white'
+          : 'text-gray-300 hover:bg-white/10 hover:text-white'
+"
+      >
+        <i class="fa-solid fa-eye text-cyan-300"></i>
+        Watched
+      </button>
+    </div>
+  </div>
+  <div class="min-h-[calc(100vh-4rem)] flex gap-10 px-28 pt-3">
+    <div class="w-52 shrink-0">
+      <div class="sticky top-30">
+        <app-user-filters
+          (emitFilter)="applyFilter($event)"
+          (searchChange)="updateSearch($event)"
+        />
+      </div>
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <app-display-watchlist [watchList]="filteredItems()" />
+    </div>
+  </div>
 </div>
