@@ -1,146 +1,168 @@
-<div
-  class="text-xs py-3 px-2 text-gray-300 bg-purple-800 border border-pink-300 shadow-[0_10px_30px_rgba(0,0,0,0.3)] shadow-2xl rounded-md flex flex-col"
->
-  <div class="flex flex-col gap-2">
-    <div class="flex justify-between mx-1">
-      <p class="font-extrabold">Sort</p>
-      <button class="cursor-pointer" (click)="toggleSortVisibility()">
-        <i
-          class="fa-solid fa-chevron-down transition-transform duration-200"
-          [class.rotate-180]="sortVisible()"
-        ></i>
-      </button>
-    </div>
-
-    @if(sortVisible()) {
-    <div class="flex flex-col gap-1 relative">
-      <button
-        class="text-[0.65rem] w-full border-gray-300 border rounded-sm border-pink-300 text-left px-2 py-2 bg-violet-900 hover:cursor-pointer"
-        (click)="toggleSortOptions()"
-      >
-        {{selectedSortLabel()}}
-      </button>
-      @if(sortDropdownToggle()) {
-
-      <div
-        class="overflow-hidden w-full border-gray-300 border rounded-sm border-pink-300 bg-violet-900 z-10 absolute top-full left-0 mt-1"
-      >
-        @for(options of sortOptions; track options.value) {
+<form [formGroup]="filterForm" (ngSubmit)="applySearch()">
+  <div
+    class="text-xs py-3 px-2 text-gray-200 bg-[#221437] border border-violet-700 shadow-[0_12px_40px_rgba(0,0,0,0.45)] rounded-lg flex flex-col"
+  >
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between mx-1">
+        <p class="font-extrabold">Sort</p>
         <button
-          class="block w-full text-left text-[0.65rem] py-2 px-3 hover:bg-violet-800 transition-colors duration-200 hover:cursor-pointer"
-          (click)="updateSortOption(options)"
+          type="button"
+          class="cursor-pointer"
+          (click)="toggleSortVisibility()"
         >
-          {{ options.label }}
+          <i
+            class="fa-solid fa-chevron-down transition-transform duration-200"
+            [class.rotate-180]="sortVisible()"
+          ></i>
         </button>
+      </div>
+
+      @if(sortVisible()) {
+      <div class="flex flex-col gap-1 relative">
+        <button
+          type="button"
+          class="text-[0.65rem] w-full rounded-md border border-violet-700 bg-[#140B23] px-2 py-2 text-left text-gray-200 hover:bg-violet-900 transition-colors"
+          (click)="toggleSortOptions()"
+        >
+          {{selectedSortLabel()}}
+        </button>
+        @if(sortDropdownToggle()) {
+
+        <div
+          class="absolute left-0 top-full z-10 mt-1 w-full overflow-hidden rounded-md border border-violet-700 bg-[#1B102D]"
+        >
+          @for(options of sortOptions; track options.value) {
+          <button
+            type="button"
+            class="block w-full px-3 py-2 text-left text-[0.65rem] text-gray-200 transition-colors hover:bg-violet-700"
+            (click)="updateSortOption(options)"
+          >
+            {{ options.label }}
+          </button>
+          }
+        </div>
         }
       </div>
       }
     </div>
-    }
-  </div>
 
-  <hr class="border-pink-300 -mx-2 my-3" />
+    <hr class="border-violet-700 -mx-2 my-3" />
 
-  <div class="flex flex-col gap-2">
-    <div class="flex justify-between mx-1">
-      <p class="font-extrabold">Filters</p>
-      <button class="cursor-pointer" (click)="toggleFilterVisibility()">
-        <i
-          class="fa-solid fa-chevron-down transition-transform duration-200"
-          [class.rotate-180]="filterVisible()"
-        ></i>
-      </button>
-    </div>
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between mx-1">
+        <p class="font-extrabold">Filters</p>
+        <button
+          type="button"
+          class="cursor-pointer"
+          (click)="toggleFilterVisibility()"
+        >
+          <i
+            class="fa-solid fa-chevron-down transition-transform duration-200"
+            [class.rotate-180]="filterVisible()"
+          ></i>
+        </button>
+      </div>
 
-    @if(filterVisible()) {
-    <div class="flex flex-col gap-1 relative px-2">
-      <div class="flex flex-col">
-        <p class="text-[0.75rem] font-bold">Release Date</p>
-
-        <div class="flex justify-between items-center mt-2">
-          <p class="text-[0.65rem]">From</p>
-
-          <div class="relative">
-            <input
-              #fromPicker
-              type="text"
-              mwlFlatpickr
-              [dateFormat]="'d-m-Y'"
-              class="w-28 h-5 pr-7 px-2 text-xs rounded-sm border border-pink-300 bg-violet-900 text-gray-300"
-            />
-
+      @if(filterVisible()) {
+      <div class="flex flex-col gap-1 relative px-2">
+        <div class="flex flex-col">
+          <div class="flex justify-between">
+            <p class="text-[0.75rem] font-bold">Release Date</p>
             <button
               type="button"
-              class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
-              (click)="fromPicker.click()"
+              (click)="clearDates()"
+              class="text-[0.65rem] font-medium text-fuchsia-400 transition-colors hover:text-fuchsia-300 hover:cursor-pointer underline"
             >
-              <i class="fa-regular fa-calendar text-[0.7rem] text-gray-400"></i>
+              Clear
             </button>
+          </div>
+
+          <div class="flex justify-between items-center mt-2">
+            <p class="text-[0.65rem]">From</p>
+
+            <div class="relative">
+              <input
+                #fromPicker
+                type="text"
+                mwlFlatpickr
+                [dateFormat]="'d-m-Y'"
+                class="h-7 w-28 rounded-md border border-violet-700 bg-[#140B23] px-2 pr-7 text-xs text-gray-200 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                formControlName="from_date"
+              />
+
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
+                (click)="fromPicker.click()"
+              >
+                <i
+                  class="fa-regular fa-calendar text-[0.7rem] text-gray-500 transition-colors hover:text-violet-300"
+                ></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-2">
+            <p class="text-[0.65rem]">To</p>
+
+            <div class="relative">
+              <input
+                #toPicker
+                type="text"
+                mwlFlatpickr
+                [dateFormat]="'d-m-Y'"
+                class="h-7 w-28 rounded-md border border-violet-700 bg-[#140B23] px-2 pr-7 text-xs text-gray-200 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                formControlName="to_date"
+              />
+
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
+                (click)="toPicker.click()"
+              >
+                <i
+                  class="fa-regular fa-calendar text-[0.7rem] text-gray-500 transition-colors hover:text-violet-300"
+                ></i>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-between items-center mt-2">
-          <p class="text-[0.65rem]">To</p>
+        <div class="mt-4">
+          <p class="font-extrabold my-1">Genres</p>
 
-          <div class="relative">
-            <input
-              #toPicker
-              type="text"
-              mwlFlatpickr
-              [dateFormat]="'d-m-Y'"
-              class="w-28 h-5 pr-7 px-2 text-xs rounded-sm border border-pink-300 bg-violet-900 text-gray-300"
-            />
-
+          <span>
+            @for (genre of movieGenres(); track genre.id) {
             <button
               type="button"
-              class="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
-              (click)="toPicker.click()"
+              class="mr-1 mb-1 rounded-full px-3 py-1 text-xs transition-all duration-150 hover:cursor-pointer"
+              (click)="addGenres(genre.id)"
+              [ngClass]="isGenreSelected(genre.id)
+                ? 'bg-fuchsia-600 ring-2 ring-fuchsia-400 text-white'
+                : 'bg-violet-800 hover:bg-violet-700 text-gray-200'
+            "
             >
-              <i class="fa-regular fa-calendar text-[0.7rem] text-gray-400"></i>
+              {{ genre.name }}
             </button>
-          </div>
+            }
+          </span>
         </div>
       </div>
-
-      <div class="mt-4">
-        <p class="font-extrabold my-1">Genres</p>
-
-        <span>
-          @for (genre of movieGenres(); track genre.id) {
-          <button
-            type="button"
-            class="px-3 py-1 text-xs bg-violet-500 text-gray-300 hover:bg-violet-600 rounded-full mr-1 mb-1 hover:cursor-pointer"
-          >
-            {{ genre.name }}
-          </button>
-          }
-        </span>
-      </div>
-
-      <div class="mt-4">
-        <p class="font-extrabold my-1">Keywords</p>
-        <input
-          type="text"
-          placeholder="Enter keywords"
-          class="w-full bg-violet-900 h-8 rounded-sm pl-2 pr-3 placeholder:text-xs text-xs border border-pink-300"
-        />
-      </div>
+      }
     </div>
-    }
   </div>
-</div>
 
-<div class="my-3">
-  <button
-    class="text-[0.75rem] bg-blue-500 rounded-full align-center w-full py-1 cursor-pointer hover:bg-blue-600 transition-colors duration-200"
-    [class.disabled]="noFiltersSelected()"
-    [class.opacity-50]="noFiltersSelected()"
-    [class.bg-gray-300]="noFiltersSelected()"
-    [class.cursor-not-allowed]="noFiltersSelected()"
-    [class.pointer-events-none]="noFiltersSelected()"
-    [class.text-gray-800]="noFiltersSelected()"
-    type="button"
-  >
-    Search
-  </button>
-</div>
+  <div class="my-3">
+    <button
+      type="submit"
+      class="w-full rounded-lg bg-violet-600 py-2 text-[0.75rem] font-semibold text-white transition-all duration-200 hover:bg-violet-500 hover:cursor-pointer hover:shadow-lg hover:shadow-violet-900/30"
+      [class.bg-slate-700]="noFiltersSelected"
+      [class.text-slate-400]="noFiltersSelected"
+      [class.opacity-60]="noFiltersSelected"
+      [class.cursor-not-allowed]="noFiltersSelected"
+      [class.pointer-events-none]="noFiltersSelected"
+    >
+      Search
+    </button>
+  </div>
+</form>

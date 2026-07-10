@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, EMPTY, Observable, tap, map } from 'rxjs';
-
 import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
 import { SearchResultResponse } from '../models/search-result.model';
+import { TrendingMediaType } from '../models/movie-response.model';
 
 interface CachedMediaState {
-  results: SearchResultResponse[];
+  results: TrendingMediaType[];
   currentPage: number;
   totalPages: number;
 }
@@ -23,15 +23,20 @@ export class DiscoverMediaService {
 
   private readonly cache = new Map<string, CachedMediaState>();
 
-  private readonly _mediaSubject = new BehaviorSubject<SearchResultResponse[]>(
-    [],
-  );
+  private readonly _mediaSubject = new BehaviorSubject<TrendingMediaType[]>([]);
 
   readonly media$ = this._mediaSubject.asObservable();
 
   fetchDiscoveryMedia(
     type: string,
     category: string,
+    filters?: {
+      sort: string | null;
+      genres: number[] | null;
+      from_date: string | null;
+      to_date: string | null;
+      keywords: string | null;
+    },
   ): Observable<SearchResultResponse> {
     const key = `${type}-${category}`;
 
@@ -80,7 +85,7 @@ export class DiscoverMediaService {
       }),
       tap({
         next: (res) => {
-          state!.results = [...state!.results, res];
+          state!.results = [...state!.results, ...res.results];
 
           state!.currentPage++;
           state!.totalPages = res.total_pages;
@@ -94,6 +99,49 @@ export class DiscoverMediaService {
           this._loading = false;
         },
       }),
+    );
+  }
+
+  fetchFilteredMedia(
+    type: string,
+    filters: {
+      sort: string | null;
+      genres: number[] | null;
+      from_date: string | null;
+      to_date: string | null;
+    },
+  ): Observable<SearchResultResponse> {
+    let params = new HttpParams().set('language', 'en-US').set('page', '1');
+
+    if (filters.sort) {
+      params = params.set('sort_by', filters.sort);
+    }
+
+    if (filters.genres?.length) {
+      params = params.set('with_genres', filters.genres.join(','));
+    }
+
+    if (filters.from_date) {
+      params = params.set('primary_release_date.gte', filters.from_date);
+    }
+
+    if (filters.to_date) {
+      params = params.set('primary_release_date.lte', filters.to_date);
+    }
+
+    const url = `${this._baseUrl}/discover/${type}`;
+
+    return this._httpClient.get<SearchResultResponse>(url, { params }).pipe(
+      map((data) => ({
+        ...data,
+        results: data.results.map((item) => ({
+          ...item,
+          backdrop_path: item.backdrop_path
+            ? `${this._imageUrl}${item.backdrop_path}`
+            : null,
+          poster_path: null,
+        })),
+      })),
     );
   }
 

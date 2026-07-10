@@ -1,11 +1,13 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, output } from '@angular/core';
 import { FlatpickrDirective } from 'angularx-flatpickr';
 import { SharedService } from '../../services/shared-service';
 import { forkJoin } from 'rxjs';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-discover-filter',
-  imports: [FlatpickrDirective],
+  imports: [FlatpickrDirective, ReactiveFormsModule, CommonModule],
   templateUrl: './discover-filter.html',
   styleUrl: './discover-filter.scss',
 })
@@ -24,18 +26,27 @@ export class DiscoverFilter {
 
   movieGenres = signal<{ id: number; name: string }[]>([]);
   tvGenres = signal<{ id: number; name: string }[]>([]);
+  emitFilters = output<{
+    sort: string | null;
+    genres: number[] | null;
+    from_date: string | null;
+    to_date: string | null;
+  }>();
 
-  selectedFilter = {
-    sort: '',
-    genre: '',
-    release_date: '',
-    keywords: '',
-  };
+  filterForm = new FormGroup({
+    sort: new FormControl<string>(''),
+    genres: new FormControl<number[]>([]),
+    from_date: new FormControl<string>(''),
+    to_date: new FormControl<string>(''),
+  });
 
-  noFiltersSelected = computed(() =>
-    Object.values(this.selectedFilter).every((value) => value === ''),
-  );
+  get noFiltersSelected(): boolean {
+    const value = this.filterForm.getRawValue();
 
+    return Object.values(value).every((value) =>
+      Array.isArray(value) ? value.length === 0 : value === '',
+    );
+  }
   constructor() {
     this.populateGenres();
   }
@@ -63,6 +74,7 @@ export class DiscoverFilter {
     this.selectedSortLabel.set(option.label);
     this.selectedSortValue.set(option.value);
     this.sortDropdownToggle.set(false);
+    this.filterForm.controls.sort.setValue(option.value);
   }
 
   populateGenres() {
@@ -85,5 +97,27 @@ export class DiscoverFilter {
         })),
       );
     });
+  }
+
+  isGenreSelected(id: number) {
+    return this.filterForm.controls.genres.value?.includes(id);
+  }
+
+  clearDates() {
+    this.filterForm.controls.from_date.setValue('');
+    this.filterForm.controls.to_date.setValue('');
+  }
+
+  addGenres(id: number) {
+    const genres = this.filterForm.controls.genres.value ?? [];
+    if (genres.includes(id)) {
+      this.filterForm.controls.genres.setValue(genres.filter((g) => g !== id));
+    } else {
+      this.filterForm.controls.genres.setValue([...genres, id]);
+    }
+  }
+
+  applySearch() {
+    this.emitFilters.emit(this.filterForm.getRawValue());
   }
 }

@@ -31,10 +31,17 @@ import {
   removeFromWatchlist,
   addToWatchlist,
 } from '../../store/watchlist/watchlist.actions';
+import { MediaDetailSkeleton } from '../../components/media-detail-skeleton/media-detail-skeleton';
 
 @Component({
   selector: 'app-media-details',
-  imports: [DatePipe, MinutesToHoursPipe, CastCard, CurrencyPipe],
+  imports: [
+    DatePipe,
+    MinutesToHoursPipe,
+    CastCard,
+    CurrencyPipe,
+    MediaDetailSkeleton,
+  ],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
 })
@@ -257,7 +264,6 @@ export class MediaDetails implements OnInit {
       next: (res) => {
         this.mediaData.set(res);
         this.generateGenreList();
-        console.log(res);
       },
       error: (err) => {
         console.error('Something went wrong!!', err);

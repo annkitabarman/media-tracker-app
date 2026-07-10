@@ -16,13 +16,19 @@ import { MediaCard } from '../../components/media-card/media-card';
 export class DiscoverMedia implements OnInit {
   private readonly _activatedRoute = inject(ActivatedRoute);
   private readonly _destroyRef = inject(DestroyRef);
-  private readonly _discoverMedia = inject(DiscoverMediaService);
+  private readonly _discoverMediaService = inject(DiscoverMediaService);
   category = signal<string>('');
   type = signal<string>('');
+  isLoading = signal<boolean>(true);
 
-  media$ = this._discoverMedia.media$;
+  media$ = this._discoverMediaService.media$;
 
   allMedia = signal<TrendingMediaType[]>([]);
+  skeletonCards = Array.from({ length: 20 });
+
+  get hasMoreMedia(): boolean {
+    return this._discoverMediaService.hasMore(this.type(), this.category());
+  }
 
   urlMap: Record<string, string> = {
     popular: 'Popular',
@@ -43,17 +49,30 @@ export class DiscoverMedia implements OnInit {
         this.category.set(params.get('category') ?? '');
         this.type.set(params.get('type') ?? '');
         this.fetchDiscovery();
+        this.isLoading.set(false);
       });
   }
 
   fetchDiscovery() {
-    this._discoverMedia
+    this._discoverMediaService
       .fetchDiscoveryMedia(this.type(), this.category())
       .subscribe({
         next: (res) => {
-          this.allMedia.set(res.results);
-          console.log(res.results);
+          this.allMedia.update((item) => [...item, ...res.results]);
         },
       });
+  }
+
+  applyFilters(e: {
+    sort: string | null;
+    genres: number[] | null;
+    from_date: string | null;
+    to_date: string | null;
+  }) {
+    this._discoverMediaService.fetchFilteredMedia(this.type(), e).subscribe({
+      next: (res) => {
+        this.allMedia.set(res.results);
+      },
+    });
   }
 }

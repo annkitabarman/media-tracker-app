@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 })
 export class MediaCard {
   item = input<TrendingMediaType>();
+  type = input<string>('movie');
   private readonly _router = inject(Router);
 
   openDetails() {

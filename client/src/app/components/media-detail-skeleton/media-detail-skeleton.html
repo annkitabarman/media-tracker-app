@@ -1,0 +1,62 @@
+<div class="relative animate-pulse">
+  <!-- Backdrop -->
+  <div class="h-[30rem] overflow-hidden px-10 pb-10 pt-0">
+    <div class="mt-5 h-full w-full rounded-xl bg-violet-950"></div>
+  </div>
+
+  <div class="absolute top-15 left-30 z-50 flex">
+    <!-- Poster -->
+    <div class="flex gap-6">
+      <div class="flex max-w-[13rem] flex-col items-center gap-4 flex-shrink-0">
+        <div class="h-[19.5rem] w-[13rem] rounded-lg bg-violet-900"></div>
+
+        <div class="h-8 w-full rounded-md bg-violet-800"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="mx-10 max-w-3xl">
+        <!-- Title -->
+        <div class="h-10 w-96 rounded bg-violet-800"></div>
+
+        <!-- Year / Runtime -->
+        <div class="mt-4 flex gap-3">
+          <div class="h-4 w-16 rounded bg-violet-900"></div>
+          <div class="h-4 w-4 rounded-full bg-violet-900"></div>
+          <div class="h-4 w-24 rounded bg-violet-900"></div>
+        </div>
+
+        <!-- Genres -->
+        <div class="mt-6 flex gap-2">
+          @for (_ of [1,2,3,4]; track $index) {
+          <div class="h-7 w-20 rounded-full bg-violet-900"></div>
+          }
+        </div>
+
+        <!-- Score + icons -->
+        <div class="mt-6 flex items-center gap-4">
+          <div class="h-16 w-16 rounded-full bg-violet-900"></div>
+
+          <div class="h-4 w-16 rounded bg-violet-900"></div>
+
+          <div class="h-10 w-10 rounded-full bg-violet-900"></div>
+
+          <div class="h-10 w-10 rounded-full bg-violet-900"></div>
+        </div>
+
+        <!-- Tagline -->
+        <div class="mt-8 h-4 w-72 rounded bg-violet-900"></div>
+
+        <!-- Overview heading -->
+        <div class="mt-8 h-5 w-24 rounded bg-violet-800"></div>
+
+        <!-- Overview lines -->
+        <div class="mt-4 space-y-3">
+          <div class="h-3 w-full rounded bg-violet-900"></div>
+          <div class="h-3 w-11/12 rounded bg-violet-900"></div>
+          <div class="h-3 w-10/12 rounded bg-violet-900"></div>
+          <div class="h-3 w-8/12 rounded bg-violet-900"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
