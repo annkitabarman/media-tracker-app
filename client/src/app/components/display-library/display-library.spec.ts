@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DisplayWatchlist } from './display-watchlist';
+import { DisplayLibrary } from './display-library';
 
 describe('DisplayWatchlist', () => {
-  let component: DisplayWatchlist;
-  let fixture: ComponentFixture<DisplayWatchlist>;
+  let component: DisplayLibrary;
+  let fixture: ComponentFixture<DisplayLibrary>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DisplayWatchlist],
+      imports: [DisplayLibrary],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DisplayWatchlist);
+    fixture = TestBed.createComponent(DisplayLibrary);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

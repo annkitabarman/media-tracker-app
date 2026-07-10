@@ -3,8 +3,8 @@ import { RouterOutlet } from '@angular/router';
 import { NavBar } from './components/nav-bar/nav-bar';
 import { Store } from '@ngrx/store';
 import { MoviesService } from './services/movies-service';
-import { loadWatchlistSuccess } from './store/watchlist/watchlist.actions';
-import { selectWatchlistItems } from './store/watchlist/watchlist.selectors';
+import { loadLibrarySuccess } from './store/library/library.actions';
+import { selectWatchlistItems } from './store/library/library.selectors';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -20,7 +20,7 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     const watchlist = this._moviesService.fetchWatchlist();
-    this._store.dispatch(loadWatchlistSuccess({ items: watchlist }));
+    this._store.dispatch(loadLibrarySuccess({ items: watchlist }));
 
     this._store
       .select(selectWatchlistItems)

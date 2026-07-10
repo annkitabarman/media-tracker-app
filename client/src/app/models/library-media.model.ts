@@ -1,4 +1,4 @@
-export interface WatchlistMediaModel {
+export interface LibraryMediaModel {
   name: string;
   year: string;
   poster: string;
@@ -9,4 +9,5 @@ export interface WatchlistMediaModel {
   vote_average: number;
   genre: string[];
   dateAdded: string;
+  status: 'favourites' | 'watchlist' | 'watched';
 }

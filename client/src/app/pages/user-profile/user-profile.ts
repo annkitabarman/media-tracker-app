@@ -12,12 +12,12 @@ import { CommonModule } from '@angular/common';
 import { UserFilters } from '../../components/user-filters/user-filters';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectWatchlistItems } from '../../store/watchlist/watchlist.selectors';
-import { DisplayWatchlist } from '../../components/display-watchlist/display-watchlist';
+import { selectWatchlistItems } from '../../store/library/library.selectors';
+import { DisplayLibrary } from '../../components/display-library/display-library';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule, UserFilters, DisplayWatchlist],
+  imports: [CommonModule, UserFilters, DisplayLibrary],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.scss',
 })
@@ -54,7 +54,7 @@ export class UserProfile implements OnInit {
     }));
   }
 
-  allWatchlist = toSignal(this._store.select(selectWatchlistItems), {
+  allLibraryItems = toSignal(this._store.select(selectWatchlistItems), {
     initialValue: [],
   });
 
@@ -63,10 +63,12 @@ export class UserProfile implements OnInit {
   }
 
   filteredItems = computed(() => {
-    const items = this.allWatchlist();
+    const items = this.allLibraryItems();
     const filters = this.appliedFilter();
 
     let result = [...items];
+
+    result = result.filter((item) => item.status === this.section());
 
     if (filters['search']) {
       const search = filters['search'];

@@ -1,18 +1,18 @@
 import { Component, input, signal } from '@angular/core';
-import { WatchlistMediaModel } from '../../models/watchlist-media.model';
+import { LibraryMediaModel } from '../../models/library-media.model';
 import { DatePipe } from '@angular/common';
 import { UpperCasePipe } from '@angular/common';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-watchlist-media-list',
+  selector: 'app-library-media-list',
   imports: [DatePipe, UpperCasePipe, NgClass, RouterLink],
-  templateUrl: './watchlist-media-list.html',
-  styleUrl: './watchlist-media-list.scss',
+  templateUrl: './library-media-list.html',
+  styleUrl: './library-media-list.scss',
 })
-export class WatchlistMediaList {
-  item = input<WatchlistMediaModel | null>(null);
+export class LibraryMediaList {
+  item = input<LibraryMediaModel | null>(null);
   markAsWatched = signal<boolean>(false);
 
   toggleWatched() {

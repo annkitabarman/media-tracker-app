@@ -25,12 +25,12 @@ import {
   toObservable,
 } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { selectCurrentWatchlistItem } from '../../store/watchlist/watchlist.selectors';
-import { switchMap, of } from 'rxjs';
+import { selectCurrentWatchlistItem } from '../../store/library/library.selectors';
+import { switchMap, of, finalize } from 'rxjs';
 import {
-  removeFromWatchlist,
-  addToWatchlist,
-} from '../../store/watchlist/watchlist.actions';
+  removeFromLibrary,
+  addToLibrary,
+} from '../../store/library/library.actions';
 import { MediaDetailSkeleton } from '../../components/media-detail-skeleton/media-detail-skeleton';
 
 @Component({
@@ -61,8 +61,9 @@ export class MediaDetails implements OnInit {
   originalLang = signal<string>('English');
   keywordsList = signal<KeyWordsResponse['keywords']>([]);
   showToast = signal<boolean>(false);
-  loading = signal<boolean>(false);
+  addingToLibraryLoader = signal<boolean>(false);
   watched = signal<boolean>(false);
+  dataLoadingLoader = signal<boolean>(false);
 
   toggleWatched() {
     this.watched.set(!this.watched());
@@ -142,13 +143,13 @@ export class MediaDetails implements OnInit {
   );
 
   removeFromWatchlist() {
-    this._store.dispatch(removeFromWatchlist({ id: this.id() }));
+    this._store.dispatch(removeFromLibrary({ id: this.id() }));
   }
 
   addToWatchlist() {
     const data = this.mediaData();
     if (!data) return;
-    this.loading.set(true);
+    this.addingToLibraryLoader.set(true);
     if (!this.isAddedToWatchlist()) {
       const payload = {
         name: data.mediaType === 'movie' ? data.title : data.name,
@@ -165,13 +166,20 @@ export class MediaDetails implements OnInit {
         genre: this.genreList() ?? [],
         dateAdded: new Date().toISOString(),
       };
-      this._store.dispatch(addToWatchlist({ item: payload }));
+      this._store.dispatch(
+        addToLibrary({
+          item: {
+            ...payload,
+            status: 'watchlist',
+          },
+        }),
+      );
     } else {
       this.removeFromWatchlist();
     }
 
     setTimeout(() => {
-      this.loading.set(false);
+      this.addingToLibraryLoader.set(false);
     }, 200);
   }
 
@@ -260,15 +268,19 @@ export class MediaDetails implements OnInit {
   }
 
   fetchMediaData() {
-    this._moviesService.fetchMediaDetails(this.id(), this.type()).subscribe({
-      next: (res) => {
-        this.mediaData.set(res);
-        this.generateGenreList();
-      },
-      error: (err) => {
-        console.error('Something went wrong!!', err);
-      },
-    });
+    this.dataLoadingLoader.set(true);
+    this._moviesService
+      .fetchMediaDetails(this.id(), this.type())
+      .pipe(finalize(() => this.dataLoadingLoader.set(false)))
+      .subscribe({
+        next: (res) => {
+          this.mediaData.set(res);
+          this.generateGenreList();
+        },
+        error: (err) => {
+          console.error('Something went wrong!!', err);
+        },
+      });
   }
 
   fetchCastDetails() {

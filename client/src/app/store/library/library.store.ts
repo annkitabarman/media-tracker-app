@@ -1,7 +1,7 @@
-import { WatchlistMediaModel } from '../../models/watchlist-media.model';
+import { LibraryMediaModel } from '../../models/library-media.model';
 
 export interface WatchlistState {
-  items: WatchlistMediaModel[];
+  items: LibraryMediaModel[];
   loading: boolean;
   error: string | null;
 }

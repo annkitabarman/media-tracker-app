@@ -1,17 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialState } from './watchlist.store';
+import { initialState } from './library.store';
 import {
-  addToWatchlist,
-  removeFromWatchlist,
-  loadWatchlist,
-  loadWatchlistFailure,
-  loadWatchlistSuccess,
-} from './watchlist.actions';
+  addToLibrary,
+  removeFromLibrary,
+  loadLibrary,
+  loadLibraryFailure,
+  loadLibrarySuccess,
+} from './library.actions';
 
 export const watchlistReducer = createReducer(
   initialState,
-  on(loadWatchlist, (state) => ({ ...state, loading: true, error: null })),
-  on(addToWatchlist, (state, { item }) => {
+  on(loadLibrary, (state) => ({ ...state, loading: true, error: null })),
+  on(addToLibrary, (state, { item }) => {
     const alreadyExists = state.items.some((i) => i.id === item.id);
 
     return {
@@ -20,16 +20,16 @@ export const watchlistReducer = createReducer(
       error: alreadyExists ? 'Item already exists' : null,
     };
   }),
-  on(removeFromWatchlist, (state, { id }) => ({
+  on(removeFromLibrary, (state, { id }) => ({
     ...state,
     items: state.items.filter((i) => i.id !== id),
   })),
-  on(loadWatchlistSuccess, (state, { items }) => ({
+  on(loadLibrarySuccess, (state, { items }) => ({
     ...state,
     items,
     loading: false,
   })),
-  on(loadWatchlistFailure, (state, { error }) => ({
+  on(loadLibraryFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,

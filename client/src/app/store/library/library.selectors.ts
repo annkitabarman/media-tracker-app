@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { WatchlistState } from './watchlist.store';
+import { WatchlistState } from './library.store';
 
 export const selectWatchlistState =
   createFeatureSelector<WatchlistState>('watchlist');

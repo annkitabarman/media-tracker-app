@@ -1,5 +1,5 @@
 <div class="bg-linear-to-bl from-[#12041f] via-[#1b0836] to-[#29144d] pt-6">
-  @if(loading()) {
+  @if(dataLoadingLoader()) {
   <app-media-detail-skeleton></app-media-detail-skeleton>
   } @else {
   <div class="relative">
@@ -31,7 +31,7 @@
                 class="text-xs flex items-start justify-center w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white py-2 px-2 transition cursor-pointer rounded-md"
                 (click)="addToWatchlist()"
               >
-                @if(loading()) {
+                @if(addingToLibraryLoader()) {
                 <i class="fa-solid fa-spinner fa-spin mx-2"></i>
                 } @else { @if(!isAddedToWatchlist()) {
                 <i class="fa-solid fa-plus mx-2"></i>
@@ -129,7 +129,7 @@
       </div>
     </div>
   </div>
-  } @if(!loading()) {
+  } @if(!dataLoadingLoader()) {
 
   <div class="flex gap-10 mx-10">
     <div class="flex-1 min-w-0">

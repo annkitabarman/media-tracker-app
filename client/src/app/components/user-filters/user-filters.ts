@@ -6,6 +6,7 @@ import {
   OnInit,
   computed,
   output,
+  DestroyRef,
 } from '@angular/core';
 import {
   FILTERS_DROPDOWN,
@@ -16,6 +17,7 @@ import { SharedService } from '../../services/shared-service';
 import { forkJoin } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-filters',
@@ -26,6 +28,7 @@ import { distinctUntilChanged, map } from 'rxjs';
 export class UserFilters implements OnInit {
   private readonly _sharedService = inject(SharedService);
   private readonly elementRef = inject(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
   filters = signal(FILTERS_DROPDOWN);
   SORT_OPTIONS = SORT_OPTIONS;
   genreFiltersIds = signal<{ id: number; name: string }[]>([]);
@@ -66,13 +69,15 @@ export class UserFilters implements OnInit {
 
   ngOnInit() {
     this.populateGenres();
+
     this.searchText.valueChanges
       .pipe(
         map((v) => v?.trim() ?? ''),
         distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((value) => {
-        this.searchChange.emit(value ?? '');
+        this.searchChange.emit(value);
       });
   }
 

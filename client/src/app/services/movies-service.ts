@@ -10,7 +10,7 @@ import {
   MediaDetailsResponse,
 } from '../models/movie-response.model';
 import { TvDetails } from '../models/tv.response.model';
-import { WatchlistMediaModel } from '../models/watchlist-media.model';
+import { LibraryMediaModel } from '../models/library-media.model';
 
 @Injectable({
   providedIn: 'root',
@@ -194,12 +194,12 @@ export class MoviesService {
       );
   }
 
-  fetchWatchlist(): WatchlistMediaModel[] {
+  fetchWatchlist(): LibraryMediaModel[] {
     const cached = localStorage.getItem('my-watchlist');
     return cached ? JSON.parse(cached) : [];
   }
 
-  saveWatchlist(items: WatchlistMediaModel[]): void {
+  saveWatchlist(items: LibraryMediaModel[]): void {
     const key = 'my-watchlist';
     localStorage.setItem(key, JSON.stringify(items));
   }
