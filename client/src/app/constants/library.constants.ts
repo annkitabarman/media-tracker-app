@@ -1,5 +1,5 @@
-export const enum LibraryTypes {
-  Favorite = 'favorite',
+export enum LibraryTypes {
+  Favorites = 'favorites',
   WatchList = 'watchlist',
   Watched = 'watched',
 }

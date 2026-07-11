@@ -1,0 +1,20 @@
+<div class="fixed top-5 right-5 z-100 flex flex-col gap-3">
+  @for (toast of allToasts; track toast.id) {
+
+  <div
+    class="rounded-lg px-5 py-2 text-xs text-white shadow-lg min-w-72 flex items-center justify-between"
+    [class.toast-enter]="!toast.leaving"
+    [class.toast-exit]="toast.leaving"
+    [class.bg-green-600]="toast.type === 'success'"
+    [class.bg-red-600]="toast.type === 'error'"
+    [class.bg-yellow-600]="toast.type === 'info'"
+  >
+    {{ toast.message }}
+
+    <button (click)="remove(toast.id)" class="ml-4 hover:cursor-pointer">
+      ✕
+    </button>
+  </div>
+
+  }
+</div>

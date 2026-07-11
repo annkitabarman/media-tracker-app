@@ -14,6 +14,7 @@ import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectLibraryItems } from '../../store/library/library.selectors';
 import { DisplayLibrary } from '../../components/display-library/display-library';
+import { LibraryTypes } from '../../constants/library.constants';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,6 +26,7 @@ export class UserProfile implements OnInit {
   private readonly _activatedRoute = inject(ActivatedRoute);
   private readonly _destroyRef = inject(DestroyRef);
   section = signal<string>('');
+  LIBRARY_TYPES = LibraryTypes;
 
   ngOnInit() {
     this._activatedRoute.params
@@ -65,6 +67,7 @@ export class UserProfile implements OnInit {
   filteredItems = computed(() => {
     const items = this.allLibraryItems();
     const filters = this.appliedFilter();
+    if (!items) return null;
 
     let result = [...items];
 

@@ -102,26 +102,35 @@
             </div>
             <div class="text-xs w-10">User score</div>
             <button
-              class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md transition hover:bg-violet-600 mx-2 hover:cursor-pointer"
+              class="h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 mx-2 cursor-pointer"
+              [class.bg-gradient-to-r]="libraryStatus().favorite"
+              [class.from-pink-500]="libraryStatus().favorite"
+              [class.to-fuchsia-500]="libraryStatus().favorite"
+              [class.text-white]="libraryStatus().favorite"
+              [class.bg-white/10]="!libraryStatus().favorite"
+              [class.text-white/70]="!libraryStatus().favorite"
+              [class.hover:bg-white/20]="!libraryStatus().favorite"
               (click)="toggleFavourite()"
             >
-              @if(libraryStatus().favorite) {
+              @if (libraryStatus().favorite) {
               <i class="fa-solid fa-heart"></i>
               } @else {
-
               <i class="fa-regular fa-heart"></i>
               }
             </button>
 
             <button
-              class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md transition hover:bg-violet-600 hover:cursor-pointer"
+              class="h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
+              [class.bg-gradient-to-r]="libraryStatus().watched"
+              [class.from-violet-600]="libraryStatus().watched"
+              [class.to-fuchsia-600]="libraryStatus().watched"
+              [class.text-white]="libraryStatus().watched"
+              [class.bg-white/10]="!libraryStatus().watched"
+              [class.text-white/70]="!libraryStatus().watched"
+              [class.hover:bg-white/20]="!libraryStatus().watched"
               (click)="toggleWatched()"
             >
-              @if(libraryStatus().watched) {
               <i class="fa-solid fa-eye"></i>
-              } @else {
-              <i class="fa-regular fa-eye"></i>
-              }
             </button>
           </div>
 
@@ -170,35 +179,80 @@
       class="w-64 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-white"
     >
       <div class="space-y-4 p-5">
-        <div>
-          <p class="font-semibold text-sm">Status</p>
-          <p class="text-xs opacity-80">{{mediaData()?.status}}</p>
+        <div
+          class="flex items-center justify-between border-l-2 border-fuchsia-500 pl-3 py-1"
+        >
+          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+            Status
+          </span>
+
+          <span
+            class="font-mono text-sm text-fuchsia-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]"
+          >
+            {{ mediaData()?.status }}
+          </span>
         </div>
 
-        <div>
-          <p class="font-semibold text-sm">Original Language</p>
-          <p class="text-xs opacity-80">{{originalLang()}}</p>
+        <div
+          class="flex items-center justify-between border-l-2 border-cyan-400 pl-3 py-1"
+        >
+          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+            Language
+          </span>
+
+          <span
+            class="font-mono text-sm text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+          >
+            {{ originalLang() }}
+          </span>
         </div>
 
-        @if(isMovie) {
-        <div>
-          <p class="font-semibold text-sm">Budget</p>
-          <p class="text-xs opacity-80">
+        @if (isMovie) {
+
+        <div
+          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1"
+        >
+          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+            Budget
+          </span>
+
+          <span
+            class="font-mono text-sm text-violet-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+          >
             {{ budget ? (budget | currency:'USD') : '-' }}
-          </p>
+          </span>
         </div>
 
-        <div>
-          <p class="font-semibold text-sm">Revenue</p>
-          <p class="text-xs opacity-80">
+        <div
+          class="flex items-center justify-between border-l-2 border-pink-500 pl-3 py-1"
+        >
+          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+            Revenue
+          </span>
+
+          <span
+            class="font-mono text-sm text-pink-300 drop-shadow-[0_0_8px_rgba(236,72,153,0.6)]"
+          >
             {{ revenue ? (revenue | currency:'USD') : '-' }}
-          </p>
+          </span>
         </div>
+
         } @else {
-        <div>
-          <p class="font-semibold text-sm">Type</p>
-          <p class="text-xs opacity-80">{{ typeOfShow }}</p>
+
+        <div
+          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1"
+        >
+          <span class="text-xs uppercase tracking-[0.3em] text-white/50">
+            Type
+          </span>
+
+          <span
+            class="font-mono text-sm text-violet-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+          >
+            {{ typeOfShow }}
+          </span>
         </div>
+
         }
 
         <div>

@@ -34,6 +34,7 @@ import {
 } from '../../store/library/library.actions';
 import { MediaDetailSkeleton } from '../../components/media-detail-skeleton/media-detail-skeleton';
 import { LibraryTypes } from '../../constants/library.constants';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-media-details',
@@ -54,6 +55,8 @@ export class MediaDetails implements OnInit {
   private readonly _sharedService = inject(SharedService);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _store = inject(Store);
+  private readonly _toastService = inject(ToastService);
+
   id = signal<number>(0);
   type = signal<'movie' | 'tv'>('movie');
   genreList = signal<string[] | undefined>([]);
@@ -72,14 +75,14 @@ export class MediaDetails implements OnInit {
   }
 
   toggleFavourite() {
-    this.addToLibrary(LibraryTypes.Favorite);
+    this.addToLibrary(LibraryTypes.Favorites);
   }
 
   libraryStatus = computed(() => {
     const statuses = this.existingLibraryItem()?.watch_status ?? [];
 
     return {
-      favorite: statuses.includes(LibraryTypes.Favorite),
+      favorite: statuses.includes(LibraryTypes.Favorites),
       watchlist: statuses.includes(LibraryTypes.WatchList),
       watched: statuses.includes(LibraryTypes.Watched),
     };
@@ -200,6 +203,7 @@ export class MediaDetails implements OnInit {
           },
         }),
       );
+      this._toastService.success(`Added to ${watchStatus}!`);
     } else {
       const watchStatusExists = existing?.watch_status?.includes(watchStatus);
       if (!watchStatusExists) {
@@ -209,8 +213,10 @@ export class MediaDetails implements OnInit {
             watch_status: watchStatus,
           }),
         );
+        this._toastService.success(`Added to ${watchStatus}!`);
       } else {
         this.removeFromLibrary(watchStatus);
+        this._toastService.success(`Removed from ${watchStatus}!`);
       }
     }
     setTimeout(() => {

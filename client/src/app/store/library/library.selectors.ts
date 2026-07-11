@@ -6,7 +6,7 @@ export const selectLibraryState =
 
 export const selectLibraryItems = createSelector(
   selectLibraryState,
-  (state) => state.items,
+  (state) => state?.items,
 );
 
 export const selectLoading = createSelector(
@@ -16,7 +16,7 @@ export const selectLoading = createSelector(
 
 export const selectCurrentLibraryItem = (id: number) =>
   createSelector(selectLibraryItems, (items) =>
-    items.find((item) => item.id === id),
+    items?.find((item) => item.id === id),
   );
 
 export const selectInLibrary = (id: number) =>

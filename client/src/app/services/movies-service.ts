@@ -194,13 +194,14 @@ export class MoviesService {
       );
   }
 
-  fetchWatchlist(): LibraryMediaModel[] {
-    const cached = localStorage.getItem('my-watchlist');
+  fetchLibrary(): LibraryMediaModel[] {
+    const cached = localStorage.getItem('my-library');
     return cached ? JSON.parse(cached) : [];
   }
 
-  saveWatchlist(items: LibraryMediaModel[]): void {
-    const key = 'my-watchlist';
+  saveLibrary(items: LibraryMediaModel[]): void {
+    if (!items) return;
+    const key = 'my-library';
     localStorage.setItem(key, JSON.stringify(items));
   }
 }

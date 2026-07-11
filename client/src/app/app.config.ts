@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
       player: () => import('lottie-web'),
     }),
     provideStore({
-      watchlist: libraryReducer,
+      library: libraryReducer,
     }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

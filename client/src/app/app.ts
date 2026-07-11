@@ -6,10 +6,11 @@ import { MoviesService } from './services/movies-service';
 import { loadLibrarySuccess } from './store/library/library.actions';
 import { selectLibraryItems } from './store/library/library.selectors';
 import { distinctUntilChanged } from 'rxjs';
+import { ToastComponent } from './components/toast-component/toast-component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavBar],
+  imports: [RouterOutlet, NavBar, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -19,14 +20,14 @@ export class App implements OnInit {
   protected title = 'media-tracker';
 
   ngOnInit(): void {
-    const watchlist = this._moviesService.fetchWatchlist();
+    const watchlist = this._moviesService.fetchLibrary();
     this._store.dispatch(loadLibrarySuccess({ items: watchlist }));
 
     this._store
       .select(selectLibraryItems)
       .pipe(distinctUntilChanged())
       .subscribe((items) => {
-        this._moviesService.saveWatchlist(items);
+        this._moviesService.saveLibrary(items);
       });
   }
 }
