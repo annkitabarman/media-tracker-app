@@ -110,7 +110,7 @@
               [class.bg-white/10]="!libraryStatus().favorite"
               [class.text-white/70]="!libraryStatus().favorite"
               [class.hover:bg-white/20]="!libraryStatus().favorite"
-              (click)="toggleFavourite()"
+              (click)="toggleFavorite()"
             >
               @if (libraryStatus().favorite) {
               <i class="fa-solid fa-heart"></i>
@@ -151,26 +151,52 @@
       <div
         class="rounded-2xl border border-white/10 bg-white/5 py-4 pl-30 pr-10 backdrop-blur-xl"
       >
-        <span class="text-xl text-white">Cast</span>
+        <div>
+          <span class="text-xl text-white">Cast</span>
 
-        <div class="w-full h-70 my-5 overflow-x-auto">
-          <div class="flex py-3 gap-4 w-max">
-            @for (c of castList(); track c.id) {
-            <app-cast-card
-              class="w-32 flex-shrink-0"
-              [castName]="c.name"
-              [castRole]="c.character"
-              [castProfilePath]="c.profile_path"
-            />
-            }
+          <div class="w-full h-70 my-5 overflow-x-auto clean-scrollbar">
+            <div class="flex py-3 gap-4 w-max">
+              @for (c of castList(); track c.id) {
+              <app-cast-card
+                class="w-32 flex-shrink-0"
+                [castName]="c.name"
+                [castRole]="c.character"
+                [castProfilePath]="c.profile_path"
+              />
+              }
 
-            <div class="flex items-center flex-shrink-0 px-1 mr-1">
-              <a class="cursor-pointer hover:text-blue-300 hover:underline">
-                <span class="text-xs">View more</span>
-                <i class="fa-solid fa-arrow-right text-sm ml-1"></i>
-              </a>
+              <div class="flex items-center flex-shrink-0 px-1 mr-1">
+                <a class="cursor-pointer hover:text-blue-300 hover:underline">
+                  <span class="text-xs">View more</span>
+                  <i class="fa-solid fa-arrow-right text-sm ml-1"></i>
+                </a>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div
+          class="h-px bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent opacity-70 shadow-[0_0_12px_rgba(217,70,239,0.8)]"
+        ></div>
+
+        <div class="my-7">
+          <p class="text-sm text-white">
+            If you liked
+            <span class="text-gray-400 italic">{{displayTitle}}</span>, you
+            might also like...
+          </p>
+          <app-recommendations-component
+            [recommendationsList]="recommendations()"
+          />
+        </div>
+
+        <div
+          class="h-px bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent opacity-70 shadow-[0_0_12px_rgba(217,70,239,0.8)]"
+        ></div>
+
+        <div class="my-7">
+          <p class="text-sm text-white">Trailer</p>
+          <app-view-trailer-component [mediaType]="type()" [id]="id()" />
         </div>
       </div>
     </div>
@@ -254,9 +280,47 @@
         </div>
 
         }
-
         <div>
-          <div class="text-[0.65rem] my-1">Keywords</div>
+          <div
+            class="flex items-center border-l-2 border-fuchsia-500 pl-3 py-1 mb-3"
+          >
+            <span class="text-xs uppercase tracking-[0.3em] text-white/50">
+              Production Companies
+            </span>
+          </div>
+
+          <div class="space-y-3 mt-2">
+            @for (company of productionCompanies; track company.id) {
+            <div class="flex items-center gap-3">
+              @if (company.logo_path) {
+              <img
+                [src]="'https://image.tmdb.org/t/p/w200' + company.logo_path"
+                [alt]="company.name"
+                class="h-8 w-8 rounded bg-white p-1 object-contain shrink-0"
+              />
+              } @else {
+              <div
+                class="h-8 w-8 rounded bg-white/10 flex items-center justify-center text-[0.55rem] text-gray-400 shrink-0"
+              >
+                N/A
+              </div>
+              }
+
+              <div class="min-w-0">
+                <div class="text-xs truncate">{{ company.name }}</div>
+                @if (company.origin_country) {
+                <div class="text-[0.6rem] text-gray-400">
+                  {{ company.origin_country }}
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="my-7">
+          <div class="text-[0.65rem] my-3">Keywords</div>
           <div class="flex flex-wrap gap-0.5">
             @for(k of keywordsList(); track k.id) {
             <span

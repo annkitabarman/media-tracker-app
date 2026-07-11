@@ -35,6 +35,9 @@ import {
 import { MediaDetailSkeleton } from '../../components/media-detail-skeleton/media-detail-skeleton';
 import { LibraryTypes } from '../../constants/library.constants';
 import { ToastService } from '../../services/toast-service';
+import { TrendingMediaType } from '../../models/movie-response.model';
+import { RecommendationsComponent } from '../../components/recommendations-component/recommendations-component';
+import { ViewTrailerComponent } from '../../components/view-trailer-component/view-trailer-component';
 
 @Component({
   selector: 'app-media-details',
@@ -44,6 +47,8 @@ import { ToastService } from '../../services/toast-service';
     CastCard,
     CurrencyPipe,
     MediaDetailSkeleton,
+    RecommendationsComponent,
+    ViewTrailerComponent,
   ],
   templateUrl: './media-details.html',
   styleUrl: './media-details.scss',
@@ -69,12 +74,13 @@ export class MediaDetails implements OnInit {
   addingToLibraryLoader = signal<boolean>(false);
   watched = signal<boolean>(false);
   dataLoadingLoader = signal<boolean>(false);
+  recommendations = signal<TrendingMediaType[]>([]);
 
   toggleWatched() {
     this.addToLibrary(LibraryTypes.Watched);
   }
 
-  toggleFavourite() {
+  toggleFavorite() {
     this.addToLibrary(LibraryTypes.Favorites);
   }
 
@@ -87,6 +93,10 @@ export class MediaDetails implements OnInit {
       watched: statuses.includes(LibraryTypes.Watched),
     };
   });
+
+  get productionCompanies() {
+    return this.mediaData()?.production_companies;
+  }
 
   get isMovie(): boolean {
     const data = this.mediaData();
@@ -251,6 +261,7 @@ export class MediaDetails implements OnInit {
   ngOnInit(): void {
     this.fetchRoutes();
     this.generateLanguageList();
+    this.fetchSimilar();
   }
 
   generateLanguageList() {
@@ -317,7 +328,10 @@ export class MediaDetails implements OnInit {
           this.generateGenreList();
         },
         error: (err) => {
-          console.error('Something went wrong!!', err);
+          this._toastService.error(
+            'Something went wrong!! Unable to load data',
+          );
+          console.error(err);
         },
       });
   }
@@ -337,5 +351,16 @@ export class MediaDetails implements OnInit {
   toggleDropdown(event: MouseEvent) {
     event.stopPropagation();
     this.isDropdownOpen.update((v) => !v);
+  }
+
+  fetchSimilar() {
+    this._moviesService.fetchRecommendations(this.type(), this.id()).subscribe({
+      next: (res) => {
+        this.recommendations.set(res.results);
+      },
+      error: (err) => {
+        this._toastService.error('Unable to load recommendations');
+      },
+    });
   }
 }

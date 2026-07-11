@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
-import { Observable, map, forkJoin, catchError, of, tap } from 'rxjs';
+import { BASE_URL, IMAGE_BASE_URL, YOUTUBE_URL } from '../constants/api-urls';
+import { Observable, map, forkJoin, catchError, of, tap, filter } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   TrendingMediaType,
@@ -11,6 +11,7 @@ import {
 } from '../models/movie-response.model';
 import { TvDetails } from '../models/tv.response.model';
 import { LibraryMediaModel } from '../models/library-media.model';
+import { TrailerResponse } from '../models/videos.response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +99,110 @@ export class MoviesService {
         );
       }),
     );
+  }
+
+  fetchRecommendations(
+    type: 'movie' | 'tv',
+    id: number,
+  ): Observable<TrendingMediaAPIResponse> {
+    const key = `recommendation-${type}-${id}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 10);
+      const hasData = data?.id === id;
+
+      // 🔥 Fix old cache (missing mediaType)
+      if (data && !data.mediaType) {
+        data.mediaType = type;
+      }
+
+      if (!isExpired && hasData) {
+        return of(data);
+      }
+    }
+    return this._httpClient
+      .get<TrendingMediaAPIResponse>(
+        `${BASE_URL}/${type}/${id}/recommendations?language=en-US&page=1`,
+      )
+      .pipe(
+        map((res) => ({
+          ...res,
+          results: res.results.map((show) => ({
+            ...show,
+            poster_path: show.poster_path
+              ? `${IMAGE_BASE_URL}${show.poster_path}`
+              : null,
+            backdrop_path: show.backdrop_path
+              ? `${IMAGE_BASE_URL}${show.backdrop_path}`
+              : null,
+          })),
+        })),
+        tap((data) => {
+          if (!data.results.length) return;
+
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              data,
+              mediaType: type,
+              timestamp: Date.now(),
+            }),
+          );
+        }),
+        catchError(() =>
+          of({
+            page: 1,
+            results: [],
+            total_pages: 0,
+            total_results: 0,
+          } as TrendingMediaAPIResponse),
+        ),
+      );
+  }
+
+  fetchTrailer(
+    type: 'movie' | 'tv',
+    id: number,
+  ): Observable<TrailerResponse | undefined> {
+    const key = `trailer-${type}-${id}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 10);
+      const hasData = data?.id === id;
+
+      // 🔥 Fix old cache (missing mediaType)
+      if (data && !data.mediaType) {
+        data.mediaType = type;
+      }
+
+      if (!isExpired && hasData) {
+        return of(data);
+      }
+    }
+
+    return this._httpClient
+      .get<{
+        id: number;
+        results: TrailerResponse[];
+      }>(`${BASE_URL}/${type}/${id}/videos`)
+      .pipe(
+        map((res) => {
+          return (
+            res.results.find(
+              (v) => v.site === 'Youtube' && v.type == 'Trailer' && v.official,
+            ) ??
+            res.results.find(
+              (v) => v.site === 'YouTube' && v.type === 'Teaser' && v.official,
+            )
+          );
+        }),
+      );
   }
 
   fetchMediaDetails(

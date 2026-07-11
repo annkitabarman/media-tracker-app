@@ -30,8 +30,8 @@ export const TV_SHOWS_MENU = [
 
 export const USER_MENU = [
   {
-    menu: 'Favourites',
-    link: '/user/favourites',
+    menu: 'Favorites',
+    link: '/user/favorites',
   },
   {
     menu: 'Watchlist',
@@ -39,7 +39,7 @@ export const USER_MENU = [
   },
   {
     menu: 'Watched',
-    link: '/user/watchlist',
+    link: '/user/watched',
   },
 ];
 

@@ -1,0 +1,51 @@
+@if (recommendationsList().length) {
+
+<div class="mt-8">
+  <div
+    class="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent clean-scrollbar"
+  >
+    @for (r of recommendationsList(); track r.id) {
+
+    <div class="w-56 shrink-0 snap-start cursor-pointer">
+      <div class="group relative overflow-hidden rounded-2xl">
+        <img
+          [src]="r.backdrop_path || r.poster_path"
+          [alt]="r.title || r.name"
+          class="h-36 w-full object-cover transition duration-300 group-hover:scale-105"
+        />
+
+        <!-- Hover Overlay -->
+        <div
+          class="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 opacity-0 transition-all duration-300 group-hover:opacity-100"
+        >
+          <span class="text-xs text-white/80">
+            {{ r.release_date || r.first_air_date }}
+          </span>
+
+          <span
+            class="flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 text-xs text-white backdrop-blur-sm"
+          >
+            <i class="fa-solid fa-star text-yellow-400"></i>
+            {{ r.vote_average | number:'1.1-1' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Always Visible -->
+      <h3
+        class="mt-2 line-clamp-2 text-[0.65rem] font-medium text-white transition-colors duration-300 group-hover:text-fuchsia-300"
+      >
+        <a
+          [routerLink]="['/', r?.media_type, r?.id]"
+          class="hover:underline hover:text-fuchsia-300"
+        >
+          {{ r.title || r.name }}
+        </a>
+      </h3>
+    </div>
+
+    }
+  </div>
+</div>
+
+}
