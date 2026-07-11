@@ -1,25 +1,23 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { WatchlistState } from './library.store';
+import { LibraryState } from './library.store';
 
-export const selectWatchlistState =
-  createFeatureSelector<WatchlistState>('watchlist');
+export const selectLibraryState =
+  createFeatureSelector<LibraryState>('library');
 
-export const selectWatchlistItems = createSelector(
-  selectWatchlistState,
+export const selectLibraryItems = createSelector(
+  selectLibraryState,
   (state) => state.items,
 );
 
 export const selectLoading = createSelector(
-  selectWatchlistState,
+  selectLibraryState,
   (state) => state.loading,
 );
 
-export const selectCurrentWatchlistItem = (id: number) =>
-  createSelector(selectWatchlistItems, (items) =>
+export const selectCurrentLibraryItem = (id: number) =>
+  createSelector(selectLibraryItems, (items) =>
     items.find((item) => item.id === id),
   );
 
-export const selectInWatchlist = (id: number) =>
-  createSelector(selectWatchlistItems, (items) =>
-    items.some((i) => i.id === id),
-  );
+export const selectInLibrary = (id: number) =>
+  createSelector(selectLibraryItems, (items) => items.some((i) => i.id === id));

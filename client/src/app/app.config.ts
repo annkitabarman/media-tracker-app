@@ -11,7 +11,7 @@ import { provideLottieOptions } from 'ngx-lottie';
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { watchlistReducer } from './store/library/library.reducer';
+import { libraryReducer } from './store/library/library.reducer';
 import { provideFlatpickrDefaults } from 'angularx-flatpickr';
 
 export const appConfig: ApplicationConfig = {
@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
       player: () => import('lottie-web'),
     }),
     provideStore({
-      watchlist: watchlistReducer,
+      watchlist: libraryReducer,
     }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

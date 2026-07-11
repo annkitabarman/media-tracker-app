@@ -29,11 +29,11 @@
             <div class="flex flex-col w-full overflow-hidden h-8 gap-4 px-4">
               <button
                 class="text-xs flex items-start justify-center w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white py-2 px-2 transition cursor-pointer rounded-md"
-                (click)="addToWatchlist()"
+                (click)="toggleWatchList()"
               >
                 @if(addingToLibraryLoader()) {
                 <i class="fa-solid fa-spinner fa-spin mx-2"></i>
-                } @else { @if(!isAddedToWatchlist()) {
+                } @else { @if(!libraryStatus().watchlist) {
                 <i class="fa-solid fa-plus mx-2"></i>
                 Add to Watchlist} @else {
                 <i class="fa-solid fa-check mx-2"></i>
@@ -103,15 +103,21 @@
             <div class="text-xs w-10">User score</div>
             <button
               class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md transition hover:bg-violet-600 mx-2 hover:cursor-pointer"
+              (click)="toggleFavourite()"
             >
+              @if(libraryStatus().favorite) {
+              <i class="fa-solid fa-heart"></i>
+              } @else {
+
               <i class="fa-regular fa-heart"></i>
+              }
             </button>
 
             <button
               class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md transition hover:bg-violet-600 hover:cursor-pointer"
               (click)="toggleWatched()"
             >
-              @if(watched()) {
+              @if(libraryStatus().watched) {
               <i class="fa-solid fa-eye"></i>
               } @else {
               <i class="fa-regular fa-eye"></i>

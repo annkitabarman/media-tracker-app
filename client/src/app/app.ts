@@ -4,7 +4,7 @@ import { NavBar } from './components/nav-bar/nav-bar';
 import { Store } from '@ngrx/store';
 import { MoviesService } from './services/movies-service';
 import { loadLibrarySuccess } from './store/library/library.actions';
-import { selectWatchlistItems } from './store/library/library.selectors';
+import { selectLibraryItems } from './store/library/library.selectors';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -23,7 +23,7 @@ export class App implements OnInit {
     this._store.dispatch(loadLibrarySuccess({ items: watchlist }));
 
     this._store
-      .select(selectWatchlistItems)
+      .select(selectLibraryItems)
       .pipe(distinctUntilChanged())
       .subscribe((items) => {
         this._moviesService.saveWatchlist(items);

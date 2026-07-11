@@ -6,9 +6,10 @@ import {
   loadLibrary,
   loadLibraryFailure,
   loadLibrarySuccess,
+  editStatus,
 } from './library.actions';
 
-export const watchlistReducer = createReducer(
+export const libraryReducer = createReducer(
   initialState,
   on(loadLibrary, (state) => ({ ...state, loading: true, error: null })),
   on(addToLibrary, (state, { item }) => {
@@ -20,10 +21,22 @@ export const watchlistReducer = createReducer(
       error: alreadyExists ? 'Item already exists' : null,
     };
   }),
-  on(removeFromLibrary, (state, { id }) => ({
+  on(removeFromLibrary, (state, { id, watch_status }) => ({
     ...state,
-    items: state.items.filter((i) => i.id !== id),
+    items: state.items
+      .map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              watch_status: item?.watch_status?.filter(
+                (status) => status !== watch_status,
+              ),
+            }
+          : item,
+      )
+      .filter((item) => item.watch_status?.length > 0),
   })),
+
   on(loadLibrarySuccess, (state, { items }) => ({
     ...state,
     items,
@@ -33,5 +46,19 @@ export const watchlistReducer = createReducer(
     ...state,
     loading: false,
     error,
+  })),
+
+  on(editStatus, (state, { id, watch_status }) => ({
+    ...state,
+    items: state.items?.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            watch_status: item.watch_status?.includes(watch_status)
+              ? item?.watch_status
+              : [...item?.watch_status, watch_status],
+          }
+        : item,
+    ),
   })),
 );

@@ -25,13 +25,15 @@ import {
   toObservable,
 } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { selectCurrentWatchlistItem } from '../../store/library/library.selectors';
+import { selectCurrentLibraryItem } from '../../store/library/library.selectors';
 import { switchMap, of, finalize } from 'rxjs';
 import {
   removeFromLibrary,
   addToLibrary,
+  editStatus,
 } from '../../store/library/library.actions';
 import { MediaDetailSkeleton } from '../../components/media-detail-skeleton/media-detail-skeleton';
+import { LibraryTypes } from '../../constants/library.constants';
 
 @Component({
   selector: 'app-media-details',
@@ -66,8 +68,22 @@ export class MediaDetails implements OnInit {
   dataLoadingLoader = signal<boolean>(false);
 
   toggleWatched() {
-    this.watched.set(!this.watched());
+    this.addToLibrary(LibraryTypes.Watched);
   }
+
+  toggleFavourite() {
+    this.addToLibrary(LibraryTypes.Favorite);
+  }
+
+  libraryStatus = computed(() => {
+    const statuses = this.existingLibraryItem()?.watch_status ?? [];
+
+    return {
+      favorite: statuses.includes(LibraryTypes.Favorite),
+      watchlist: statuses.includes(LibraryTypes.WatchList),
+      watched: statuses.includes(LibraryTypes.Watched),
+    };
+  });
 
   get isMovie(): boolean {
     const data = this.mediaData();
@@ -133,31 +149,40 @@ export class MediaDetails implements OnInit {
     return (this.castDetails()?.cast ?? []).slice(0, 9);
   });
 
-  existingWatchlist = toSignal(
+  existingLibraryItem = toSignal(
     toObservable(this.id).pipe(
       switchMap((id) =>
-        id ? this._store.select(selectCurrentWatchlistItem(id)) : of(null),
+        id ? this._store.select(selectCurrentLibraryItem(id)) : of(null),
       ),
     ),
     { initialValue: null },
   );
 
-  removeFromWatchlist() {
-    this._store.dispatch(removeFromLibrary({ id: this.id() }));
+  removeFromLibrary(watchStatus: string) {
+    this._store.dispatch(
+      removeFromLibrary({ id: this.id(), watch_status: watchStatus }),
+    );
   }
 
-  addToWatchlist() {
+  toggleWatchList() {
+    this.addToLibrary(LibraryTypes.WatchList);
+  }
+
+  addToLibrary(watchStatus: string) {
     const data = this.mediaData();
     if (!data) return;
-    this.addingToLibraryLoader.set(true);
-    if (!this.isAddedToWatchlist()) {
+
+    if (watchStatus === LibraryTypes.WatchList)
+      this.addingToLibraryLoader.set(true);
+
+    const existing = this.existingLibraryItem();
+
+    if (!existing) {
       const payload = {
         name: data.mediaType === 'movie' ? data.title : data.name,
         year:
-          data?.mediaType === 'movie'
-            ? data?.release_date
-            : data?.first_air_date,
-        poster: data?.poster_path ?? '',
+          data.mediaType === 'movie' ? data.release_date : data.first_air_date,
+        poster: data.poster_path ?? '',
         mediaType: this.type(),
         id: this.id(),
         overview: data.overview,
@@ -166,24 +191,32 @@ export class MediaDetails implements OnInit {
         genre: this.genreList() ?? [],
         dateAdded: new Date().toISOString(),
       };
+
       this._store.dispatch(
         addToLibrary({
           item: {
             ...payload,
-            status: 'watchlist',
+            watch_status: [watchStatus],
           },
         }),
       );
     } else {
-      this.removeFromWatchlist();
+      const watchStatusExists = existing?.watch_status?.includes(watchStatus);
+      if (!watchStatusExists) {
+        this._store.dispatch(
+          editStatus({
+            id: this.id(),
+            watch_status: watchStatus,
+          }),
+        );
+      } else {
+        this.removeFromLibrary(watchStatus);
+      }
     }
-
     setTimeout(() => {
       this.addingToLibraryLoader.set(false);
     }, 200);
   }
-
-  isAddedToWatchlist = computed(() => !!this.existingWatchlist());
 
   castDetails = signal<CastDetailsResponse | null>(null);
 

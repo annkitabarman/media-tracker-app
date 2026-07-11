@@ -9,5 +9,5 @@ export interface LibraryMediaModel {
   vote_average: number;
   genre: string[];
   dateAdded: string;
-  status: 'favourites' | 'watchlist' | 'watched';
+  watch_status: string[];
 }
