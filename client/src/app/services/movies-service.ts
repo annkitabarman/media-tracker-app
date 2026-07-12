@@ -12,6 +12,10 @@ import {
 import { TvDetails } from '../models/tv.response.model';
 import { LibraryMediaModel } from '../models/library-media.model';
 import { TrailerResponse } from '../models/videos.response.model';
+import {
+  WatchProviderResponse,
+  CountryWatchProviders,
+} from '../models/platform.response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -308,5 +312,50 @@ export class MoviesService {
     if (!items) return;
     const key = 'my-library';
     localStorage.setItem(key, JSON.stringify(items));
+  }
+
+  fetchPlatforms(
+    type: 'movie' | 'tv',
+    id: number,
+  ): Observable<CountryWatchProviders> {
+    const key = `platforms-${type}-${id}`;
+    const cached = localStorage.getItem(key);
+
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const isExpired = this.checkExpiry(timestamp, 1000 * 60 * 60);
+
+      if (!isExpired) {
+        return of(data);
+      }
+    }
+
+    return this._httpClient
+      .get<WatchProviderResponse>(
+        `${this._baseUrl}/${type}/${id}/watch/providers`,
+      )
+      .pipe(
+        map((data) => {
+          const providers = data.results.IN;
+
+          return {
+            ...providers,
+            flatrate: providers.flatrate?.map((provider) => ({
+              ...provider,
+              logo_path: `${IMAGE_BASE_URL}${provider.logo_path}`,
+            })),
+          };
+        }),
+
+        tap((res) => {
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              data: res,
+              timestamp: Date.now(),
+            }),
+          );
+        }),
+      );
   }
 }

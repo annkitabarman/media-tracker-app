@@ -31,7 +31,6 @@ export class ViewTrailerComponent {
               `https://www.youtube.com/embed/${res?.key}`,
             ),
           );
-          console.log(this.trailerUrl());
         },
       });
     });

@@ -38,6 +38,7 @@ import { ToastService } from '../../services/toast-service';
 import { TrendingMediaType } from '../../models/movie-response.model';
 import { RecommendationsComponent } from '../../components/recommendations-component/recommendations-component';
 import { ViewTrailerComponent } from '../../components/view-trailer-component/view-trailer-component';
+import { CountryWatchProviders } from '../../models/platform.response.model';
 
 @Component({
   selector: 'app-media-details',
@@ -75,6 +76,7 @@ export class MediaDetails implements OnInit {
   watched = signal<boolean>(false);
   dataLoadingLoader = signal<boolean>(false);
   recommendations = signal<TrendingMediaType[]>([]);
+  providersList = signal<CountryWatchProviders | null>(null);
 
   toggleWatched() {
     this.addToLibrary(LibraryTypes.Watched);
@@ -262,6 +264,15 @@ export class MediaDetails implements OnInit {
     this.fetchRoutes();
     this.generateLanguageList();
     this.fetchSimilar();
+    this.fetchProviders();
+  }
+
+  fetchProviders() {
+    this._moviesService.fetchPlatforms(this.type(), this.id()).subscribe({
+      next: (res) => {
+        this.providersList.set(res);
+      },
+    });
   }
 
   generateLanguageList() {
