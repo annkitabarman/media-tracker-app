@@ -58,7 +58,6 @@ export class DiscoverMedia implements OnInit {
         this.type.set(params.get('type') ?? '');
         this.allMedia.set([]);
         this.fetchDiscovery();
-        this.isLoading.set(false);
       });
   }
 
@@ -96,6 +95,7 @@ export class DiscoverMedia implements OnInit {
       .subscribe({
         next: (res) => {
           this.allMedia.update((item) => [...item, ...res.results]);
+          this.isLoading.set(false);
         },
       });
   }
