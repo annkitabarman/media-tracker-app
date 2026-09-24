@@ -6,7 +6,6 @@ import { Observable, map, tap, of, shareReplay, timestamp } from 'rxjs';
 import {
   SearchResultResponse,
   SuggestionItem,
-  SearchResultItem,
   SearchResultsPayload,
 } from '../models/search-result.model';
 

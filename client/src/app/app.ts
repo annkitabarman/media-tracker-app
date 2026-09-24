@@ -7,6 +7,8 @@ import { loadLibrarySuccess } from './store/library/library.actions';
 import { selectLibraryItems } from './store/library/library.selectors';
 import { distinctUntilChanged } from 'rxjs';
 import { ToastComponent } from './components/toast-component/toast-component';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +20,7 @@ export class App implements OnInit {
   private readonly _store = inject(Store);
   private readonly _moviesService = inject(MoviesService);
   protected title = 'media-tracker';
+  private readonly _destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     const watchlist = this._moviesService.fetchLibrary();
@@ -25,7 +28,7 @@ export class App implements OnInit {
 
     this._store
       .select(selectLibraryItems)
-      .pipe(distinctUntilChanged())
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this._destroyRef))
       .subscribe((items) => {
         this._moviesService.saveLibrary(items);
       });
