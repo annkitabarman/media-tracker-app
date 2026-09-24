@@ -199,7 +199,7 @@ export class MoviesService {
         map((res) => {
           return (
             res.results.find(
-              (v) => v.site === 'Youtube' && v.type == 'Trailer' && v.official,
+              (v) => v.site === 'YouTube' && v.type == 'Trailer' && v.official,
             ) ??
             res.results.find(
               (v) => v.site === 'YouTube' && v.type === 'Teaser' && v.official,

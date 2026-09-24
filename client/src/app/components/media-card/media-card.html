@@ -2,10 +2,20 @@
   class="mx-4 mt-4 w-40 rounded-xl overflow-hidden bg-zinc-800 shadow-lg hover:scale-105 transition"
 >
   <div (click)="openDetails()" class="cursor-pointer">
+    @if (item()?.poster_path || item()?.backdrop_path) {
     <img
       [src]="item()?.poster_path || item()?.backdrop_path"
+      [alt]="item()?.title || item()?.name"
       class="w-full aspect-[2/3] object-cover"
     />
+    } @else {
+    <div
+      class="w-full aspect-[2/3] bg-violet-950 flex flex-col items-center justify-center text-gray-400 gap-2"
+    >
+      <span class="text-3xl">🎬</span>
+      <span class="text-xs text-center px-2">No image available</span>
+    </div>
+    }
   </div>
 
   <div class="p-3 bg-violet-900 text-white">
@@ -17,7 +27,7 @@
       {{ item()?.title || item()?.name }}
     </a>
 
-    <div class="text-[0.65rem] text-gray-400 mt-1">
+    <div class="text-[0.65rem] text-gray-400 mt-1 h-4">
       {{ item()?.release_date || item()?.first_air_date | date:'longDate' }}
     </div>
   </div>
