@@ -26,7 +26,7 @@ export class DiscoverMedia implements OnInit {
   private readonly _discoverMediaService = inject(DiscoverMediaService);
   category = signal<string>('');
   type = signal<string>('');
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
 
   media$ = this._discoverMediaService.media$;
 
@@ -90,11 +90,23 @@ export class DiscoverMedia implements OnInit {
   }
 
   fetchDiscovery() {
+    if (this.isLoading() || !this.hasMoreMedia) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
     this._discoverMediaService
       .fetchDiscoveryMedia(this.type(), this.category())
       .subscribe({
         next: (res) => {
-          this.allMedia.update((item) => [...item, ...res.results]);
+          this.allMedia.update((items) => [...items, ...res.results]);
+
+          this.isLoading.set(false);
+        },
+
+        error: (err) => {
+          console.error('Error loading media', err);
           this.isLoading.set(false);
         },
       });

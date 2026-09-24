@@ -4,6 +4,7 @@ import { BehaviorSubject, EMPTY, Observable, tap, map } from 'rxjs';
 import { BASE_URL, IMAGE_BASE_URL } from '../constants/api-urls';
 import { SearchResultResponse } from '../models/search-result.model';
 import { TrendingMediaType } from '../models/movie-response.model';
+import { finalize } from 'rxjs/operators';
 
 interface CachedMediaState {
   results: TrendingMediaType[];
@@ -19,7 +20,7 @@ export class DiscoverMediaService {
   private readonly _baseUrl = BASE_URL;
   private readonly _imageUrl = IMAGE_BASE_URL;
 
-  private _loading = false;
+  private _loading = new Set<string>();
 
   private readonly cache = new Map<string, CachedMediaState>();
 
@@ -54,8 +55,8 @@ export class DiscoverMediaService {
       this.cache.set(key, state);
     }
 
-    // Prevent duplicate requests
-    if (this._loading) {
+    // Prevent duplicate requests for this category
+    if (this._loading.has(key)) {
       return EMPTY;
     }
 
@@ -64,40 +65,37 @@ export class DiscoverMediaService {
       return EMPTY;
     }
 
-    this._loading = true;
+    // Lock immediately
+    this._loading.add(key);
 
     const url =
       `${this._baseUrl}/${type}/${category}` +
       `?language=en-US&page=${state.currentPage}`;
 
     return this._httpClient.get<SearchResultResponse>(url).pipe(
-      map((data) => {
-        return {
-          ...data,
-          results: data.results.map((item) => ({
-            ...item,
-            backdrop_path: item.backdrop_path
-              ? `${this._imageUrl}${item.backdrop_path}`
-              : null,
-            poster_path: null,
-          })),
-        };
+      map((data) => ({
+        ...data,
+        results: data.results.map((item) => ({
+          ...item,
+          backdrop_path: item.backdrop_path
+            ? `${this._imageUrl}${item.backdrop_path}`
+            : null,
+          poster_path: null,
+        })),
+      })),
+
+      tap((res) => {
+        state!.results = [...state!.results, ...res.results];
+
+        state!.currentPage++;
+        state!.totalPages = res.total_pages;
+
+        this._mediaSubject.next(state!.results);
       }),
-      tap({
-        next: (res) => {
-          state!.results = [...state!.results, ...res.results];
 
-          state!.currentPage++;
-          state!.totalPages = res.total_pages;
-
-          this._mediaSubject.next(state!.results);
-
-          this._loading = false;
-        },
-
-        error: () => {
-          this._loading = false;
-        },
+      // Always release the lock
+      finalize(() => {
+        this._loading.delete(key);
       }),
     );
   }
@@ -173,7 +171,8 @@ export class DiscoverMediaService {
     return state.currentPage <= state.totalPages;
   }
 
-  isLoading(): boolean {
-    return this._loading;
+  isLoading(type: string, category: string): boolean {
+    const key = `${type}-${category}`;
+    return this._loading.has(key);
   }
 }
