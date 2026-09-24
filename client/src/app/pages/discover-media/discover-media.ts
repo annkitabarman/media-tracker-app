@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { DiscoverFilter } from '../../components/discover-filter/discover-filter';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -40,6 +47,7 @@ export class DiscoverMedia implements OnInit {
   get heading(): string {
     return this.urlMap[this.category()] ?? '';
   }
+  private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     this._activatedRoute.paramMap
@@ -48,9 +56,38 @@ export class DiscoverMedia implements OnInit {
         const param = params;
         this.category.set(params.get('category') ?? '');
         this.type.set(params.get('type') ?? '');
+        this.allMedia.set([]);
         this.fetchDiscovery();
         this.isLoading.set(false);
       });
+  }
+
+  @ViewChild('loadMoreTrigger')
+  loadMoreTrigger!: ElementRef;
+
+  private observer!: IntersectionObserver;
+
+  ngAfterViewInit() {
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          this.hasMoreMedia &&
+          !this.isLoading()
+        ) {
+          this.fetchDiscovery();
+        }
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    this.observer.observe(this.loadMoreTrigger.nativeElement);
+  }
+
+  ngOnDestroy() {
+    this.observer?.disconnect();
   }
 
   fetchDiscovery() {

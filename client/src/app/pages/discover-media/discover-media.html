@@ -39,14 +39,7 @@
       <app-media-card [type]="type()" [item]="item" />
       }
     </div>
-
-    @if(hasMoreMedia && !isLoading()) {
-    <button
-      class="my-5 mx-5 w-full rounded-lg bg-violet-600 py-2 text-sm font-semibold text-white hover:bg-violet-500 hover:cursor-pointer"
-      (click)="fetchDiscovery()"
-    >
-      Load More
-    </button>
-    } }
+    <div #loadMoreTrigger class="h-10"></div>
+    }
   </div>
 </div>
