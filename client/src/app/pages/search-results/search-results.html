@@ -1,7 +1,7 @@
 <div
-  class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-28 py-10 bg-linear-to-bl from-[#1e063d] to-violet-900"
+  class="min-h-[calc(100vh-4rem)] flex flex-col px-4 sm:px-8 md:px-16 lg:px-28 py-6 sm:py-10 bg-linear-to-bl from-[#1e063d] to-violet-900"
 >
-  <div class="w-full max-w-6xl px-20">
+  <div class="w-full max-w-6xl mx-auto">
     @if(searchResults()?.length) {
 
     <app-search-result-list
@@ -13,9 +13,7 @@
 
     } @else {
 
-    <div class="min-h-[70vh] flex justify-center text-white text-xs">
-      No items match your query
-    </div>
+    <div class="text-white text-xs">No items match your query</div>
 
     }
   </div>

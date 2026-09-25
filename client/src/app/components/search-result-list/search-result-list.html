@@ -1,70 +1,89 @@
-<div class="w-full mx-4 text-xs">
-  @for(item of searchResult(); track item.id) {
-  <div class="my-4 bg-violet-700 h-25 rounded-lg flex items-start">
-    @if(item.poster_path) {
+<div class="min-h-[calc(100vh-4rem)] flex flex-col">
+  <div class="w-full text-xs">
+    @for(item of searchResult(); track item.id) {
 
-    <a
-      [routerLink]="['/', item?.media_type, item?.id]"
-      class="w-17 block shrink-0"
-    >
-      <img
-        [src]="item.poster_path"
-        class="h-25 w-17 object-cover rounded-l-lg cursor-pointer"
-      />
-    </a>
-    } @else {
-    <div
-      class="w-17 shrink-0 h-25 rounded-l-lg bg-gray-300 flex items-center justify-center overflow-hidden"
-    >
-      <a [routerLink]="['/', item?.media_type, item?.id]">
+    <div class="my-4 bg-violet-700 h-25 rounded-lg flex items-start">
+      @if(item.poster_path) {
+
+      <a
+        [routerLink]="['/', item?.media_type, item?.id]"
+        class="w-17 block shrink-0"
+      >
         <img
-          src="no-image.svg"
-          alt="No image available"
-          class="w-8 h-8 object-contain opacity-70"
+          [src]="item.poster_path"
+          class="h-25 w-17 object-cover rounded-l-lg cursor-pointer"
         />
       </a>
-    </div>
-    }
-    <div class="px-4 mt-2 flex flex-col justify-center gap-1">
-      <div class="hover:text-blue-400 hover:underline">
-        <a
-          [routerLink]="['/', item?.media_type, item?.id]"
-          class="font-bold cursor-pointer"
-          >{{ item.title }}</a
-        >
-        @if(item.original_title) {
-        <span class="ml-1"> ({{ item.original_title }}) </span>
-        }
+
+      } @else {
+
+      <div
+        class="w-17 shrink-0 h-25 rounded-l-lg bg-gray-300 flex items-center justify-center overflow-hidden"
+      >
+        <a [routerLink]="['/', item?.media_type, item?.id]">
+          <img
+            src="no-image.svg"
+            alt="No image available"
+            class="w-8 h-8 object-contain opacity-70"
+          />
+        </a>
       </div>
-      <p class="mt-1 text-[0.65rem]">
-        {{item.release_date | date: 'longDate'}}
-      </p>
-      <p class="line-clamp-2 mt-2">{{item.overview}}</p>
+
+      }
+
+      <div class="px-4 mt-2 flex flex-col justify-center gap-1 min-w-0">
+        <div class="hover:text-blue-400 hover:underline truncate">
+          <a
+            [routerLink]="['/', item?.media_type, item?.id]"
+            class="font-bold cursor-pointer"
+          >
+            {{ item.title }}
+          </a>
+
+          @if(item.original_title) {
+          <span class="ml-1"> ({{ item.original_title }}) </span>
+          }
+        </div>
+
+        <p class="mt-1 text-[0.65rem]">
+          {{item.release_date | date: 'longDate'}}
+        </p>
+
+        <p class="line-clamp-2 mt-2">{{item.overview}}</p>
+      </div>
     </div>
+
+    }
   </div>
+
+  <!-- Pagination -->
+  @if(searchResult()?.length) {
+
+  <div
+    class="mt-auto flex justify-center gap-3 pt-6 text-blue-300 text-[0.75rem]"
+  >
+    @if(currentPage() > 1) {
+    <button
+      (click)="pageChange.emit(currentPage() - 1)"
+      [disabled]="currentPage() === 1"
+      class="cursor-pointer hover:underline hover:text-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
+    >
+      &lt; Prev
+    </button>
+    }
+
+    <span> Page {{ currentPage() }} of {{ totalPages() }} </span>
+
+    @if(currentPage() < totalPages()) {
+    <button
+      (click)="pageChange.emit(currentPage() + 1)"
+      [disabled]="currentPage() === totalPages()"
+      class="cursor-pointer hover:underline hover:text-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
+    >
+      Next &gt;
+    </button>
+    }
+  </div>
+
   }
 </div>
-
-@if(searchResult()?.length) {
-
-<div class="flex justify-center gap-3 mt-6 text-blue-300 text-[0.75rem]">
-  <button
-    (click)="pageChange.emit(currentPage() - 1)"
-    [disabled]="currentPage() === 1"
-    class="cursor-pointer hover:underline hover:text-blue-500"
-  >
-    < Prev
-  </button>
-
-  <span>Page {{ currentPage() }} of {{totalPages()}}</span>
-
-  <button
-    (click)="pageChange.emit(currentPage() + 1)"
-    [disabled]="currentPage === totalPages"
-    class="cursor-pointer hover:underline hover:text-blue-500"
-  >
-    Next >
-  </button>
-</div>
-
-}

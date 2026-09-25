@@ -72,7 +72,11 @@ export class NavBar implements OnInit {
 
   ngOnInit(): void {
     this._activatedRoute.queryParams.subscribe((params) => {
-      const query = params['q'];
+      let query = params['q'];
+      if (query) {
+        // Remove the word "search" (case-insensitive, whole word)
+        query = query.replace(/\bsearch\b/gi, '').trim();
+      }
       this.searchText.setValue(query, {
         emitEvent: false,
       });
