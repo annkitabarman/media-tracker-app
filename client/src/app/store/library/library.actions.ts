@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { LibraryMediaModel } from '../../models/library-media.model';
 
-export const loadLibrary = createAction('[Watchlist] Load Watchlist');
+export const loadLibrary = createAction('[Library] Load Library');
 
 export const addToLibrary = createAction(
   '[Library] Add New to Library',
