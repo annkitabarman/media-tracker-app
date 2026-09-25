@@ -1,74 +1,119 @@
-<div class="bg-linear-to-bl from-[#12041f] via-[#1b0836] to-[#29144d] pt-6">
+<div
+  class="bg-linear-to-bl from-[#12041f] via-[#1b0836] to-[#29144d] pt-3 sm:pt-6"
+>
   @if(dataLoadingLoader()) {
+
   <app-media-detail-skeleton></app-media-detail-skeleton>
+
   } @else {
+
+  <!-- HERO -->
   <div class="relative">
-    <div class="h-[30rem] overflow-hidden px-10 pb-10 pt-0 relative">
+    <!-- Backdrop -->
+    <div
+      class="relative h-[18rem] sm:h-[24rem] md:h-[30rem] overflow-hidden px-2 sm:px-4 md:px-6 lg:px-10 pb-4 sm:pb-6 md:pb-10"
+    >
       <img
         [src]="mediaData()?.backdrop_path"
-        class="h-full w-full rounded-xl object-cover brightness-75"
+        class="h-full w-full rounded-lg sm:rounded-xl object-cover brightness-75"
       />
 
-      <!-- Gradient overlay -->
+      <!-- Gradient -->
       <div
-        class="absolute inset-x-10 top-5 bottom-10 rounded-xl bg-gradient-to-t from-[#1b0836] via-[#1b0836]/50 to-transparent"
+        class="absolute inset-x-2 sm:inset-x-4 md:inset-x-6 lg:inset-x-10 top-3 sm:top-5 bottom-4 sm:bottom-6 md:bottom-10 rounded-lg sm:rounded-xl bg-gradient-to-t from-[#1b0836] via-[#1b0836]/60 to-transparent"
       ></div>
     </div>
 
-    <div class="absolute top-15 left-30 flex justify-between mx-10 z-50">
-      <div class="flex gap-6">
+    <!-- HERO CONTENT -->
+    <div
+      class="relative -mt-24 sm:-mt-32 md:-mt-40 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 z-10"
+    >
+      <div
+        class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 lg:gap-10"
+      >
+        <!-- POSTER -->
         <div
-          class="relative flex flex-col items-center gap-4 max-w-[13rem] flex-shrink-0"
+          class="relative flex flex-col items-center gap-4 w-40 sm:w-48 md:w-52 lg:w-56 shrink-0"
         >
           <img
             [src]="mediaData()?.poster_path"
-            class="w-full object-cover rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-violet-700/40"
+            class="w-full rounded-xl sm:rounded-2xl object-cover shadow-2xl shadow-black/50 ring-1 ring-violet-700/40"
           />
 
-          <div class="flex items-center gap-1 w-full relative">
-            <div class="flex flex-col w-full overflow-hidden h-8 gap-4 px-4">
-              <button
-                class="text-xs flex items-start justify-center w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white py-2 px-2 transition cursor-pointer rounded-md"
-                (click)="toggleWatchList()"
-              >
-                @if(addingToLibraryLoader()) {
-                <i class="fa-solid fa-spinner fa-spin mx-2"></i>
-                } @else { @if(!libraryStatus().watchlist) {
-                <i class="fa-solid fa-plus mx-2"></i>
-                Add to Watchlist} @else {
-                <i class="fa-solid fa-check mx-2"></i>
-                Added to Watchlist} }
-              </button>
-            </div>
+          <!-- WATCHLIST -->
+          <div class="w-full">
+            <button
+              class="text-xs sm:text-sm flex items-center justify-center w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white py-2 px-2 transition cursor-pointer rounded-md"
+              (click)="toggleWatchList()"
+            >
+              @if(addingToLibraryLoader()) {
+
+              <i class="fa-solid fa-spinner fa-spin mx-2"></i>
+
+              } @else { @if(!libraryStatus().watchlist) {
+
+              <i class="fa-solid fa-plus mx-2"></i>
+              Add to Watchlist } @else {
+
+              <i class="fa-solid fa-check mx-2"></i>
+              Added to Watchlist } }
+            </button>
           </div>
         </div>
 
-        <div class="text-white mx-10 max-w-3xl">
-          <h1 class="text-5xl font-bold">{{displayTitle}}</h1>
+        <!-- DETAILS -->
+        <div class="text-white w-full max-w-3xl text-center md:text-left">
+          <!-- TITLE -->
+          <h1
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+          >
+            {{displayTitle}}
+          </h1>
 
-          <div class="flex items-center gap-2">
-            <h2 class="text-xl">({{releaseDate | date:'yyyy'}})</h2>
+          <!-- META -->
+          <div
+            class="mt-2 flex flex-wrap items-center justify-center md:justify-start gap-2 text-sm sm:text-base md:text-xl"
+          >
+            <h2>({{releaseDate | date:'yyyy'}})</h2>
 
-            <div class="text-xl">•</div>
+            <div>•</div>
+
             @if(isMovie) {
 
-            <div class="text-md">{{runtime ?? 0 | minutesToHours}}</div>
-            } @else { {{seasonCount}} Season{{seasonCount > 1 ? 's' : ''}} }
-          </div>
+            <div class="text-sm sm:text-base">
+              {{runtime ?? 0 | minutesToHours}}
+            </div>
 
-          <div class="my-4 flex flex-wrap gap-3">
-            @for(g of genreList(); track $index) {
-            <span
-              class="rounded-full border border-violet-500/40 bg-violet-700/20 px-4 py-1 text-xs backdrop-blur-sm transition hover:bg-violet-700/40"
-              >{{g}}</span
-            >
+            } @else {
+
+            <div class="text-sm sm:text-base">
+              {{seasonCount}} Season{{seasonCount > 1 ? 's' : ''}}
+            </div>
+
             }
           </div>
 
+          <!-- GENRES -->
           <div
-            class="mt-5 flex items-center gap-4 rounded-full bg-black/25 px-4 py-2 backdrop-blur-md w-fit"
+            class="my-3 sm:my-4 flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3"
           >
-            <div class="relative h-16 w-16">
+            @for(g of genreList(); track $index) {
+
+            <span
+              class="rounded-full border border-violet-500/40 bg-violet-700/20 px-3 sm:px-4 py-1 text-[10px] sm:text-xs backdrop-blur-sm transition hover:bg-violet-700/40"
+            >
+              {{g}}
+            </span>
+
+            }
+          </div>
+
+          <!-- SCORE + ACTIONS -->
+          <div
+            class="mx-auto md:mx-0 mt-4 sm:mt-5 flex items-center justify-center md:justify-start gap-3 sm:gap-4 rounded-full bg-black/25 px-3 sm:px-4 py-2 backdrop-blur-md w-fit"
+          >
+            <!-- SCORE -->
+            <div class="relative h-12 w-12 sm:h-16 sm:w-16">
               <svg class="h-full w-full rotate-[90deg]">
                 <circle
                   cx="50%"
@@ -95,14 +140,17 @@
               </svg>
 
               <div
-                class="text-xs absolute inset-0 flex items-center justify-center text-white"
+                class="text-[10px] sm:text-xs absolute inset-0 flex items-center justify-center text-white"
               >
                 {{percentage ? percentage + '%' : "NR"}}
               </div>
             </div>
+
             <div class="text-xs w-10">User score</div>
+
+            <!-- FAVORITE -->
             <button
-              class="h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 mx-2 cursor-pointer"
+              class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
               [class.bg-gradient-to-r]="libraryStatus().favorite"
               [class.from-pink-500]="libraryStatus().favorite"
               [class.to-fuchsia-500]="libraryStatus().favorite"
@@ -119,8 +167,9 @@
               }
             </button>
 
+            <!-- WATCHED -->
             <button
-              class="h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
+              class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
               [class.bg-gradient-to-r]="libraryStatus().watched"
               [class.from-violet-600]="libraryStatus().watched"
               [class.to-fuchsia-600]="libraryStatus().watched"
@@ -134,40 +183,56 @@
             </button>
           </div>
 
-          <div class="italic my-6">{{mediaData()?.tagline}}</div>
+          <!-- TAGLINE -->
+          <div class="italic my-4 sm:my-6 text-sm sm:text-base">
+            {{mediaData()?.tagline}}
+          </div>
 
-          <h4 class="text-base">Overview</h4>
-          <p class="mt-3 max-w-3xl leading-5 text-xs text-gray-300">
+          <!-- OVERVIEW -->
+          <h4 class="text-sm sm:text-base">Overview</h4>
+
+          <p class="mt-2 sm:mt-3 leading-5 text-xs sm:text-sm text-gray-300">
             {{ mediaData()?.overview }}
           </p>
         </div>
       </div>
     </div>
   </div>
-  } @if(!dataLoadingLoader()) {
 
-  <div class="flex gap-10 mx-10">
+  @if(!dataLoadingLoader()) {
+
+  <!-- LOWER CONTENT -->
+  <div
+    class="flex flex-col lg:flex-row gap-6 lg:gap-10 mx-3 sm:mx-5 md:mx-8 lg:mx-10 mt-8"
+  >
+    <!-- MAIN CONTENT -->
     <div class="flex-1 min-w-0">
       <div
-        class="rounded-2xl border border-white/10 bg-white/5 py-4 pl-30 pr-10 backdrop-blur-xl"
+        class="rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 py-4 px-3 sm:px-5 md:px-8 lg:pl-10 lg:pr-10 backdrop-blur-xl"
       >
+        <!-- CAST -->
         <div>
-          <span class="text-xl text-white">Cast</span>
+          <span class="text-lg sm:text-xl text-white"> Cast </span>
 
-          <div class="w-full h-70 my-5 overflow-x-auto clean-scrollbar">
-            <div class="flex py-3 gap-4 w-max">
+          <div
+            class="w-full h-64 sm:h-70 my-4 sm:my-5 overflow-x-auto clean-scrollbar"
+          >
+            <div class="flex py-3 gap-3 sm:gap-4 w-max">
               @for (c of castList(); track c.id) {
+
               <app-cast-card
-                class="w-32 flex-shrink-0"
+                class="w-28 sm:w-32 flex-shrink-0"
                 [castName]="c.name"
                 [castRole]="c.character"
                 [castProfilePath]="c.profile_path"
               />
+
               }
 
               <div class="flex items-center flex-shrink-0 px-1 mr-1">
                 <a class="cursor-pointer hover:text-blue-300 hover:underline">
-                  <span class="text-xs">View more</span>
+                  <span class="text-xs"> View more </span>
+
                   <i class="fa-solid fa-arrow-right text-sm ml-1"></i>
                 </a>
               </div>
@@ -175,164 +240,197 @@
           </div>
         </div>
 
+        <!-- DIVIDER -->
         <div
           class="h-px bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent opacity-70 shadow-[0_0_12px_rgba(217,70,239,0.8)]"
         ></div>
 
-        <div class="my-7">
+        <!-- RECOMMENDATIONS -->
+        <div class="my-6 sm:my-7">
           <p class="text-sm text-white">
             If you liked
-            <span class="text-gray-400 italic">{{displayTitle}}</span>, you
+            <span class="text-gray-400 italic"> {{displayTitle}} </span>, you
             might also like...
           </p>
+
           <app-recommendations-component
             [recommendationsList]="recommendations()"
           />
         </div>
 
+        <!-- DIVIDER -->
         <div
           class="h-px bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent opacity-70 shadow-[0_0_12px_rgba(217,70,239,0.8)]"
         ></div>
 
-        <div class="my-7">
-          <p class="text-sm text-white">Trailer</p>
+        <!-- TRAILER -->
+        <div class="my-6 sm:my-7">
+          <p class="text-sm text-white mb-3">Trailer</p>
+
           <app-view-trailer-component [mediaType]="type()" [id]="id()" />
         </div>
       </div>
     </div>
 
+    <!-- SIDEBAR -->
     <div
-      class="w-64 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-white"
+      class="w-full lg:w-64 rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-white shrink-0"
     >
-      <div class="space-y-4 p-5">
+      <div class="space-y-4 p-4 sm:p-5">
+        <!-- STATUS -->
         <div
-          class="flex items-center justify-between border-l-2 border-fuchsia-500 pl-3 py-1"
+          class="flex items-center justify-between border-l-2 border-fuchsia-500 pl-3 py-1 gap-3"
         >
-          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+          <span
+            class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/50"
+          >
             Status
           </span>
 
-          <span
-            class="font-mono text-sm text-fuchsia-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]"
-          >
+          <span class="font-mono text-xs sm:text-sm text-fuchsia-300 truncate">
             {{ mediaData()?.status }}
           </span>
         </div>
 
+        <!-- LANGUAGE -->
         <div
-          class="flex items-center justify-between border-l-2 border-cyan-400 pl-3 py-1"
+          class="flex items-center justify-between border-l-2 border-cyan-400 pl-3 py-1 gap-3"
         >
-          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+          <span
+            class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/50"
+          >
             Language
           </span>
 
-          <span
-            class="font-mono text-sm text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]"
-          >
+          <span class="font-mono text-xs sm:text-sm text-cyan-300">
             {{ originalLang() }}
           </span>
         </div>
 
         @if (isMovie) {
 
+        <!-- BUDGET -->
         <div
-          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1"
+          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1 gap-3"
         >
-          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+          <span
+            class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/50"
+          >
             Budget
           </span>
 
-          <span
-            class="font-mono text-sm text-violet-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
-          >
+          <span class="font-mono text-xs sm:text-sm text-violet-300 truncate">
             {{ budget ? (budget | currency:'USD') : '-' }}
           </span>
         </div>
 
+        <!-- REVENUE -->
         <div
-          class="flex items-center justify-between border-l-2 border-pink-500 pl-3 py-1"
+          class="flex items-center justify-between border-l-2 border-pink-500 pl-3 py-1 gap-3"
         >
-          <span class="text-xs uppercase tracking-[0.2em] text-white/50">
+          <span
+            class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/50"
+          >
             Revenue
           </span>
 
-          <span
-            class="font-mono text-sm text-pink-300 drop-shadow-[0_0_8px_rgba(236,72,153,0.6)]"
-          >
+          <span class="font-mono text-xs sm:text-sm text-pink-300 truncate">
             {{ revenue ? (revenue | currency:'USD') : '-' }}
           </span>
         </div>
 
         } @else {
 
+        <!-- TYPE -->
         <div
-          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1"
+          class="flex items-center justify-between border-l-2 border-violet-500 pl-3 py-1 gap-3"
         >
-          <span class="text-xs uppercase tracking-[0.3em] text-white/50">
+          <span
+            class="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-white/50"
+          >
             Type
           </span>
 
-          <span
-            class="font-mono text-sm text-violet-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
-          >
+          <span class="font-mono text-xs sm:text-sm text-violet-300">
             {{ typeOfShow }}
           </span>
         </div>
 
         }
+
+        <!-- PRODUCTION COMPANIES -->
         <div>
           <div
             class="flex items-center border-l-2 border-fuchsia-500 pl-3 py-1 mb-3"
           >
-            <span class="text-xs uppercase tracking-[0.3em] text-white/50">
+            <span
+              class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/50"
+            >
               Production Companies
             </span>
           </div>
 
           <div class="space-y-3 mt-2">
             @for (company of productionCompanies; track company.id) {
+
             <div class="flex items-center gap-3">
               @if (company.logo_path) {
+
               <img
                 [src]="'https://image.tmdb.org/t/p/w200' + company.logo_path"
                 [alt]="company.name"
                 class="h-8 w-8 rounded bg-white p-1 object-contain shrink-0"
               />
+
               } @else {
+
               <div
                 class="h-8 w-8 rounded bg-white/10 flex items-center justify-center text-[0.55rem] text-gray-400 shrink-0"
               >
                 N/A
               </div>
+
               }
 
               <div class="min-w-0">
                 <div class="text-xs truncate">{{ company.name }}</div>
+
                 @if (company.origin_country) {
+
                 <div class="text-[0.6rem] text-gray-400">
                   {{ company.origin_country }}
                 </div>
+
                 }
               </div>
             </div>
+
             }
           </div>
         </div>
 
-        <div class="my-7">
+        <!-- KEYWORDS -->
+        <div class="my-6">
           <div class="text-[0.65rem] my-3">Keywords</div>
-          <div class="flex flex-wrap gap-0.5">
+
+          <div class="flex flex-wrap gap-1">
             @for(k of keywordsList(); track k.id) {
+
             <span
               class="rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-3 py-1 text-[0.60rem] text-fuchsia-100 transition hover:bg-fuchsia-500/20"
-              >{{k.name}}</span
             >
+              {{k.name}}
+            </span>
+
             }
           </div>
         </div>
 
-        <div class="my-7">
-          <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <!-- STREAMING -->
+        <div class="my-6">
+          <div
+            class="rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5"
+          >
             <p class="mb-4 text-sm font-semibold text-white">
               Available to Stream
             </p>
@@ -340,6 +438,7 @@
             <div class="flex flex-wrap gap-3">
               @for(provider of providersList()?.flatrate; track
               provider.provider_id) {
+
               <div
                 class="group flex flex-col items-center gap-2"
                 [title]="provider.provider_name"
@@ -347,15 +446,16 @@
                 <img
                   [src]="provider.logo_path"
                   [alt]="provider.provider_name"
-                  class="size-12 rounded-xl border border-white/10 transition group-hover:scale-105"
+                  class="size-10 sm:size-12 rounded-xl border border-white/10 transition group-hover:scale-105"
                 />
 
                 <span
-                  class="max-w-14 text-center text-[11px] leading-tight text-gray-400"
+                  class="max-w-14 text-center text-[10px] sm:text-[11px] leading-tight text-gray-400"
                 >
                   {{ provider.provider_name }}
                 </span>
               </div>
+
               }
             </div>
           </div>
@@ -363,5 +463,5 @@
       </div>
     </div>
   </div>
-  }
+  } }
 </div>
