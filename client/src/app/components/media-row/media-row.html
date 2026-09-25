@@ -1,20 +1,31 @@
-<div class="text-xl my-4 px-4">{{mediaType()}}</div>
+<div class="text-lg sm:text-xl my-3 sm:my-4 px-3 sm:px-4">
+  {{ mediaType() }}
+</div>
 
 <div
-  class="flex h-[22rem] bg-[#31135c] rounded-md relative overflow-x-auto"
+  class="flex min-h-[20rem] sm:min-h-[22rem] bg-[#31135c] rounded-md relative overflow-x-auto overflow-y-hidden"
   [ngClass]="mediaHasError() ? 'items-center justify-center' : 'items-start'"
 >
   @if(mediaHasError()) {
+
   <div
-    class="flex items-center justify-center w-full bg-gray-300 mx-4 rounded-md"
+    class="flex items-center justify-center w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] bg-gray-300 mx-2 sm:mx-4 rounded-md min-h-[18rem]"
   >
-    <ng-lottie [options]="options" class="h-64"></ng-lottie>
+    <ng-lottie [options]="options" class="h-48 sm:h-64"></ng-lottie>
   </div>
+
   } @else { @if(mediaLoading()) { @for(i of [1,2,3,4,5,6]; track i) {
-  <div class="relative">
-    <div class="w-40 h-64 mt-4 mx-4 rounded-md bg-gray-300 animate-pulse"></div>
-    <div class="ml-1 mt-2 w-40 truncate animate-pulse">...</div>
+
+  <div class="relative shrink-0">
+    <div
+      class="w-32 sm:w-36 md:w-40 h-52 sm:h-60 md:h-64 mt-3 sm:mt-4 mx-2 sm:mx-3 md:mx-4 rounded-md bg-gray-300 animate-pulse"
+    ></div>
+
+    <div
+      class="ml-2 sm:ml-3 md:ml-4 mt-2 w-32 sm:w-36 md:w-40 h-4 rounded bg-gray-400 animate-pulse"
+    ></div>
   </div>
+
   } } @else { @for(media of mediaList(); track media.id) {
   <app-media-card [item]="media" />
   } } }
