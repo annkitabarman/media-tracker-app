@@ -150,6 +150,8 @@
 
             <!-- FAVORITE -->
             <button
+              [attr.title]="libraryStatus().favorite ? 'Remove from favorites' : 'Add to favorites'"
+              [attr.aria-label]="libraryStatus().favorite ? 'Remove from favorites' : 'Add to favorites'"
               class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
               [class.bg-gradient-to-r]="libraryStatus().favorite"
               [class.from-pink-500]="libraryStatus().favorite"
@@ -169,6 +171,8 @@
 
             <!-- WATCHED -->
             <button
+              [attr.title]="libraryStatus().watched ? 'Remove from watched' : 'Add to watched'"
+              [attr.aria-label]="libraryStatus().watched ? 'Remove from watched' : 'Add to watched'"
               class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
               [class.bg-gradient-to-r]="libraryStatus().watched"
               [class.from-violet-600]="libraryStatus().watched"
@@ -229,13 +233,13 @@
 
               }
 
-              <div class="flex items-center flex-shrink-0 px-1 mr-1">
+              <!-- <div class="flex items-center flex-shrink-0 px-1 mr-1">
                 <a class="cursor-pointer hover:text-blue-300 hover:underline">
                   <span class="text-xs"> View more </span>
 
                   <i class="fa-solid fa-arrow-right text-sm ml-1"></i>
                 </a>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
