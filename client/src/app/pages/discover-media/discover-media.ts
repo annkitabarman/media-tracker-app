@@ -28,8 +28,6 @@ export class DiscoverMedia implements OnInit {
   type = signal<string>('');
   isLoading = signal<boolean>(false);
 
-  media$ = this._discoverMediaService.media$;
-
   allMedia = signal<TrendingMediaType[]>([]);
   skeletonCards = Array.from({ length: 20 });
 

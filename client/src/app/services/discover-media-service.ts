@@ -24,10 +24,6 @@ export class DiscoverMediaService {
 
   private readonly cache = new Map<string, CachedMediaState>();
 
-  private readonly _mediaSubject = new BehaviorSubject<TrendingMediaType[]>([]);
-
-  readonly media$ = this._mediaSubject.asObservable();
-
   fetchDiscoveryMedia(
     type: string,
     category: string,
@@ -89,8 +85,6 @@ export class DiscoverMediaService {
 
         state!.currentPage++;
         state!.totalPages = res.total_pages;
-
-        this._mediaSubject.next(state!.results);
       }),
 
       // Always release the lock
@@ -147,18 +141,12 @@ export class DiscoverMediaService {
     const key = `${type}-${category}`;
 
     const state = this.cache.get(key);
-
-    if (state) {
-      this._mediaSubject.next(state.results);
-    }
   }
 
   reset(type: string, category: string): void {
     const key = `${type}-${category}`;
 
     this.cache.delete(key);
-
-    this._mediaSubject.next([]);
   }
 
   hasMore(type: string, category: string): boolean {
